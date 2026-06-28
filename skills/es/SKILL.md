@@ -80,11 +80,26 @@ es /a-d -path "F:\source\BindAliasPlus" "*.java"
 # Limit results
 es -n 20 "*.java"
 
-# Sort by size (largest first)
-es -n 10 -sort size-descending -size "*.jar"
+# Sort by size (largest first) — "project tail": see big/important files at a glance
+es -n 15 -sort size-descending -size "*.java" -path "F:\source\BindAliasPlus\src"
 
-# Sort by date modified (newest first)
-es -n 10 -sort date-modified-descending -dm "*.md"
+# Sort by date modified (newest first) — see what changed recently
+es -n 15 -sort date-modified-descending -dm '!path:git' -path "F:\source\BindAliasPlus"
+```
+
+### Excluding paths (NOT operator)
+
+The Everything NOT operator `!` must prefix a **search function** (like `path:`, `ext:`), not a bare term:
+
+```bash
+# ❌ Bare NOT — ignored, .git files still show
+es !.git -path "F:\source\BindAliasPlus"
+
+# ✅ Function-scoped NOT — excludes anything with "git" in the path
+es '!path:git' -path "F:\source\BindAliasPlus"
+
+# Also works:
+es -match-path '!.git' -path "F:\source\BindAliasPlus"
 ```
 
 ### Whole Word and Case
