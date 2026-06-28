@@ -26,13 +26,13 @@ This Skill is the **entrance index** to the error documentation system.
 
 | Tool | Error Type | Link |
 |------|-----------|------|
-| `search_code` (GitHub) | `rate-limit-exceeded` | [~/.agents/errors/search_code/rate-limit-exceeded/](~/.agents/errors/search_code/rate-limit-exceeded/) |
+| — | — | *(none yet)* |
 
 ### CLI Tools
 
 | Tool | Error Type | Link |
 |------|-----------|------|
-| `gradlew` | `compilation-error` | [~/.agents/errors/gradlew/compilation-error/](~/.agents/errors/gradlew/compilation-error/) |
+| — | — | *(none yet)* |
 
 ### Skill-Introduced CLI Tools
 
