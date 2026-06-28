@@ -58,5 +58,5 @@ Then add a row to the reference table above linking to the new entry.
 
 - `<tool-name>`: Use the **exact name** from the tool call JSON (e.g., `read_file`, `search_code`, `terminal`). For CLI tools introduced by a Skill, use the Skill name. For other CLI tools, use the binary name (e.g., `find`, `gradlew`).
 - `<error-type>`: The unique identifier for the error. Determine it using this strict priority order:
-  1. **Canonical Code:** If the error contains a standard code string (e.g., `ENOENT`, `EACCES`, `429`, `rate-limit-exceeded`), use it exactly as printed.
-  3. **Normalized Message:** If only a raw string message exists, strip all dynamic variables (paths, lines, hex addresses, numbers). Take the first few (suggested 3-5, longer enough to differ errors with similar static words yet having different root cause and solution) words of the static error message, convert to lowercase, and join with hyphens.
+  1. **Verbatim code in the error message**: If the error output literally contains a standard code string (e.g., `ENOENT`, `EACCES`, `rate-limit-exceeded`), use that string exactly as printed. **Do not infer or guess a code** — if the error doesn't say it, it's not there.
+  2. **Key distinguishing phrase**: Otherwise, read the static (non-variable) part of the error message. Pick the few words that distinguish this error from other errors on the same tool — not mechanically the first N words. Strip dynamic parts (paths, numbers, hex), convert to lowercase, join with hyphens. Example: `"Path … is not in the project"` → `path-not-in-project`.
