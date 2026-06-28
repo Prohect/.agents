@@ -20,7 +20,7 @@ Consult errors Skill when any tool call (builtin, CLI, MCP, Skill-introduced CLI
 2. **`list_directory`** — narrow to the right subdirectory (skip if `es` gives the path directly)
 3. **`terminal` grep** — now grep a single file or small subtree, not the whole forest
 
-**🗂️ Directory exploration: prefer `es` over `list_directory`**
+**🗂️ Directory / File exploration: prefer `es` over `list_directory`**
 
 `list_directory` shows a single level, unsorted. `es` gives the whole tree ranked — use it as a "project tail":
 - `es -n 50 -sort size-descending -size -path "..."` — biggest files = project skeleton
