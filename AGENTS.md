@@ -41,6 +41,10 @@ git --no-pager branch --sort=-committerdate | head -n 12
 
 Current branch first, then all branches sorted by recent activity. Limit with `head -n N`.
 
+**🧠 Complex project? Load `es`**
+
+After checking branches, if the project seems to have nested directories or more than a handful of files, load the `es` Skill — it gives you the whole tree ranked in one shot, way faster than `list_directory`.
+
 **🚫 Never push without permission**
 
 Local commits are always allowed — they're safe, local version control. But `git push` (and `gh` operations that write to remotes) require explicit user permission. Ask before pushing.
