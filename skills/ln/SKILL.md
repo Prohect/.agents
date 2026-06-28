@@ -144,3 +144,4 @@ If you need symlinks often without UAC, use `cmd //c mklink` instead of `ln -s`.
 - **Cross-volume**: Hard links fail across volumes. Use symlinks (with elevation) for cross-volume linking.
 - **Verbose output**: The `'link' => 'target'` format tells you what was created.
 - **Temp files**: Clean up test links with `rm` — the data survives until all hard links are removed.
+- **`sed -i` breaks hard links**: `sed -i` creates a temp file and renames it, giving the file a new inode. All other hard links to the same inode see stale data. Use `cat >` or `cp` + re-link instead.
