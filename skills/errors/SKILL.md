@@ -13,7 +13,7 @@ This Skill is the **entrance index** to the error documentation system.
 
 | Tool | Error Type | Link |
 |------|-----------|------|
-| `read_file` | `ENOENT` (file not found) | [~/.agents/errors/read_file/ENOENT/](~/.agents/errors/read_file/ENOENT/) |
+| `read_file` | `path-not-in-project` | [~/.agents/errors/read_file/path-not-in-project/](~/.agents/errors/read_file/path-not-in-project/) |
 | `write_file` | — | *(none yet)* |
 | `edit_file` | — | *(none yet)* |
 | `terminal` | — | *(none yet)* |
