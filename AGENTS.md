@@ -41,9 +41,7 @@ git --no-pager branch --sort=-committerdate | head -n 12
 
 Then call `list_directory` on the project root to see the top-level structure.
 
-**🧠 Complex project? Load `es`**
-
-After checking branches, if the project has nested directories or more than a handful of files, load the `es` Skill — it gives you the whole tree ranked in one shot, way faster than `list_directory`.
+After checking branches and calling `list_directory`, if the project seems to have directories or more than a handful of files, **load the `es` Skill** — it gives you the whole tree ranked in one shot, way faster than `list_directory`.
 
 **🚫 Never push without permission**
 
