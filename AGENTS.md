@@ -29,9 +29,9 @@ Consult errors Skill when any tool call (builtin, CLI, MCP, Skill-introduced CLI
 
 **⛔ Never create files named:** `nul`, `con`, `prn`, `aux`, `com1`–`com9`, `lpt1`–`lpt9` — these are Windows reserved device names. Windows Explorer and many tools can't delete/rename them. (If one exists, `terminal` `rm` can remove it via POSIX path bypass.)
 
-**🌿 Before any work — check branches**
+**🌿 Before any work — check branches and list root**
 
-Always run this first to know where you are and what exists:
+Always start with this to know where you are and what the project looks like:
 
 ```bash
 git --no-pager branch --show-current
@@ -39,11 +39,11 @@ echo "---"
 git --no-pager branch --sort=-committerdate | head -n 12
 ```
 
-Current branch first, then all branches sorted by recent activity. Limit with `head -n N`.
+Then call `list_directory` on the project root to see the top-level structure.
 
 **🧠 Complex project? Load `es`**
 
-After checking branches, if the project seems to have nested directories or more than a handful of files, load the `es` Skill — it gives you the whole tree ranked in one shot, way faster than `list_directory`.
+After checking branches, if the project has nested directories or more than a handful of files, load the `es` Skill — it gives you the whole tree ranked in one shot, way faster than `list_directory`.
 
 **🚫 Never push without permission**
 
