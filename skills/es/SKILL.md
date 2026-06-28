@@ -67,11 +67,14 @@ es -match-path "gradle" -path "F:\source\BindAliasPlus"
 ### Type Filtering
 
 ```bash
-# Folders only
-es /ad -path "F:\source\BindAliasPlus"
+# Folders only (use folder: search function — /ad flag doesn't work on this install)
+es -n 20 "folder:" -path "F:\source\BindAliasPlus\mc-decompile-sources\26.1.2_26.2"
 
-# Files only
-es /a-d -path "F:\source\BindAliasPlus" "*.java"
+# Files only (use file: search function)
+es -n 10 "file: *.java" -path "F:\source\BindAliasPlus\src"
+
+# Exclude folders from results
+es -n 10 "!folder: *.java" -path "F:\source\BindAliasPlus\src"
 ```
 
 ### Sort and Limit
@@ -180,7 +183,7 @@ es -n 10 "SKILL.md"
 
 ### Find Empty Directories
 
-Use `/ad` (folders only) combined with path filtering, then check manually — Everything doesn't have a native "empty folder" filter.
+Use `folder:` combined with path filtering, then check manually — Everything doesn't have a native "empty folder" filter.
 
 ### Find Files by Attribute
 
@@ -203,7 +206,8 @@ es /ar -n 10 -path "F:\source\BindAliasPlus"
 ## Tips
 
 - Options can be abbreviated: internal `-` chars are optional (e.g., `-wholeword` works for `-whole-word`).
-- Switches can also start with `/` (e.g., `/a-d`).
+- Switches can also start with `/` (e.g., `/a-d`), but **`/ad` for folders doesn't work** on this install — use `folder:` search function instead.
 - Disable a column with `-no-` prefix (e.g., `-no-size`).
 - Use `^` prefix or double-quotes to escape special chars: `\ & | > < ^`.
 - For scripting, prefer `-csv` or `-export-csv` for parseable output.
+- Use `folder:` to filter directories only, `file:` for files only.
