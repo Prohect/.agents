@@ -29,13 +29,17 @@ Consult errors Skill when any tool call (builtin, CLI, MCP, Skill-introduced CLI
 
 **⛔ Never create files named:** `nul`, `con`, `prn`, `aux`, `com1`–`com9`, `lpt1`–`lpt9` — these are Windows reserved device names. Windows Explorer and many tools can't delete/rename them. (If one exists, `terminal` `rm` can remove it via POSIX path bypass.)
 
-**🌿 Before any work — check the current branch**
+**🌿 Before any work — check branches**
 
-Always run `git --no-pager branch --show-current` first. Know where you are before touching anything.
+Always run this first to know where you are and what exists:
 
-**🧠 Complex project? Always load `es`**
+```bash
+git --no-pager branch --show-current
+echo "---"
+git --no-pager branch --sort=-committerdate | head -n 12
+```
 
-If the project seems have more than a handful of files or nested directories, load the `es` Skill before exploring.
+Current branch first, then all branches sorted by recent activity. Limit with `head -n N`.
 
 **🚫 Never push without permission**
 
