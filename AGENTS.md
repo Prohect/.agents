@@ -36,3 +36,7 @@ Always run `git --no-pager branch --show-current` first. Know where you are befo
 **🧠 Complex project? Always load `es`**
 
 If the project seems have more than a handful of files or nested directories, load the `es` Skill before exploring.
+
+**🚫 Never push without permission**
+
+Local commits are always allowed — they're safe, local version control. But `git push` (and `gh` operations that write to remotes) require explicit user permission. Ask before pushing.
