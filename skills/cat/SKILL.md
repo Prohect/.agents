@@ -1,6 +1,6 @@
 ---
 name: cat
-description: Use cat (and shell redirects) for safe file reads and writes that preserve hard links and symlinks. Use when you need to read or overwrite a file without breaking links — unlike sed -i which destroys them.
+description: Use cat (and shell redirects) for safe file reads and writes that preserve hard links and symlinks. Also the universal escape hatch when read_file can't reach a path (outside project root, ~/.agents/errors/, sibling repos). Prefer cat > over sed -i for link-safe overwrites.
 ---
 
 # cat & Shell Redirects — Link-Safe File I/O
