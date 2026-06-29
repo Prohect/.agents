@@ -1,0 +1,5 @@
+   leading spaces
+trailing spaces   
+   both sides   
+no spaces
+	tab indented

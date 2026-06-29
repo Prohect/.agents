@@ -1,0 +1,9 @@
+START
+line one
+line two
+line three
+END
+START
+more data
+even more
+END

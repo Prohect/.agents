@@ -1,0 +1,6 @@
+2024-01-15 10:00:00 [INFO] Server started on port 8080
+2024-01-15 10:00:01 [DEBUG] Loading configuration
+2024-01-15 10:00:05 [ERROR] Failed to connect to database: timeout
+2024-01-15 10:00:06 [WARN] Retrying connection (attempt 2)
+2024-01-15 10:00:10 [ERROR] Failed to connect to database: connection refused
+2024-01-15 10:00:15 [INFO] Server is shutting down

@@ -50,4 +50,4 @@ For files that must be read frequently, consider adding their parent as a projec
 
 ## Attempts Log
 
-- **2026-06-28**: Hit while testing read tool scope — tried reading binary, sibling repo, and errors dir. Resolved with `terminal cat`.
+- **2026-06-28**: Hit while testing read tool scope — tried reading binary, sibling repo, and errors directory. Resolved with `terminal cat`.

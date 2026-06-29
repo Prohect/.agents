@@ -1,228 +1,294 @@
 ---
 name: es
-description: Use the Everything Search CLI (es) for ultra-fast file and directory search on Windows. Use when you need to find files/directories by name, extension, pattern, regex, or path, especially across large directory trees where traditional search is too slow.
+description: Use ES (Everything Search 1.1.0.30) for instant filename/path search on Windows. Use when you need to find files by name, extension, path pattern, or sort by size/date — orders of magnitude faster than `find` or recursive `ls`.
 ---
 
-# ES
+# es — Everything Search CLI
 
-`es` is the command-line interface to Voidtools Everything, a lightning-fast Windows file indexer. It returns results near-instantly because it queries Everything's pre-built NTFS index rather than walking the filesystem.
+`es.exe` v1.1.0.30, the command-line interface to Voidtools Everything. Searches filenames and paths via the Everything index — instant results, even across the entire filesystem. Use it whenever you need to locate files or directories by name, extension, or path pattern.
 
-## Prerequisites
+## Quick Reference
 
-Everything must be running for `es` to work. If it's not already running, start it first (path varies by installation — adjust as needed). If the UAC is not permitted, then do not use `es`. If a search returns `Error 8: Everything IPC window not found`, start Everything first:
+| Task | Command |
+|------|---------|
+| Find by extension | `es -path "$HOME/proj" "*.java"` |
+| Exclude `.git` noise | `es -path "$HOME/proj" '!path:git'` |
+| Files only | add `file:` to search |
+| Folders only | add `folder:` to search |
+| Sort by size (largest first) | `-sort-size-descending` |
+| Sort by date (newest first) | `-sort-date-modified-descending` |
+| Limit results | `-n 50` |
+| Show size column | `-size` |
+| Show date column | `-date-modified` (or `-dm`) |
+| Match path (not just name) | `-match-path` (or `-p`) |
+| Regex search | `-regex "pattern"` |
+| Case-sensitive | `-case` |
+| Count results only | `-get-result-count` |
 
-```bash
-# Start Everything in background mode (adjust path to your installation)
-"E:/Programme Files/Everything/Everything.exe" -startup
-```
-
-Confirm it's running with a quick test:
-
-```bash
-es -n 5 "."
-```
-
-The Everything database auto-updates while running. If the index seems stale, force a rebuild:
-
-```bash
-es -reindex
-```
-
-## Search Syntax
-
-Everything uses its own search syntax, not regex by default. Basic patterns:
-
-| Pattern | Meaning |
-|---------|---------|
-| `foo` | files/directories whose name (one level deep, full path not included) contains "foo" (case-insensitive) |
-| `".file name with spaces"` | files/directories whose name (one level deep, full path not included) contains ".file name with spaces"  (case-insensitive) |
-| `"ext:exe;dll"` | files filtered by extension list |
-
-### Regex Search
-
-Use `-regex` (or `-r`) for regex mode:
-
-`a|b` : Match a or b
-`gr(a|e)y` : Match gray or grey
-`.` : Match any single character
-`[abc]` : Match any character: a, b, or c
-`[^abc]` : Match any character except a, b, c
-`[a-z]` : Match any character in range a to z
-`[a-zA-Z]` : Match any character in range a-z or A-Z
-`^` : Match start of filename
-`$` : Match end of filename
-`( )` : Marked sub-expression (capturing group)
-`\n` : Match the nth marked sub-expression (n = 1 to 9)
-`\b` : Match word boundary
-`*` : Match preceding item 0 or more times
-`?` : Match preceding item 0 or 1 time
-`+` : Match preceding item 1 or more times
-`*?` : Match preceding item 0 or more times (lazy)
-`+?` : Match preceding item 1 or more times (lazy)
-`{x}` : Match preceding item exactly x times
-`{x,}` : Match preceding item x or more times
-`{x,y}` : Match preceding item between x and y times
-`\` : Escape special character
-
-Example:
-```bash
-es -r "\.rs$"
-```
-
-### Path Filtering
+## Basic Search
 
 ```bash
-# Search recursively within a directory (case-insensitive exact match on the directory name)
-es -path "$HOME/.agents/demo/proj" "*.java"
+# All .java files under a directory
+es -path "$HOME/.agents/demo/es" "*.java"
+# → src/Main.java, src/special file.java, test/TestHelper.java, src/Utils.java
 
-# Search direct children of a directory — non-recursive, only items whose parent is exactly this path
-es -parent "$HOME/.agents/demo/proj" "*.gradle"
+# Using Everything ext: syntax (same result)
+es -path "$HOME/.agents/demo/es" "ext:java"
 
-# Search recursively within the *parent* of the given path — equivalent to `es -path "$HOME/.agents/demo/proj"`
-es -parent-path "$HOME/.agents/demo/proj/src"
+# Match anywhere in the path, not just filename
+es -path "$HOME/.agents/demo/es" -match-path "test"
+# → test/ (directory), test/test_main.rs, test/TestHelper.java
 
-# Match against full absolute path, not just filename or directory name
-es -match-path "gradle" -path "$HOME/.agents/demo/proj"
+# Short form of -match-path
+es -path "$HOME/.agents/demo/es" -p "test"
 ```
 
-### Type Filtering
+## Filtering: Files vs Folders
 
 ```bash
-# Directories only
-es folder: -path "$HOME/.agents/demo/proj"
+# Files only — add `file:` to the search
+es -path "$HOME/.agents/demo/es" file:
 
-# Files only
-es -n 20 file: "*.java" -path "$HOME/.agents/demo/proj/src"
+# Folders only — add `folder:` to the search
+es -path "$HOME/.agents/demo/es" folder:
+
+# Combine with other filters
+es -path "$HOME/.agents/demo/es" "ext:java" file:       # .java files only, no dirs
+es -path "$HOME/.agents/demo/es" "test" folder:         # directories matching "test"
 ```
 
-### Sort and Limit
+**Note:** The `/ad` (folders only) and `/a-d` (files only) DIR-style switches are documented but may not work reliably in all ES/Everything configurations. Prefer `file:` and `folder:` in the search text.
+
+## Excluding Noise
+
+The `!` prefix negates a search term. Use Everything's function syntax for precise exclusions:
 
 ```bash
-# Limit results
-es -n 20 "*.java"
+# Exclude anything with ".git" in the path
+es -path "$HOME/.agents/demo/es" '!path:git'
 
-# Sort by size (largest first) — "project tail": see big/important files at a glance
-es -n 20 -sort size-descending -size "*.java" -path "$HOME/.agents/demo/proj"
+# Exclude multiple patterns — chain ! terms
+es -path "$HOME/proj" '!path:git' '!path:node_modules' '!path:target'
 
-# Sort by date modified (newest first) — see what changed recently
-es -n 20 -sort date-modified-descending -dm '!path:git' -path "$HOME/.agents/demo/proj"
+# Exclude hidden files
+es -path "$HOME/proj" '!attrib:H'
 ```
 
-### NOT operator
+**Shell safety:** Wrap `!` terms in single quotes to prevent history expansion in bash. In sh (the default shell) both single and double quotes are safe.
 
-The Everything NOT operator is `!`:
+## Sorting & Limiting
 
 ```bash
-# Bare `!` excludes only items whose *name* matches the given string.
-# The .git directory itself is excluded, but its contents still appear
-# because their individual names (e.g., "config") don't contain ".git".
-es '!.git' -path "$HOME/.agents/demo/proj"
+# Largest files first (great for finding disk hogs)
+es -path "$HOME/.agents/demo/es" -sort-size-descending -size -n 5
+# → 51,200  resources/large.bin
+#      38  error.log
+#      33  server.log
+#      33  src/main.rs
+#      23  src/Utils.java
 
-# `!` following `-match-path` excludes items whose *full path* matches the string.
-# This removes everything inside .git as well.
-es -match-path '!.git' -path "$HOME/.agents/demo/proj"
+# Most recently modified first (what changed recently?)
+es -path "$HOME/.agents/demo/es" -sort-date-modified-descending -date-modified '!path:git' file: -n 5
+# → 2026/06/29 22:18  test/test_main.rs
+#   2026/06/29 22:18  test/TestHelper.java
+#   2026/06/29 22:18  resources/tiny.txt
+#   ...
 
-# Function-scoped `!` excludes anything with "git" anywhere in the path
-es '!path:git' -path "$HOME/.agents/demo/proj"
+# Sort ascending (oldest/smallest first)
+es -path "$HOME/.agents/demo/es" -sort-size-ascending -size -n 3
 ```
 
-### Whole Word and Case
+Available sort keys: `name`, `path`, `size`, `extension`, `date-created`, `date-modified`, `date-accessed`, `attributes`, `run-count`, `date-recently-changed`, `date-run`.
+
+## Display Columns
+
+By default, `es` prints only the full path. Add columns to see metadata:
 
 ```bash
-# Whole word match — es is case-insensitive by default
-es -whole-word "SKILL"
+es -path "$HOME/.agents/demo/es" -size -extension "*.java"
+# → 23 java  src/Main.java
+#    7 java  src/special file.java
+#   12 java  test/TestHelper.java
+#   23 java  src/Utils.java
 
-# Case-sensitive search
-es -i "ClassName"
+# Common column flags (and short forms):
+#   -size              file size
+#   -date-modified, -dm   last modified date
+#   -date-created, -dc    creation date
+#   -extension, -ext      file extension
+#   -full-path-and-name   full path + filename (default)
 ```
 
-## Output Display
+Size formatting:
+```bash
+es -path "$HOME/.agents/demo/es" -size -size-format 2 -sort-size-descending -n 2
+# → 50 KB  resources/large.bin
+#    1 KB  error.log
+# -size-format: 0=auto, 1=Bytes, 2=KB, 3=MB
+```
 
-Default output is one full path per line. Add columns for metadata:
+## Regex & Case Sensitivity
+
+`-regex` enables Everything's regex engine. By default regex matches the filename only (use `-match-path` to match against the full path). Searches are **case-insensitive** unless `-case` is added.
+
+### Regex Syntax Reference
+
+| Syntax | Meaning |
+|--------|---------|
+| `a\|b` | Match `a` or `b` |
+| `.` | Match any single character |
+| `[abc]` | Match any single character: `a`, `b`, or `c` |
+| `[^abc]` | Match any single character except `a`, `b`, `c` |
+| `[a-z]` | Match any single character in range `a` through `z` |
+| `[a-zA-Z]` | Match any single character in range `a`–`z` or `A`–`Z` |
+| `^` | Match start of filename |
+| `$` | Match end of filename |
+| `( )` | Capturing group for backreferences (see below) |
+| `\n` | Backreference to the nth captured group (`n` = 1–9) |
+| `\b` | Match word boundary |
+| `*` | Match preceding element 0 or more times |
+| `?` | Match preceding element 0 or 1 time |
+| `+` | Match preceding element 1 or more times |
+| `*?` | Match preceding element 0 or more times (lazy) |
+| `+?` | Match preceding element 1 or more times (lazy) |
+| `{x}` | Match preceding element exactly `x` times |
+| `{x,}` | Match preceding element `x` or more times |
+| `{x,y}` | Match preceding element between `x` and `y` times |
+| `\` | Escape special characters (e.g., `\.` for literal dot) |
+
+### Verified Examples
 
 ```bash
-# Show file size and date modified
-es -size -dm -n 20 "*.rs" -path "$HOME/.agents/demo/proj"
+# Alternation — use | without parentheses
+es -path "$HOME/.agents/demo/es" -regex "Main|Utils"
+# → src/Main.java, src/main.rs, test/test_main.rs, src/Utils.java
 
-# Available columns:
-# -name, -path-column, -full-path-and-name, -extension, -size
-# -date-created (-dc), -date-modified (-dm), -date-accessed (-da)
-# -attributes, -run-count, -date-run, -date-recently-changed (-rc)
+# Character class
+# (Note: .java works in character class; . is literal here)
+es -path "$HOME/.agents/demo/es" -regex "[er].*\.log"
+# → error.log, server.log
+
+# Start anchor ^ (matches start of filename)
+es -path "$HOME/.agents/demo/es" -regex "^M.*\.java"
+# → src/Main.java
+
+# Negated character class
+# Match .java files NOT starting with M
+es -path "$HOME/.agents/demo/es" -regex "^[^M].*\.java"
+# → src/special file.java, test/TestHelper.java, src/Utils.java
+
+# End anchor $ (match by extension)
+es -path "$HOME/.agents/demo/es" -regex "\.rs$"
+# → src/main.rs, test/test_main.rs
+
+# ? quantifier (optional preceding element)
+es -path "$HOME/.agents/demo/es" -regex "errors?\.log"
+# → error.log
+
+# Capturing groups + backreferences
+# Match filenames where first char repeats later (files only)
+es -path "$HOME/.agents/demo/es" -regex "^(.).*\1" file:
+# → test/test_main.rs, test/TestHelper.java, CamelCaseFile.txt, resources/tiny.txt
+
+# Case-sensitive regex
+es -path "$HOME/.agents/demo/es" -case -regex "Main"
+# → src/Main.java
 ```
 
-### Structured Output Formats
+### Important: `( )` is for backreferences, not alternation
+
+Everything's regex engine treats `(...)` as a **capturing group** for use with `\1`–`\9` backreferences. It does **not** support `(a|b)` for alternation grouping.
 
 ```bash
-# CSV output (with header)
-es -csv -size -dm -n 20 "*.rs" -path "$HOME/.agents/demo/proj"
+# ✅ Works — bare alternation with wildcard dot
+es -path "$HOME/.agents/demo/es" -regex "Main.java|Utils.java"
 
-# TSV, EFU, TXT formats also available: -tsv, -efu, -txt
-
-# Export to file
-es -export-csv results.csv -size -dm -n 20 "*.rs" -path "$HOME/.agents/demo/proj"
+# ❌ Does NOT work — parentheses not supported for alternation grouping
+es -path "$HOME/.agents/demo/es" -regex "(Main|Utils).java"
 ```
 
-## Metadata Queries (No File Listing)
+**⚠️ Quirk:** An escaped dot (`\.`) or bracket dot (`[.]`) **before** `|` breaks alternation — only the first alternative matches. Use an unescaped `.` (wildcard) in alternation patterns, or restructure the regex:
 
 ```bash
-# Count matching files
-es -get-result-count "*.java" -path "$HOME/.agents/demo/proj"
+# ❌ Broken — escaped dot before | drops second alternative
+es -path "$HOME/.agents/demo/es" -regex "error\.log|server\.log"
+# → error.log only (server.log dropped)
 
-# Total size of matching files
-es -get-total-size "*.java" -path "$HOME/.agents/demo/proj"
+# ✅ Fixed — use unescaped . (wildcard) in alternation
+es -path "$HOME/.agents/demo/es" -regex "error.log|server.log"
+# → error.log, server.log
 
-# Get Everything version
-es -version
+# ✅ Fixed — use $ anchor (safe with \. at end)
+es -path "$HOME/.agents/demo/es" -regex "error\.log$|server\.log$"
+# → error.log, server.log
 ```
+
+## Counting & Sizing
+
+```bash
+# How many Java files?
+es -path "$HOME/.agents/demo/es" -get-result-count "ext:java"
+# → 4
+
+# Total size of all matching files
+es -path "$HOME/.agents/demo/es" -get-total-size "ext:java"
+```
+
+## Paths with Spaces
+
+```bash
+# Double-quote output — safe for piping to xargs
+es -path "$HOME/.agents/demo/es" -double-quote "notes"
+# → "C:\Users\...\demo\es\my notes.txt"
+
+# Pipe to xargs (strip \r on Windows first):
+es -path "$HOME/.agents/demo/es" -double-quote "notes" | tr -d '\r' | xargs cat
+```
+
+## CSV / Machine-Readable Output
+
+```bash
+es -path "$HOME/.agents/demo/es" -csv "ext:java"
+# → Filename
+#   "C:\Users\...\src\Main.java"
+#   "C:\Users\...\src\special file.java"
+#   "C:\Users\...\test\TestHelper.java"
+#   "C:\Users\...\src\Utils.java"
+```
+
+Other formats: `-efu` (Everything File List), `-txt`, `-m3u`/`-m3u8` (playlists), `-tsv`.
 
 ## Common Recipes
 
-### Find All Source Files in a Project
-
 ```bash
-es -n 50 "ext:java;kt;xml;gradle;json;properties" -path "$HOME/.agents/demo/proj"
+# What are the biggest files in a project? (exclude .git noise)
+es -n 20 -sort size-descending -size -path "$HOME/proj" '!path:git'
+
+# What changed recently? (files only, last 30)
+es -n 30 -sort date-modified-descending -dm '!path:git' -path "$HOME/proj" file:
+
+# Find all Rust source files, sorted by path
+es -path "$HOME/proj" -s "ext:rs"
+
+# Count files by extension in a directory
+es -path "$HOME/proj" -get-result-count "ext:rs"   # Rust
+es -path "$HOME/proj" -get-result-count "ext:java" # Java
+
+# Find files with "config" in the path, case-insensitive
+es -path "$HOME/proj" -match-path "config"
+
+# Export a file list to CSV for scripting
+es -path "$HOME/proj" -export-csv files.csv "ext:java"
 ```
 
-### Find Recently Modified Files
+## Notes
 
-```bash
-es -n 20 -sort date-modified-descending -dm -path "$HOME/.agents/demo/proj"
-```
-
-### Find Large Files
-
-```bash
-es -n 20 -sort size-descending -size -path "$HOME/.agents/demo/proj"
-```
-
-### Search Across Multiple Drives
-
-```bash
-# Everything indexes all NTFS volumes by default — no -path needed
-es -n 20 "SKILL.md"
-```
-
-## Error Codes
-
-| Code | Meaning |
-|------|---------|
-| 6 | Invalid switch/argument |
-| 8 | Everything not running (IPC error) |
-| Other | See `es --help` for full list |
-
-## Tips
-
-- **Combine with shell tools**: Pipe es output to `grep`, `wc -l`, or `xargs` for further processing. On Windows, strip `\r` first.
-
-  ```bash
-  # Count lines across all .java files
-  es "*.java" -path "$HOME/.agents/demo/proj" | tr -d '\r' | xargs -d '\n' wc -l
-  ```
-
-- **Use `-n` to limit results**: es can return thousands of results quickly — always set `-n` unless you need everything.
-
-- **Prefer `-path` over `-parent` for exploration**: `-path` searches recursively, which is usually what you want. Use `-parent` when you need exactly one level deep.
-
-- **Single-quote special characters in shell**: Characters like `!` and `*` have special meaning in most shells. Wrap them in single quotes (`'!path:git'`, `'*.java'`) to pass them literally to es.
-
-- **Run `es --help` for the full option list**: The help output covers every flag, sort option, and export format available.
+- **`es` is index-based.** It queries the Everything database, not the filesystem. Results are instant but reflect the last index scan. Use `es -reindex` to force a rescan before querying.
+- **Windows paths use backslashes.** `es` outputs backslashes (`C:\Users\...`). For shell pipelines, forward slashes work for most tools but not all.
+- **`\r\n` line endings.** On Windows, `es` output lines end with `\r\n`. Pipe through `tr -d '\r'` before feeding to `xargs` or other Unix tools.
+- **Use `$HOME` in paths, never hardcode usernames.** `"$HOME/.agents/demo/es"` is portable; `"C:\Users\76288\..."` is not.
+- **Quote `!` and `*` in search terms.** Single quotes (`'!path:git'`, `'*.java'`) prevent shell expansion and work in all shells.
+- **Omit `-n` to return all results.** The default has no upper limit. Use `-n <num>` to cap results. Avoid `-n 0` (it returns zero results).
+- **Combine filters in the search text.** `es -path "..." "ext:java" file: "Main"` finds Java files containing "Main" in the name. Each space-separated token is AND-ed together.
+- **`-s` sorts by full path** (shortcut for `-sort-path-ascending`).
+- **`-no-result-error`** sets a non-zero exit code when no results are found — useful in scripts.
