@@ -9,14 +9,14 @@ description: Use the Everything Search CLI (es.exe) for ultra-fast file and fold
 
 ## Prerequisites
 
-Everything must be running for `es` to work. If a search returns `Error 8: Everything IPC window not found`, start Everything first:
+Everything must be running for `es` to work, if it's not already running, start it first, if the UAC is not permitted, then do not use `es`. If a search returns `Error 8: Everything IPC window not found`, start Everything first:
 
 ```bash
 # Start Everything in background mode (typical location)
 "E:/Programme Files/Everything/Everything.exe" -startup
 ```
 
-Confirm it's running with a quick test: `es -n 1 "."`
+Confirm it's running with a quick test: `es -n 50 "."`
 
 The Everything database auto-updates while running. If the index seems stale, force a rebuild:
 
@@ -71,10 +71,10 @@ es -match-path "gradle" -path "F:\source\BindAliasPlus"
 es -n 20 "folder:" -path "F:\source\BindAliasPlus\mc-decompile-sources\26.1.2_26.2"
 
 # Files only (use file: search function)
-es -n 10 "file: *.java" -path "F:\source\BindAliasPlus\src"
+es -n 20 "file: *.java" -path "F:\source\BindAliasPlus\src"
 
 # Exclude folders from results
-es -n 10 "!folder: *.java" -path "F:\source\BindAliasPlus\src"
+es -n 20 "!folder: *.java" -path "F:\source\BindAliasPlus\src"
 ```
 
 ### Sort and Limit
@@ -84,10 +84,10 @@ es -n 10 "!folder: *.java" -path "F:\source\BindAliasPlus\src"
 es -n 20 "*.java"
 
 # Sort by size (largest first) — "project tail": see big/important files at a glance
-es -n 15 -sort size-descending -size "*.java" -path "F:\source\BindAliasPlus\src"
+es -n 20 -sort size-descending -size "*.java" -path "F:\source\BindAliasPlus\src"
 
 # Sort by date modified (newest first) — see what changed recently
-es -n 15 -sort date-modified-descending -dm '!path:git' -path "F:\source\BindAliasPlus"
+es -n 20 -sort date-modified-descending -dm '!path:git' -path "F:\source\BindAliasPlus"
 ```
 
 ### Excluding paths (NOT operator)
@@ -121,7 +121,7 @@ Default output is one full path per line. Add columns for metadata:
 
 ```bash
 # Show file size and date modified
-es -size -dm -n 5 "*.exe" -path "E:/Programme Files/Everything"
+es -size -dm -n 20 "*.exe" -path "E:/Programme Files/Everything"
 
 # Available columns:
 # -name, -path-column, -full-path-and-name, -extension, -size
@@ -133,7 +133,7 @@ es -size -dm -n 5 "*.exe" -path "E:/Programme Files/Everything"
 
 ```bash
 # CSV output (with header)
-es -csv -n 5 "*.md" -path "F:\source\BindAliasPlus"
+es -csv -n 20 "*.md" -path "F:\source\BindAliasPlus"
 
 # TSV, EFU, TXT formats also available: -tsv, -efu, -txt
 
@@ -178,7 +178,7 @@ es -n 20 -sort size-descending -size -path "F:\source\BindAliasPlus"
 
 ```bash
 # Everything indexes all NTFS volumes by default — no -path needed
-es -n 10 "SKILL.md"
+es -n 20 "SKILL.md"
 ```
 
 ### Find Empty Directories
@@ -189,10 +189,10 @@ Use `folder:` combined with path filtering, then check manually — Everything d
 
 ```bash
 # Hidden files and folders
-es /ah -n 10 -path "F:\source\BindAliasPlus"
+es /ah -n 20 -path "F:\source\BindAliasPlus"
 
 # Read-only files
-es /ar -n 10 -path "F:\source\BindAliasPlus"
+es /ar -n 20 -path "F:\source\BindAliasPlus"
 ```
 
 ## Error Codes
