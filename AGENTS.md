@@ -28,7 +28,7 @@ eg. To search inside gitignore dirs (e.g. `mc-decompile-sources/`), use `es` to 
 - `es -n 50 -sort date-modified-descending -dm '!path:git' -path "..."` - what's changed recently
 - Exclude noise: `'!path:git'` to suppress `.git`, filter by extension (`*.java`) to narrow further
 
-**While using `terminal`, never create or redirect to file named:** `nul`, `con`, `prn`, `aux`, `com1`–`com9`, `lpt1`–`lpt9` - these are Windows reserved device names.
+**While using `terminal`, never create or redirect to file named:** `nul`, `con`, `prn`, `aux`, `com1`-`com9`, `lpt1`-`lpt9` - these are Windows reserved device names.
 
 **Check branches and list root**
 
