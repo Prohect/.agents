@@ -34,9 +34,7 @@ Consult errors Skill when any tool call (builtin, CLI, MCP, Skill-introduced CLI
 Always start with this to know where you are and what the project looks like:
 
 ```bash
-git --no-pager branch --show-current
-echo "---"
-git --no-pager branch --sort=-committerdate | head -n 50
+git --no-pager branch --show-current; echo "---"; git --no-pager branch --sort=-committerdate | head -n 50;
 ```
 
 Then call `list_directory` on the project root to see the top-level structure.
