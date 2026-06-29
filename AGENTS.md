@@ -19,7 +19,7 @@ Load errors Skill when any tool call (builtin, CLI, MCP, Skill-introduced CLI) t
 1. **`es`** - find likely files by filename, path (`-match-path`, `-path`), sort by size/date (`-sort`) - instant, index-based
 2. ***`terminal` grep*** - now grep a single file or small subtree, not the whole forest
 
-eg. To search inside gitignore dirs (e.g. `mc-decompile-sources/`), use `es` to find files/dirs by filename or path, then *`terminal` grep* to read content.
+eg. To search inside gitignore directories (e.g. `mc-decompile-sources/`), use `es` to find files/directories by filename or path, then *`terminal` grep* to read content.
 
 **Directory exploration: `es` Skill**
 
