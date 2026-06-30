@@ -307,7 +307,7 @@ es -reindex; es -path "$HOME\.agents\demo\es" "*.java"
 - **`es` is index-based.** It queries the Everything database, not the filesystem. Results are instant but reflect the last index scan. Use `es -reindex` to force a rescan before querying.
 - **Windows paths use backslashes.** `es` outputs backslashes (`C:\Users\...`). For shell pipelines, forward slashes work for most tools but not all.
 - **`\r\n` line endings.** On Windows, `es` output lines end with `\r\n`. Pipe through `tr -d '\r'` before feeding to `xargs` or other Unix tools.
-- **Use `$HOME` in paths, never hardcode usernames.** `"$HOME/.agents/demo/es"` is portable; `"C:\Users\76288\..."` is not.
+- **Use `$HOME` in paths, never hardcode usernames.** `"$HOME/.agents/demo/es"` is portable; `"C:\Users\username\..."` is not.
 - **Quote `!` and `*` in search terms.** Single quotes (`'!path:git'`, `'*.java'`) prevent shell expansion and work in all shells.
 - **Omit `-n` to return all results.** The default has no upper limit. Use `-n <num>` to cap results. Avoid `-n 0` (it returns zero results).
 - **Combine filters in the search text.** `es -path "..." "ext:java" file: "Main"` finds Java files containing "Main" in the name. Each space-separated token is AND-ed together.

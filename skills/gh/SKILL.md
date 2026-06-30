@@ -5,11 +5,11 @@ description: Use the GitHub CLI (gh v2.95.0) for GitHub operations — repo mana
 
 # gh — GitHub CLI
 
-`gh` v2.95.0 is installed and authenticated as **Prohect**. Use it for GitHub operations that need repo-level access.
+`gh` v2.95.0 is installed and authenticated. Use it for GitHub operations that need repo-level access.
 
 **Location**: `C:/Program Files/GitHub CLI/gh` (not on PATH in all shells; use full path or `gh` if found)
 
-**Auth**: Logged into `github.com` as Prohect. Token scopes: `gist`, `read:org`, `repo`.
+**Auth**: Logged into `github.com`. Token scopes: `gist`, `read:org`, `repo`.
 
 ## Common Commands
 
@@ -20,7 +20,7 @@ description: Use the GitHub CLI (gh v2.95.0) for GitHub operations — repo mana
 gh repo view owner/repo --json name,visibility,url,description
 
 # List your repos
-gh repo list Prohect --limit 10 --json name,visibility
+gh repo list your-username --limit 10 --json name,visibility
 
 # Change repo visibility
 gh repo edit owner/repo --visibility public --accept-visibility-change-consequences

@@ -319,5 +319,5 @@ MSYS=winsymlinks:nativestrict ln -sbv new.target critical.link
 - **Symlinks require Developer Mode or admin** on Windows. `mklink /J` (junction) works without admin and behaves like a directory hard link.
 - **`-r` computes relative paths automatically** — prefer it for symlinks that must work when the tree is moved.
 - **`-s` overrides `-L` and `-P`.** When creating symlinks, these dereference flags are ignored.
-- **Use `$HOME` in paths, never hardcode usernames.** `"$HOME/.agents/demo/ln"` is portable; `/c/Users/76288/...` is not.
+- **Use `$HOME` in paths, never hardcode usernames.** `"$HOME/.agents/demo/ln"` is portable; `/c/Users/username/...` is not.
 - **Quote names with spaces** in the shell. Single-quote `!` and `*` to prevent expansion.

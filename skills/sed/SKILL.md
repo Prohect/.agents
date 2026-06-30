@@ -456,7 +456,7 @@ sed 's|\\|/|g' /tmp/bs_test.txt
 
 # ✅ Works — sed sees s|\\|/|g (literal backslash → forward slash)
 sed 's|\\\\|/|g' /tmp/bs_test.txt
-# → C:/Users/76288/project/src/main.c
+# → C:/Users/username/project/src/main.c
 ```
 
 This only affects consecutive backslashes. Single backslash patterns (`\n`, `\t`, `\+`, `\(`, `\1`) work normally because they're already a single backslash in the sed script.

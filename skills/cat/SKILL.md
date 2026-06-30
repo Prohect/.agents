@@ -263,5 +263,5 @@ cat file.txt | grep "pattern"
 - **`-u` is ignored** on all modern systems (it was for unbuffered output on ancient Unix). It's silently accepted but does nothing.
 - **`-b` overrides `-n`.** When both are specified, only non-blank lines are numbered.
 - **`-A` = `-vET`** — a single flag that shows all hidden characters (non-printing bytes, tabs, and line ends).
-- **Use `$HOME` in paths, never hardcode usernames.** `"$HOME/.agents/demo/cat"` is portable; `"C:\Users\76288\..."` is not.
+- **Use `$HOME` in paths, never hardcode usernames.** `"$HOME/.agents/demo/cat"` is portable; `"C:\Users\username\..."` is not.
 - **On Windows, `cat` handles CRLF files transparently.** Lines with `\r\n` display normally; use `-A` to detect them.
