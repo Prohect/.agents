@@ -1,12 +1,12 @@
-# agents — Zed Coding Agent Skills & Rules
+# .agents — Zed Coding Agent Skills & Rules
 
 A curated collection of [Zed](https://zed.dev) coding agent skills, error references, and project rules. Each skill teaches the agent how to use a specific CLI tool effectively.
 
 ## Quick Deploy
 
 ```bash
-git clone https://github.com/Prohect/agents.git
-cd agents
+git clone https://github.com/Prohect/.agents.git
+cd .agents
 
 # Deploy skills — symlink into ~/.agents/skills/
 mkdir -p "$HOME/.agents/skills"
