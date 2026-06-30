@@ -4,45 +4,51 @@ A curated collection of [Zed](https://zed.dev) coding agent skills, error refere
 
 ## Quick Deploy
 
+The repo itself is the deploy target — clone it directly into `~/.agents`:
+
 ```bash
-git clone https://github.com/Prohect/.agents.git
-cd .agents
-
-# Deploy skills — symlink into ~/.agents/skills/
-mkdir -p "$HOME/.agents/skills"
-for skill in skills/*; do
-    ln -s "$(pwd)/$skill" "$HOME/.agents/skills/$(basename "$skill")"
-done
-
-# Deploy error docs
-ln -s "$(pwd)/errors" "$HOME/.agents/errors"
-
-# Deploy project rules (optional — only if this is your primary ruleset)
-ln -s "$(pwd)/AGENTS.md" "$HOME/.agents/AGENTS.md"
-ln -s "$(pwd)/Zed/AGENTS.md" "$HOME/.agents/Zed/AGENTS.md"
+git clone https://github.com/Prohect/.agents.git "$HOME/.agents"
 ```
 
-On Windows, use `mklink /J` (junctions, no admin needed) or `cmd //c 'mklink ...'` from MSYS2 shells. See the [`ln` skill](skills/ln/SKILL.md) for details.
+That's it. Zed's agent resolves skills relative to `~/.agents/skills/`, error docs from `~/.agents/errors/`, and global rules from `~/.agents/AGENTS.md`.
+
+If `~/.agents` already exists, clone somewhere else and copy in what you need:
+
+```bash
+git clone https://github.com/Prohect/.agents.git /tmp/agents-src
+
+# Copy skills you want
+cp -r /tmp/agents-src/skills/cat "$HOME/.agents/skills/cat"
+
+# Copy error docs
+cp -r /tmp/agents-src/errors "$HOME/.agents/errors"
+
+# Merge or replace global rules
+cp /tmp/agents-src/AGENTS.md "$HOME/.agents/AGENTS.md"
+
+rm -rf /tmp/agents-src
+```
 
 ## Structure
 
 ```
 .
-├── AGENTS.md              # Global agent rules (project-agnostic)
+├── README.md               # You are here
+├── AGENTS.md               # Global agent rules (project-agnostic)
 ├── Zed/
-│   └── AGENTS.md          # Zed-specific agent configuration
-├── skills/                # Agent skills (one per CLI tool)
-│   ├── awk/               #   GNU awk — text processing
-│   ├── cat/               #   GNU cat — file display
-│   ├── commit-message/    #   Git commit message writing
-│   ├── errors/            #   Tool error reference index
-│   ├── es/                #   Everything Search — instant file search
-│   ├── gh/                #   GitHub CLI
-│   ├── grep/              #   GNU grep — content search
-│   ├── ln/                #   GNU ln + mklink — links & junctions
-│   └── sed/               #   GNU sed — stream editing
-├── errors/                # Error solution docs (referenced by errors skill)
-└── demo/                  # Deterministic test fixtures for each skill
+│   └── AGENTS.md           # Zed-specific agent configuration
+├── skills/                 # Agent skills (one per CLI tool)
+│   ├── awk/                #   GNU awk — text processing
+│   ├── cat/                #   GNU cat — file display
+│   ├── commit-message/     #   Git commit message writing
+│   ├── errors/             #   Tool error reference index
+│   ├── es/                 #   Everything Search — instant file search
+│   ├── gh/                 #   GitHub CLI
+│   ├── grep/               #   GNU grep — content search
+│   ├── ln/                 #   GNU ln + mklink — links & junctions
+│   └── sed/                #   GNU sed — stream editing
+├── errors/                 # Error solution docs (referenced by errors skill)
+└── demo/                   # Deterministic test fixtures for each skill
 ```
 
 ## How Skills Work
@@ -66,21 +72,21 @@ The agent loads a skill when a task matches its description. The SKILL.md teache
 
 The `errors` skill is special: it's an index of documented tool-call errors and their solutions. When the agent hits a new error, it consults `errors/` for a known fix instead of guessing. Each error has its own directory with a `SOLUTION.md`.
 
-## Prerequisites
+## Tool Dependencies
 
-Skills assume these CLI tools are available on `$PATH`:
+Skills document the usage of these CLI tools, but you only need the ones you use:
 
-| Tool | Minimum Version | Windows |
-|------|----------------|---------|
-| GNU awk | 5.3.0 | via MSYS2/Git Bash |
-| GNU cat | 8.32 | via MSYS2/Git Bash |
-| GNU grep | 3.0 | via MSYS2/Git Bash |
-| GNU sed | 4.9 | via MSYS2/Git Bash |
-| GNU ln | 8.32 | via MSYS2; `mklink` fallback |
-| Everything Search (`es`) | 1.1.0.30 | native Windows |
-| GitHub CLI (`gh`) | 2.95.0 | native Windows |
+| Tool | Minimum Version | How to get it |
+|------|----------------|---------------|
+| GNU awk | 5.3.0 | `pacman -S gawk` (MSYS2), or built-in on most Linux/macOS |
+| GNU cat | 8.32 | `pacman -S coreutils` (MSYS2), or built-in |
+| GNU grep | 3.0 | `pacman -S grep` (MSYS2), or built-in |
+| GNU sed | 4.9 | `pacman -S sed` (MSYS2), or built-in |
+| GNU ln | 8.32 | `pacman -S coreutils` (MSYS2), or built-in |
+| Everything Search | 1.1.0.30 | [voidtools.com](https://www.voidtools.com) (Windows only) |
+| GitHub CLI | 2.95.0 | [cli.github.com](https://cli.github.com) |
 
-Install MSYS2 tools with `pacman -S coreutils grep sed gawk`.
+On Windows, install [MSYS2](https://www.msys2.org) to get the GNU toolchain. The `es` and `gh` skills are Windows-first but the concepts transfer.
 
 ## Contributing
 
