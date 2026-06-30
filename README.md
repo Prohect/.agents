@@ -4,29 +4,27 @@ A curated collection of [Zed](https://zed.dev) coding agent skills, error refere
 
 ## Quick Deploy
 
-The repo itself is the deploy target — clone it directly into `~/.agents`:
+The repo itself is the deploy target — clone it directly into `~/`:
 
 ```bash
-git clone https://github.com/Prohect/.agents.git "$HOME/.agents"
+git clone https://github.com/Prohect/.agents.git "$HOME/"
 ```
 
-That's it. Zed's agent resolves skills relative to `~/.agents/skills/`, error docs from `~/.agents/errors/`, and global rules from `~/.agents/AGENTS.md`.
-
-If `~/.agents` already exists, clone somewhere else and copy in what you need:
+If `~/.agents` already exists, you may optionally combine them with this repo:
 
 ```bash
-git clone https://github.com/Prohect/.agents.git /tmp/agents-src
+# Rename your old skills directory
+mv "$HOME/.agents/skills" "$HOME/.agents-old/skills"
 
-# Copy skills you want
-cp -r /tmp/agents-src/skills/cat "$HOME/.agents/skills/cat"
+# Clone this repo into your home directory
+git clone https://github.com/Prohect/.agents.git "$HOME/"
 
-# Copy error docs
-cp -r /tmp/agents-src/errors "$HOME/.agents/errors"
+# combine them (optional if you already paid lots of effort maintaining your custom skills), 
+# you should read the contents recursively of both directories, 
+# and merge them manually to keep the rules not conflicting and confusing.
 
-# Merge or replace global rules
-cp /tmp/agents-src/AGENTS.md "$HOME/.agents/AGENTS.md"
-
-rm -rf /tmp/agents-src
+# Remove the old skills directory (optional)
+rm -rf "$HOME/.agents-old"
 ```
 
 ## Structure
@@ -34,18 +32,19 @@ rm -rf /tmp/agents-src
 ```
 .
 ├── README.md               # You are here
-├── AGENTS.md               # Global agent rules (project-agnostic)
+├── AGENTS.md               # Project agent rules for agents to maintain or contribute to this repository
 ├── Zed/
-│   └── AGENTS.md           # Zed-specific agent configuration
+│   └── AGENTS.md           # Global agent rule, you may override or combine with your old global AGENTS.md
+│                           # Recommand to use directory symlink to keep this one synced with your global AGENTS.md
 ├── skills/                 # Agent skills (one per CLI tool)
 │   ├── awk/                #   GNU awk — text processing
 │   ├── cat/                #   GNU cat — file display
 │   ├── commit-message/     #   Git commit message writing
 │   ├── errors/             #   Tool error reference index
-│   ├── es/                 #   Everything Search — instant file search
+│   ├── es/                 #   Everything Search — instant file/directory search, only on Windows
 │   ├── gh/                 #   GitHub CLI
 │   ├── grep/               #   GNU grep — content search
-│   ├── ln/                 #   GNU ln + mklink — links & junctions
+│   ├── ln/                 #   GNU ln + mklink — links & junctions, only on Windows
 │   └── sed/                #   GNU sed — stream editing
 ├── errors/                 # Error solution docs (referenced by errors skill)
 └── demo/                   # Deterministic test fixtures for each skill
@@ -70,7 +69,7 @@ The agent loads a skill when a task matches its description. The SKILL.md teache
 
 ## The `errors` Skill
 
-The `errors` skill is special: it's an index of documented tool-call errors and their solutions. When the agent hits a new error, it consults `errors/` for a known fix instead of guessing. Each error has its own directory with a `SOLUTION.md`.
+The `errors` skill is special: it's an index of documented tool-call errors and their solutions. When the agent hits a new error, it could consults `errors/` for a known fix instead of guessing. Each error has its own directory with a `SOLUTION.md`.
 
 ## Tool Dependencies
 

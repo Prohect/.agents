@@ -46,7 +46,7 @@ cat "D:/source/other-project/README.md"                   # sibling repo
 cat "$HOME/.agents/errors/.../SOLUTION.md"               # errors dir
 ```
 
-For files that must be read frequently, consider adding their parent as a project root, or symlinking them into a project root directory.
+For files that must be read frequently, consider create a hardlink.
 
 ## Attempts Log
 
