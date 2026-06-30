@@ -281,6 +281,27 @@ es -path "$HOME/proj" -match-path "config"
 es -path "$HOME/proj" -export-csv files.csv "ext:java"
 ```
 
+## Troubleshooting
+
+### Error 8: Everything IPC window not found
+
+`es.exe` is a thin CLI client that talks to the Everything GUI via IPC. If the Everything application isn't running, `es` has nothing to talk to and exits with code 8.
+
+**Fix:** 
+```bash
+# Run "Everything" in the background
+everything -startup
+```
+If it's not in your $PATH, ask the user the full path and document it below or add it to $PATH if the contents of the parent directory of everything.exe seems clean.
+
+### Stale index: `-reindex`
+
+If results seem out of date, force a fresh scan via flag `-reindex` before querying:
+
+```bash
+es -reindex; es -path "$HOME\.agents\demo\es" "*.java"
+```
+
 ## Notes
 
 - **`es` is index-based.** It queries the Everything database, not the filesystem. Results are instant but reflect the last index scan. Use `es -reindex` to force a rescan before querying.

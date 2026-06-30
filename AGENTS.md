@@ -43,3 +43,9 @@ Then call `list_directory` on the project root to see the top-level structure. I
 **Never push without permission**
 
 Local commits are always allowed - they're safe, local version control. But `git push` (and `gh` operations or mcp tools that write to remotes) require explicit user permission. Ask before pushing.
+
+**Use portable paths**
+
+`$HOME` expands in double quotes and is portable. Never hardcode a username or machine-specific path.
+Ask the user for the path to the specific CLI tool when a call is failed with `command not found` or similar error.
+Harness $PATH and hardlink and symlink, maintain a clean CLI tool directory which is added to $PATH.
