@@ -1,4 +1,4 @@
-## Rules & workflow for skill creation (generic)
+## Rules & workflow for skill maintenance
 
 ### 0. Audit the tool first
 ```bash
