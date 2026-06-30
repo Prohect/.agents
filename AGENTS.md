@@ -1,51 +1,43 @@
-**Load the `errors` Skill first encountering new tool call error**
+## Rules & workflow for skill creation (generic)
 
-Load errors Skill when any tool call (builtin, CLI, MCP, Skill-introduced CLI) throws an new(not appearing in context) error.
-
-**Read Tool Scope**
-
-| tool | scope | gitignore-aware |
-|------|-------|:----------:|
-| `read_file` / `list_directory` | project roots + `~/.agents/skills/` only | sees all |
-| `grep` / `find_path` | project roots only | skips `.gitignore` + `.git/info/exclude` |
-| *`terminal` cat/grep/ls/find* | anywhere (stupidly slow working on large file trees) | sees all |
-| `es` (Everything Search) | anywhere (filenames, full absolute paths, no file content, but stupidly fast working on any file trees) | sees all |
-
-
-**Search efficiently**
-
-*`terminal` ls* is slow on large trees and requires recursive tool calls. **always use `es` instead**:
-
-1. **`es`** - find likely files by filename, path (`-match-path`, `-path`), sort by size/date (`-sort`) - instant, index-based
-2. ***`terminal` grep*** - now grep a single file or small subtree, not the whole forest
-
-eg. To search inside gitignore directories (e.g. `mc-decompile-sources/`), use `es` to find files/directories by filename or path, then *`terminal` grep* to read content.
-
-**Directory exploration: `es` Skill**
-
-`es` gives the whole tree ranked:
-- `es -n 50 -sort size-descending -size -path "..."`
-- `es -n 50 -sort date-modified-descending -dm '!path:git' -path "..."` - what's changed recently
-- Exclude noise: `'!path:git'` to suppress `.git`, filter by extension (`*.java`) to narrow further
-
-**While using `terminal`, never create or redirect to file named:** `nul`, `con`, `prn`, `aux`, `com1`-`com9`, `lpt1`-`lpt9` - these are Windows reserved device names.
-
-**Check branches and list root**
-
-Always start with this to know where you are and what the project looks like:
-
+### 0. Audit the tool first
 ```bash
-git --no-pager branch --show-current; echo " "; git --no-pager branch --sort=-committerdate | head -n 50;
+<tool> --help       # capture full option list
+<tool> --version    # confirm it's running
 ```
+Never write a skill without understanding the tool's actual CLI surface.
 
-Then call `list_directory` on the project root to see the top-level structure. If the project seems to have some directories, **load the `es` Skill** - it could give you the whole sorted tree in one call.
+### 1. Build a controlled demo directory
+Create a small, representative file tree covering every edge case the examples will touch (multiple types, nested dirs, hidden dirs, spaces in names, varied sizes, camelCase) under 
+```bash
+"$HOME/.agents/demo/<skill>"
+```
+This makes results **deterministic and reproducible**.
 
-**Never push without permission**
+### 2. Test every example before writing it
+No guessed syntax. Run each command against the demo directory, capture the actual output, and use that as the documented expected output. If something behaves unexpectedly, investigate and document it — don't paper over it.
 
-Local commits are always allowed - they're safe, local version control. But `git push` (and `gh` operations or mcp tools that write to remotes) require explicit user permission. Ask before pushing.
+### 3. Watch shell vs tool syntax conflicts
+- `!` → history expansion in bash → wrap in single quotes
+- `*` → globbing → single-quote
+- `\` → escape char → prefer forward slashes; double-escape if unavoidable
+- possible solution: **single-quote anything with `!` or `*`**
 
-**Use portable paths**
+### 4. Prefer literal code blocks over tables for syntax references
+Markdown tables require escaping `|` inside code spans (`\|`), which obscures the actual syntax. A plain code block shows the syntax exactly as the user would type it.
 
-`$HOME` expands in double quotes and is portable. Never hardcode a username or machine-specific path to any file content.
-Ask the user for the path to the specific CLI tool when a call is failed with `command not found` or similar error.
-Harness $PATH and hardlink and symlink, maintain a clean CLI tool directory which is added to $PATH.
+### 5. Verify independently — spawn a sub-agent
+After writing the skill, spawn a sub-agent to load the skill fresh and run **every single code block** against the demo directory. Fresh eyes catch errors you've become blind to. Report pass/fail for each example and suggest fixes.
+
+### 6. Fix → re-verify → iterate
+The sub-agent will find bugs. Fix them, then have the sub-agent re-verify just the failing examples. Repeat until all pass.
+The last step of this loop must be a pass report for all examples.
+
+### 7. `edit_file` struggles with heavy backslash escaping
+When a replacement contains many `\` characters (regex patterns, Windows paths), `edit_file`'s JSON encoding can fail. Fall back to `write_file` for the whole file, or use `terminal` + `sed` with a script file.
+
+### 8. Document discovered quirks prominently
+If testing reveals tool behavior that contradicts the documented syntax (e.g., a feature that doesn't work as advertised, or a syntax interaction that breaks), add a clearly marked **⚠️ Quirk** callout with broken vs. working examples.
+
+### 9. Leave no trace
+Remove temp files (`*.sed`, backup copies) when done. The demo directory should contain only the controlled test fixtures.
