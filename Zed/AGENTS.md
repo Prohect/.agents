@@ -40,7 +40,7 @@ Always start with this to know where you are and what the project looks like:
 git --no-pager branch --show-current; echo " "; git --no-pager branch --sort=-committerdate | head -n 50;
 ```
 
-Then call `list_directory` on the project root to see the top-level structure. If the project seems to have some directories, **load the `es` Skill** - it could give you the whole sorted tree in one call.
+Then call `list_directory` on the project root to see the top-level structure. If the project seems to have some directories, **load the `es` Skill** - it gives you the whole sorted tree in one call.
 
 **Never push without permission**
 
