@@ -30,6 +30,8 @@ eg. To search inside gitignore directories (e.g. `mc-decompile-sources/`), use `
 
 **While using `terminal`, never create or redirect to file named:** `nul`, `con`, `prn`, `aux`, `com1`-`com9`, `lpt1`-`lpt9` - these are Windows reserved device names.
 
+**While using `terminal` <tool>, always load `<tool>` Skill if available**
+
 **Check branches and list root**
 
 Always start with this to know where you are and what the project looks like:
@@ -42,7 +44,7 @@ Then call `list_directory` on the project root to see the top-level structure. I
 
 **Never push without permission**
 
-Local commits are always allowed - they're safe, local version control. But `git push` (and `gh` operations or mcp tools that write to remotes) require explicit user permission. Ask before pushing.
+Local stash are always allowed - they're safe, local version control. But `git commit` and `git push` (and `gh` operations or mcp tools that (potentially) write to remotes) require explicit user permission. Ask before pushing.
 
 **Use portable paths**
 
