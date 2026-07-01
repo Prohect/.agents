@@ -290,7 +290,7 @@ es -path "$HOME/proj" -export-csv files.csv "ext:java"
 **Fix:** 
 ```bash
 # Run "Everything" in the background
-everything -startup
+MSYS2_ARG_CONV_EXCL="/Run;/TN" schtasks.exe /Run /TN everything
 ```
 If it's not in your $PATH, ask the user the full path and document it below or add it to $PATH if the contents of the parent directory of everything.exe seems clean.
 
