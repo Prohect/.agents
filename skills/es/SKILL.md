@@ -1,6 +1,6 @@
 ---
 name: es
-description: Use ES (Everything Search 1.1.0.30) for instant filename/path search on Windows. Use when you need to find files by name, extension, path pattern, or sort by size/date — orders of magnitude faster than `find` or recursive `ls`.
+description: Use ES (Everything Search 1.1.0.30) for instant filename/path search on Windows. Use when you need to find files/directories by name, extension, path pattern, or sort by size/date — orders of magnitude faster than `find` or recursive `ls`.
 ---
 
 # es — Everything Search CLI
