@@ -1,7 +1,3 @@
-**Load the `errors` Skill first encountering new tool call error**
-
-Load errors Skill when any tool call (builtin, CLI, MCP, Skill-introduced CLI) throws an new(not appearing in context) error.
-
 **Read Tool Scope**
 
 | tool | scope | gitignore-aware |
@@ -42,7 +38,7 @@ git --no-pager branch --show-current; echo " "; git --no-pager branch --sort=-co
 
 Then call `list_directory` on the project root to see the top-level structure. If the project seems to have some directories, **load the `es` Skill** - it gives you the whole sorted tree in one call.
 
-**Never push without permission**
+**Never commit or push without permission**
 
 Local stash are always allowed - they're safe, local version control. But `git commit` and `git push` (and `gh` operations or mcp tools that (potentially) write to remotes) require explicit user permission. Ask before pushing.
 
@@ -51,3 +47,8 @@ Local stash are always allowed - they're safe, local version control. But `git c
 `$HOME` expands in double quotes and is portable. Never hardcode a username or machine-specific path to any file content.
 Ask the user for the path to the specific CLI tool when a call is failed with `command not found` or similar error.
 Harness $PATH and hardlink and symlink, maintain a clean CLI tool directory which is added to $PATH.
+
+**Make minimal changes**
+- Make minimal changes with minimal doc (explain why is the code coding that way) while coding.
+- Make minimal changes to markdown files, minimal yet comprehensive mining, 
+  but not minimal length or tokens, the token is expected exactly as-is from the session.
