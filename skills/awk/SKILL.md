@@ -19,12 +19,13 @@ MSYS2, bash, and awk each process backslashes, creating multi-level escaping tha
 # ✅ Forward slashes — zero escaping issues
 awk '{print FILENAME}' ./names.txt
 
-# If your data contains backslashes, prefer a script file (-f) to avoid shell escaping:
-echo '/C:\\Program Files/' > pattern.awk
+# If your data contains backslashes, prefer a script file (-f) to avoid shell escaping.
+# Use printf with octal to bypass shell backslash processing:
+printf '/C:\134\134Program Files/\n' > pattern.awk
 awk -f pattern.awk paths.txt
 ```
 
-If you see `warning: escape sequence \X treated as plain X`, you have a backslash count mismatch — prefer forward slashes.
+If you see `warning: escape sequence \X treated as plain X`, you have a backslash count mismatch. Common causes: `echo` reduces `\\` to `\` even in single quotes; `printf` needs either `\134\134` (octal) or `\\\\` (8 backslashes) to produce `\\` in the file. Prefer forward slashes or `printf` with octal.
 
 ### Single quotes inside the awk program
 

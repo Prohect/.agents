@@ -133,28 +133,60 @@ es -path "$HOME/.agents/demo/es" -size -size-format 2 -sort-size-descending -n 2
 
 ### Regex Syntax Reference
 
-| Syntax | Meaning |
-|--------|---------|
-| `a\|b` | Match `a` or `b` |
-| `.` | Match any single character |
-| `[abc]` | Match any single character: `a`, `b`, or `c` |
-| `[^abc]` | Match any single character except `a`, `b`, `c` |
-| `[a-z]` | Match any single character in range `a` through `z` |
-| `[a-zA-Z]` | Match any single character in range `a`–`z` or `A`–`Z` |
-| `^` | Match start of filename |
-| `$` | Match end of filename |
-| `( )` | Capturing group for backreferences (see below) |
-| `\n` | Backreference to the nth captured group (`n` = 1–9) |
-| `\b` | Match word boundary |
-| `*` | Match preceding element 0 or more times |
-| `?` | Match preceding element 0 or 1 time |
-| `+` | Match preceding element 1 or more times |
-| `*?` | Match preceding element 0 or more times (lazy) |
-| `+?` | Match preceding element 1 or more times (lazy) |
-| `{x}` | Match preceding element exactly `x` times |
-| `{x,}` | Match preceding element `x` or more times |
-| `{x,y}` | Match preceding element between `x` and `y` times |
-| `\` | Escape special characters (e.g., `\.` for literal dot) |
+```
+a|b          Match a or b
+gr(a|e)y     Group with alternation — matches gray or grey
+.            Match any single character
+[abc]        Match a single character a, b or c
+[^abc]       Match any single character except a, b, c
+[a-z]        Match a single character in the range a to z
+[a-zA-Z]     Match a single character in the range a to z or A to Z
+^            Match the start of the filename
+$            Match the end of the filename
+( )          Defines a marked subexpression (capturing + alternation grouping)
+\1 - \9      Matches what the nth marked subexpression matched
+*            Match the preceding element zero or more times
+?            Match the preceding element zero or one time
++            Match the preceding element one or more times
+*?           Lazily match the preceding element zero or more times
++?           Lazily match the preceding element one or more times
+{x}          Match the preceding element x times
+{x,}         Match the preceding element x or more times
+{x,y}        Match the preceding element between x and y times
+\            Escape special character
+\Q...\E      Literal sequence — treat everything between as literal chars
+\a           Alarm, the BEL character (hex 07)
+\cx          "Control-x", where x is any ASCII character
+\e           Escape (hex 1B)
+\f           Form feed (hex 0C)
+\n           Linefeed (hex 0A)
+\r           Carriage return (hex 0D)
+\t           Tab (hex 09)
+\0dd         Character with octal code 0dd
+\ddd         Character with octal code ddd, or back reference
+\o{ddd..}    Character with octal code ddd..
+\xhh         Character with hex code hh
+\x{hhh..}    Character with hex code hhh..
+\d           Any decimal digit
+\D           Any character that is not a decimal digit
+\h           Any horizontal white space character
+\H           Any character that is not a horizontal white space character
+\s           Any white space character
+\S           Any character that is not a white space character
+\v           Any vertical white space character
+\V           Any character that is not a vertical white space character
+\w           Any "word" character
+\W           Any "non-word" character
+\p{xx}       A character with the xx property
+\P{xx}       A character without the xx property
+\X           A Unicode extended grapheme cluster
+\b           Match at a word boundary
+\B           Match when not at a word boundary
+\A           Match at the start of the subject
+\Z           Match at the end of the subject (also before a newline at the end)
+\z           Match only at the end of the subject
+\G           Match at the first matching position in the subject
+```
 
 ### Verified Examples
 
@@ -195,33 +227,25 @@ es -path "$HOME/.agents/demo/es" -case -regex "Main"
 # → src/Main.java
 ```
 
-### Important: `( )` is for backreferences, not alternation
+### `( )` supports both capturing and alternation grouping
 
-Everything's regex engine treats `(...)` as a **capturing group** for use with `\1`–`\9` backreferences. It does **not** support `(a|b)` for alternation grouping.
+`( )` captures for `\1`–`\9` backreferences **and** supports `(a|b)` alternation grouping.
 
 ```bash
-# ✅ Works — bare alternation with wildcard dot
+# ✅ Bare alternation
 es -path "$HOME/.agents/demo/es" -regex "Main.java|Utils.java"
+# → src/Main.java, src/Utils.java
 
-# ❌ Does NOT work — parentheses not supported for alternation grouping
+# ✅ Paren grouping with alternation (works since v1.1.0.30)
 es -path "$HOME/.agents/demo/es" -regex "(Main|Utils).java"
-```
+# → src/Main.java, src/Utils.java
 
-**⚠️ Quirk:** An escaped dot (`\.`) or bracket dot (`[.]`) **before** `|` breaks alternation — only the first alternative matches. Use an unescaped `.` (wildcard) in alternation patterns, or restructure the regex:
-
-```bash
-# ❌ Broken — escaped dot before | drops second alternative
+# ✅ Escaped dot before | now works (fixed in v1.1.0.30)
 es -path "$HOME/.agents/demo/es" -regex "error\.log|server\.log"
-# → error.log only (server.log dropped)
-
-# ✅ Fixed — use unescaped . (wildcard) in alternation
-es -path "$HOME/.agents/demo/es" -regex "error.log|server.log"
-# → error.log, server.log
-
-# ✅ Fixed — use $ anchor (safe with \. at end)
-es -path "$HOME/.agents/demo/es" -regex "error\.log$|server\.log$"
 # → error.log, server.log
 ```
+
+**Historical note:** Prior to v1.1.0.30, `( )` only supported backreferences (no alternation grouping), and `\.` before `|` broke the second alternative. Both limitations are resolved in the current version.
 
 ## Counting & Sizing
 
