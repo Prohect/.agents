@@ -1,6 +1,4 @@
-id,name,email,status
-1,Alice,alice@example.com,active
-2,Bob,bob@example.com,active
-3,Charlie,charlie@example.com,inactive
-4,Diana,diana@example.com,active
-5,Eve,eve@example.com,pending
+id,name,value
+1,alpha,100
+2,beta,200
+3,gamma,300

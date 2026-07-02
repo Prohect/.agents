@@ -1,6 +1,6 @@
-apple
-banana
-apple
-cherry
-banana
-apple
+Alice
+Bob
+Alice
+Charlie
+Bob
+Alice

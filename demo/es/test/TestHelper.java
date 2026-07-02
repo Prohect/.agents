@@ -1,1 +1,1 @@
-test helper
+class TH{}

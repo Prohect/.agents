@@ -1,1 +1,1 @@
-public class Utils { }
+public class Utils {}

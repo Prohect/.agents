@@ -1,8 +1,8 @@
 fn main() {
-    println!("Hello World");
+    // error handling
+    println!("Error: something went wrong");
 }
 
 fn helper() {
-    // error handling
-    println!("Error: something went wrong");
+    // some other stuff
 }

@@ -1,1 +1,1 @@
-public class Hello { }
+public class Main {}

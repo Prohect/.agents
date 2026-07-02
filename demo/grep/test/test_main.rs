@@ -1,9 +1,7 @@
-#[test]
 fn test_main() {
-    assert!(true);
+    // setup
 }
 
-#[test]
 fn test_error() {
     assert!(false, "expected error");
 }
