@@ -1,25 +1,25 @@
 **Read Tool Scope**
 
-| tool | scope | gitignore-aware |
-|------|-------|:----------:|
-| `read_file` / `list_directory` | project roots + `~/.agents/skills/` only | sees all |
-| `grep` / `find_path` | project roots only | skips `.gitignore` + `.git/info/exclude` |
-| *`terminal` cat/grep/ls/find* | anywhere (stupidly slow working on large file trees) | sees all |
-| `es` (Everything Search) | anywhere (filenames, full absolute paths, no file content, but stupidly fast working on any file trees) | sees all |
-
+| tool                           | scope                                    |             gitignore-aware              |
+| ------------------------------ | ---------------------------------------- | :--------------------------------------: |
+| `read_file` / `list_directory` | project roots + `~/.agents/skills/` only |                 sees all                 |
+| `grep` / `find_path`           | project roots only                       | skips `.gitignore` + `.git/info/exclude` |
+| _`terminal` cat/grep/ls/find_  | anywhere (slow on large file trees)      |                 sees all                 |
+| `es` (Everything Search)       | anywhere (files, directories)            |                 sees all                 |
 
 **Search efficiently**
 
-*`terminal` ls* is slow on large trees and requires recursive tool calls. **always use `es` instead**:
+_`terminal` ls_ is slow on large trees and requires recursive tool calls. **always use `es` instead**:
 
 1. **`es`** - find likely files by filename, path (`-match-path`, `-path`), sort by size/date (`-sort`) - instant, index-based
-2. ***`terminal` grep*** - now grep a single file or small subtree, not the whole forest
+2. _**`terminal` grep**_ - now grep a single file or small subtree, not the whole forest
 
-eg. To search inside gitignore directories (e.g. `mc-decompile-sources/`), use `es` to find files/directories by filename or path, then *`terminal` grep* to read content.
+eg. To search inside gitignore directories (e.g. `mc-decompile-sources/`), use `es` to find files/directories by filename or path, then _`terminal` grep_ to read content.
 
 **Directory exploration: `es` Skill**
 
 `es` gives the whole tree ranked:
+
 - `es -n 50 -sort size-descending -size -path "..."`
 - `es -n 50 -sort date-modified-descending -dm '!path:git' -path "..."` - what's changed recently
 - Exclude noise: `'!path:git'` to suppress `.git`, filter by extension (`*.java`) to narrow further
@@ -49,6 +49,7 @@ Ask the user for the path to the specific CLI tool when a call is failed with `c
 Harness $PATH and hardlink and symlink, maintain a clean CLI tool directory which is added to $PATH.
 
 **Make minimal changes**
+
 - Make minimal changes with minimal doc (explain why is the code coding that way) while coding.
-- Make minimal changes to markdown files, minimal yet comprehensive mining, 
+- Make minimal changes to markdown files, minimal yet comprehensive mining,
   but not minimal length or tokens, the token is expected exactly as-is from the session.

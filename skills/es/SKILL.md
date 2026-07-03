@@ -1,6 +1,6 @@
 ---
 name: es
-description: Use ES (Everything Search 1.1.0.30) for instant filename/path search on Windows. Use when you need to find files/directories by name, extension, path pattern, or sort by size/date — orders of magnitude faster than `find` or recursive `ls`.
+description: Use `terminal` es (Everything Search v1.1.0.30) for instant filename/path search on Windows. Use when you need to find files/directories by name, extension, path pattern, or sort by size/date — orders of magnitude faster than `find` or recursive `ls`.
 ---
 
 # es — Everything Search CLI
@@ -9,21 +9,21 @@ description: Use ES (Everything Search 1.1.0.30) for instant filename/path searc
 
 ## Quick Reference
 
-| Task | Command |
-|------|---------|
-| Find by extension | `es -path "$HOME/proj" "*.java"` |
-| Exclude `.git` noise | `es -path "$HOME/proj" '!path:git'` |
-| Files only | add `file:` to search |
-| Folders only | add `folder:` to search |
-| Sort by size (largest first) | `-sort-size-descending` |
-| Sort by date (newest first) | `-sort-date-modified-descending` |
-| Limit results | `-n 50` |
-| Show size column | `-size` |
-| Show date column | `-date-modified` (or `-dm`) |
-| Match path (not just name) | `-match-path` (or `-p`) |
-| Regex search | `-regex "pattern"` |
-| Case-sensitive | `-case` |
-| Count results only | `-get-result-count` |
+| Task                         | Command                             |
+| ---------------------------- | ----------------------------------- |
+| Find by extension            | `es -path "$HOME/proj" "*.java"`    |
+| Exclude `.git` noise         | `es -path "$HOME/proj" '!path:git'` |
+| Files only                   | add `file:` to search               |
+| Folders only                 | add `folder:` to search             |
+| Sort by size (largest first) | `-sort-size-descending`             |
+| Sort by date (newest first)  | `-sort-date-modified-descending`    |
+| Limit results                | `-n 50`                             |
+| Show size column             | `-size`                             |
+| Show date column             | `-date-modified` (or `-dm`)         |
+| Match path (not just name)   | `-match-path` (or `-p`)             |
+| Regex search                 | `-regex "pattern"`                  |
+| Case-sensitive               | `-case`                             |
+| Count results only           | `-get-result-count`                 |
 
 ## Basic Search
 
@@ -120,6 +120,7 @@ es -path "$HOME/.agents/demo/es" -size -extension "*.java"
 ```
 
 Size formatting:
+
 ```bash
 es -path "$HOME/.agents/demo/es" -size -size-format 2 -sort-size-descending -n 2
 # → 50 KB  resources/large.bin
@@ -311,11 +312,13 @@ es -path "$HOME/proj" -export-csv files.csv "ext:java"
 
 `es.exe` is a thin CLI client that talks to the Everything GUI via IPC. If the Everything application isn't running, `es` has nothing to talk to and exits with code 8.
 
-**Fix:** 
+**Fix:**
+
 ```bash
 # Run "Everything" in the background
 MSYS2_ARG_CONV_EXCL="/Run;/TN" schtasks.exe /Run /TN everything
 ```
+
 If it's not in your $PATH, ask the user the full path and document it below or add it to $PATH if the contents of the parent directory of everything.exe seems clean.
 
 ### Stale index: `-reindex`

@@ -1,6 +1,6 @@
 ---
 name: grep
-description: Use GNU grep (3.0) for text search — pattern matching, recursive search, context, filtering. Use when you need to search file content for patterns, find TODOs, filter command output, or search codebases by content.
+description: Use `terminal` grep (GNU v3.0) for text search — pattern matching, recursive search, context, filtering. Use when you need to search file content for patterns, find TODOs, filter command output, or search codebases by content.
 ---
 
 # grep — Text Search
@@ -9,27 +9,27 @@ description: Use GNU grep (3.0) for text search — pattern matching, recursive 
 
 ## Quick Reference
 
-| Task | Command |
-|------|---------|
-| Basic literal search | `grep "ERROR" file.log` |
-| Case-insensitive | `grep -i "error" file` |
-| Extended regex (ERE) | `grep -E "ERROR\|FATAL" file` |
-| Fixed string (no regex) | `grep -F "literal.*" file` |
-| Perl regex (PCRE) | `grep -P "\d+" file` |
-| Whole word only | `grep -w "error" file` |
-| Whole line match | `grep -x "exact line" file` |
-| Invert match | `grep -v "DEBUG" file` |
-| Show line numbers | `grep -n "pattern" file` |
-| Only matching part | `grep -o "ERROR" file` |
-| Count matches per file | `grep -c "pattern" file` |
-| List matching files only | `grep -l "pattern" *.java` |
-| List non-matching files | `grep -L "pattern" *.java` |
-| Recursive search | `grep -r "pattern" dir/` |
-| Filter by extension | `grep -r --include="*.java" "pattern" .` |
-| Exclude a directory | `grep -r --exclude-dir=".git" "pattern" .` |
-| Exclude file patterns | `grep -r --exclude="*.log" "pattern" .` |
-| Context (N lines around) | `grep -C 2 "pattern" file` |
-| Pipe from stdin | `cmd \| grep "pattern"` |
+| Task                     | Command                                    |
+| ------------------------ | ------------------------------------------ |
+| Basic literal search     | `grep "ERROR" file.log`                    |
+| Case-insensitive         | `grep -i "error" file`                     |
+| Extended regex (ERE)     | `grep -E "ERROR\|FATAL" file`              |
+| Fixed string (no regex)  | `grep -F "literal.*" file`                 |
+| Perl regex (PCRE)        | `grep -P "\d+" file`                       |
+| Whole word only          | `grep -w "error" file`                     |
+| Whole line match         | `grep -x "exact line" file`                |
+| Invert match             | `grep -v "DEBUG" file`                     |
+| Show line numbers        | `grep -n "pattern" file`                   |
+| Only matching part       | `grep -o "ERROR" file`                     |
+| Count matches per file   | `grep -c "pattern" file`                   |
+| List matching files only | `grep -l "pattern" *.java`                 |
+| List non-matching files  | `grep -L "pattern" *.java`                 |
+| Recursive search         | `grep -r "pattern" dir/`                   |
+| Filter by extension      | `grep -r --include="*.java" "pattern" .`   |
+| Exclude a directory      | `grep -r --exclude-dir=".git" "pattern" .` |
+| Exclude file patterns    | `grep -r --exclude="*.log" "pattern" .`    |
+| Context (N lines around) | `grep -C 2 "pattern" file`                 |
+| Pipe from stdin          | `cmd \| grep "pattern"`                    |
 
 ## Regex Flavors
 
@@ -233,6 +233,7 @@ cd "$HOME/.agents/demo/grep" && grep -I "ERROR" resources/large.bin
 ```
 
 **Tip:** When searching a mixed project tree, use `-I` to skip binary files silently:
+
 ```bash
 cd "$HOME/proj" && grep -r -I "pattern" .
 ```
@@ -317,31 +318,31 @@ grep -E -o "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" file.txt
 
 ### BRE (default)
 
-| Token | Meaning |
-|-------|---------|
-| `^` | Start of line |
-| `$` | End of line |
-| `.` | Any single character |
-| `[abc]` | Character class |
-| `[^abc]` | Negated class |
-| `*` | 0 or more of preceding |
-| `\+` | 1 or more of preceding |
-| `\?` | 0 or 1 of preceding |
+| Token     | Meaning                      |
+| --------- | ---------------------------- |
+| `^`       | Start of line                |
+| `$`       | End of line                  |
+| `.`       | Any single character         |
+| `[abc]`   | Character class              |
+| `[^abc]`  | Negated class                |
+| `*`       | 0 or more of preceding       |
+| `\+`      | 1 or more of preceding       |
+| `\?`      | 0 or 1 of preceding          |
 | `\{n,m\}` | Between n and m of preceding |
-| `\|` | Alternation (OR) |
-| `\( \)` | Grouping |
-| `\n` | Backreference |
+| `\|`      | Alternation (OR)             |
+| `\( \)`   | Grouping                     |
+| `\n`      | Backreference                |
 
 ### ERE (`-E`)
 
-| Token | Meaning |
-|-------|---------|
-| `^`, `$`, `.`, `[...]`, `[^...]`, `*` | Same as BRE |
-| `+` | 1 or more (no backslash) |
-| `?` | 0 or 1 (no backslash) |
-| `{n,m}` | Between n and m (no backslash) |
-| `\|` | Alternation (no backslash) |
-| `( )` | Grouping (no backslash) |
+| Token                                 | Meaning                        |
+| ------------------------------------- | ------------------------------ |
+| `^`, `$`, `.`, `[...]`, `[^...]`, `*` | Same as BRE                    |
+| `+`                                   | 1 or more (no backslash)       |
+| `?`                                   | 0 or 1 (no backslash)          |
+| `{n,m}`                               | Between n and m (no backslash) |
+| `\|`                                  | Alternation (no backslash)     |
+| `( )`                                 | Grouping (no backslash)        |
 
 ### PCRE (`-P`)
 
@@ -350,15 +351,19 @@ Adds `\d` (digit), `\w` (word), `\s` (whitespace), `\b` (word boundary), lookahe
 ## Troubleshooting
 
 ### "Is a directory" error
+
 Use `-r` for recursive search, or `-d skip` to silently skip directories.
 
 ### .git files showing up in results
+
 `grep -r` traverses everything, including `.git`. Always add `--exclude-dir=".git"` when searching project trees.
 
 ### Binary file matches
+
 Without `-a`, grep prints "Binary file X matches" instead of content. Use `-a` to force text output, or `-I` to silently skip binary files.
 
 ### No matches but you know the pattern exists
+
 Check case sensitivity (`-i`), or whether you need `-E` for your regex, or whether the file is being treated as binary (`-a`).
 
 ## Notes

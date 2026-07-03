@@ -1,6 +1,6 @@
 ---
 name: ln
-description: Use ln (GNU coreutils 8.32) for creating hard links and symbolic links. Use mklink (Windows native) as the reliable alternative when symlinks fail on MSYS2. Use when you need to mirror files without copying, create relative cross-directory references, or set up link farms.
+description: Use `terminal` ln (GNU coreutils v8.32) for creating hard links and symbolic links. Use mklink (Windows native) as the reliable alternative when symlinks fail on MSYS2. Use when you need to mirror files without copying, create relative cross-directory references, or set up link farms.
 ---
 
 # ln — Link Files (GNU coreutils 8.32) + mklink (Windows)
@@ -9,21 +9,21 @@ description: Use ln (GNU coreutils 8.32) for creating hard links and symbolic li
 
 ## Quick Reference
 
-| Task | Command |
-|------|---------|
-| Hard link (file mirror, same inode) | `ln TARGET LINK_NAME` |
-| Symlink (MSYS2 real) | `MSYS=winsymlinks:nativestrict ln -s TARGET LINK_NAME` |
-| Hard link, overwrite existing | `ln -f TARGET LINK_NAME` |
-| Hard link, backup existing | `ln -b TARGET LINK_NAME` |
-| Verbose (show each link) | `ln -v ...` |
-| Symlink, relative path | `MSYS=winsymlinks:nativestrict ln -sr TARGET LINK_NAME` |
-| Link multiple files into a directory | `ln TARGET... DIRECTORY` |
-| Link into directory, explicit | `ln -t DIR TARGET...` |
-| Treat LINK_NAME as file (not dir) | `ln -T ...` |
-| Windows native symlink (file) | `cmd //c "mklink LINK TARGET"` |
-| Windows native symlink (dir) | `cmd //c "mklink /D LINK TARGET"` |
-| Windows native hard link | `cmd //c "mklink /H LINK TARGET"` |
-| Windows native junction | `cmd //c "mklink /J LINK TARGET"` |
+| Task                                 | Command                                                 |
+| ------------------------------------ | ------------------------------------------------------- |
+| Hard link (file mirror, same inode)  | `ln TARGET LINK_NAME`                                   |
+| Symlink (MSYS2 real)                 | `MSYS=winsymlinks:nativestrict ln -s TARGET LINK_NAME`  |
+| Hard link, overwrite existing        | `ln -f TARGET LINK_NAME`                                |
+| Hard link, backup existing           | `ln -b TARGET LINK_NAME`                                |
+| Verbose (show each link)             | `ln -v ...`                                             |
+| Symlink, relative path               | `MSYS=winsymlinks:nativestrict ln -sr TARGET LINK_NAME` |
+| Link multiple files into a directory | `ln TARGET... DIRECTORY`                                |
+| Link into directory, explicit        | `ln -t DIR TARGET...`                                   |
+| Treat LINK_NAME as file (not dir)    | `ln -T ...`                                             |
+| Windows native symlink (file)        | `cmd //c "mklink LINK TARGET"`                          |
+| Windows native symlink (dir)         | `cmd //c "mklink /D LINK TARGET"`                       |
+| Windows native hard link             | `cmd //c "mklink /H LINK TARGET"`                       |
+| Windows native junction              | `cmd //c "mklink /J LINK TARGET"`                       |
 
 ## Two Forms of ln
 

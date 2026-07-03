@@ -19,8 +19,8 @@ mv "$HOME/.agents/skills" "$HOME/.agents-old/skills"
 # Clone this repo into your home directory
 git clone https://github.com/Prohect/.agents.git "$HOME/"
 
-# combine them (optional if you already paid lots of effort maintaining your custom skills), 
-# you should read the contents recursively of both directories, 
+# combine them (optional if you already paid lots of effort maintaining your custom skills),
+# you should read the contents recursively of both directories,
 # and merge them manually to keep the rules not conflicting and confusing.
 
 # Remove the old skills directory (optional)
@@ -75,15 +75,15 @@ The `errors` skill is special: it's an index of documented tool-call errors and 
 
 Skills document the usage of these CLI tools, but you only need the ones you use:
 
-| Tool | Minimum Version | How to get it |
-|------|----------------|---------------|
-| GNU awk | 5.3.0 | `pacman -S gawk` (MSYS2), or built-in on most Linux/macOS |
-| GNU cat | 8.32 | `pacman -S coreutils` (MSYS2), or built-in |
-| GNU grep | 3.0 | `pacman -S grep` (MSYS2), or built-in |
-| GNU sed | 4.9 | `pacman -S sed` (MSYS2), or built-in |
-| GNU ln | 8.32 | `pacman -S coreutils` (MSYS2), or built-in |
-| Everything Search | 1.1.0.30 | [voidtools.com](https://www.voidtools.com) (Windows only) |
-| GitHub CLI | 2.95.0 | [cli.github.com](https://cli.github.com) |
+| Tool              | Minimum Version | How to get it                                             |
+| ----------------- | --------------- | --------------------------------------------------------- |
+| GNU awk           | 5.3.0           | `pacman -S gawk` (MSYS2), or built-in on most Linux/macOS |
+| GNU cat           | 8.32            | `pacman -S coreutils` (MSYS2), or built-in                |
+| GNU grep          | 3.0             | `pacman -S grep` (MSYS2), or built-in                     |
+| GNU sed           | 4.9             | `pacman -S sed` (MSYS2), or built-in                      |
+| GNU ln            | 8.32            | `pacman -S coreutils` (MSYS2), or built-in                |
+| Everything Search | 1.1.0.30        | [voidtools.com](https://www.voidtools.com) (Windows only) |
+| GitHub CLI        | 2.95.0          | [cli.github.com](https://cli.github.com)                  |
 
 On Windows, install [MSYS2](https://www.msys2.org) to get the GNU toolchain. The `es` and `gh` skills are Windows-first but the concepts transfer.
 

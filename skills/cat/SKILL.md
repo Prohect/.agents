@@ -1,6 +1,6 @@
 ---
 name: cat
-description: Use GNU cat (coreutils 8.32) for reading, concatenating, and displaying files. Use when you need to inspect file contents, merge files, number lines, reveal special characters (tabs, line endings, non-printing), or squeeze blank lines.
+description: Use `terminal` cat (GNU coreutils v8.32) for reading, concatenating, and displaying files. Use when you need to inspect file contents, merge files, number lines, reveal special characters (tabs, line endings, non-printing), or squeeze blank lines.
 ---
 
 # cat — Concatenate & Display Files
@@ -9,20 +9,20 @@ description: Use GNU cat (coreutils 8.32) for reading, concatenating, and displa
 
 ## Quick Reference
 
-| Task | Command |
-|------|---------|
-| Print one file | `cat file` |
-| Concatenate multiple files | `cat a.txt b.txt c.txt` |
-| Number all lines | `cat -n file` |
-| Number only non-blank lines | `cat -b file` |
-| Squeeze repeated blank lines | `cat -s file` |
-| Show `$` at line ends | `cat -E file` |
-| Show tabs as `^I` | `cat -T file` |
-| Show all hidden characters | `cat -A file` |
-| Show non-printing bytes | `cat -v file` |
-| Interleave stdin with files | `echo "text" \| cat file -` |
-| Create file from stdin | `cat > newfile.txt` |
-| Append to file | `cat >> existing.txt` |
+| Task                         | Command                     |
+| ---------------------------- | --------------------------- |
+| Print one file               | `cat file`                  |
+| Concatenate multiple files   | `cat a.txt b.txt c.txt`     |
+| Number all lines             | `cat -n file`               |
+| Number only non-blank lines  | `cat -b file`               |
+| Squeeze repeated blank lines | `cat -s file`               |
+| Show `$` at line ends        | `cat -E file`               |
+| Show tabs as `^I`            | `cat -T file`               |
+| Show all hidden characters   | `cat -A file`               |
+| Show non-printing bytes      | `cat -v file`               |
+| Interleave stdin with files  | `echo "text" \| cat file -` |
+| Create file from stdin       | `cat > newfile.txt`         |
+| Append to file               | `cat >> existing.txt`       |
 
 ## Basic Reading & Concatenation
 

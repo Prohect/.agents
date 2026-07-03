@@ -1,6 +1,6 @@
 ---
 name: sed
-description: Use GNU sed (4.9) for stream editing — substitution, deletion, insertion, regex text transformation on files or pipelines. Use when you need to find-and-replace, extract, filter, or transform text in a repeatable, scriptable way.
+description: Use `terminal` sed (GNU v4.9) for stream editing — substitution, deletion, insertion, regex text transformation on files or pipelines. Use when you need to find-and-replace, extract, filter, or transform text in a repeatable, scriptable way.
 ---
 
 # sed — Stream Editor
@@ -9,23 +9,23 @@ GNU sed v4.9. A non-interactive stream editor for filtering and transforming tex
 
 ## Quick Reference
 
-| Task | Command |
-|------|---------|
-| Replace first match per line | `sed 's/old/new/' file` |
-| Replace all matches per line | `sed 's/old/new/g' file` |
-| Delete lines matching pattern | `sed '/pattern/d' file` |
-| Print only matching lines | `sed -n '/pattern/p' file` |
-| In-place edit (no backup) | `sed -i 's/old/new/g' file` |
-| In-place with backup | `sed -i.bak 's/old/new/g' file` |
-| Multiple commands | `sed -e 's/a/A/' -e 's/b/B/' file` |
-| Lines 5–10 only | `sed -n '5,10p' file` |
-| Case-insensitive match | `sed 's/foo/bar/i'` |
-| Extended regex | `sed -E 's/pattern/replacement/' file` |
-| Quiet mode (no auto-print) | `sed -n '...'` |
-| Append after match | `sed '/pattern/a\new line' file` |
-| Insert before match | `sed '/pattern/i\new line' file` |
-| Replace entire line | `sed '/pattern/c\new line' file` |
-| Transliterate chars | `sed 'y/abc/xyz/'` |
+| Task                          | Command                                |
+| ----------------------------- | -------------------------------------- |
+| Replace first match per line  | `sed 's/old/new/' file`                |
+| Replace all matches per line  | `sed 's/old/new/g' file`               |
+| Delete lines matching pattern | `sed '/pattern/d' file`                |
+| Print only matching lines     | `sed -n '/pattern/p' file`             |
+| In-place edit (no backup)     | `sed -i 's/old/new/g' file`            |
+| In-place with backup          | `sed -i.bak 's/old/new/g' file`        |
+| Multiple commands             | `sed -e 's/a/A/' -e 's/b/B/' file`     |
+| Lines 5–10 only               | `sed -n '5,10p' file`                  |
+| Case-insensitive match        | `sed 's/foo/bar/i'`                    |
+| Extended regex                | `sed -E 's/pattern/replacement/' file` |
+| Quiet mode (no auto-print)    | `sed -n '...'`                         |
+| Append after match            | `sed '/pattern/a\new line' file`       |
+| Insert before match           | `sed '/pattern/i\new line' file`       |
+| Replace entire line           | `sed '/pattern/c\new line' file`       |
+| Transliterate chars           | `sed 'y/abc/xyz/'`                     |
 
 ## Basic Substitution
 
@@ -139,15 +139,15 @@ echo "abc123 def456" | sed -E 's/[0-9]+/NUM/'
 # → abcNUM def456
 ```
 
-| Feature | Basic regex | Extended regex (`-E`) |
-|---------|-------------|----------------------|
-| One or more | `\+` | `+` |
-| Zero or one | `\?` | `?` |
-| Alternation | `\|` | `\|` |
-| Grouping | `\( \)` | `( )` |
-| Repetition | `\{n,m\}` | `{n,m}` |
-| Word boundary | `\b`, `\B` | `\b`, `\B` |
-| Backreference | `\1`–`\9` | `\1`–`\9` |
+| Feature       | Basic regex | Extended regex (`-E`) |
+| ------------- | ----------- | --------------------- |
+| One or more   | `\+`        | `+`                   |
+| Zero or one   | `\?`        | `?`                   |
+| Alternation   | `\|`        | `\|`                  |
+| Grouping      | `\( \)`     | `( )`                 |
+| Repetition    | `\{n,m\}`   | `{n,m}`               |
+| Word boundary | `\b`, `\B`  | `\b`, `\B`            |
+| Backreference | `\1`–`\9`   | `\1`–`\9`             |
 
 ### Common Regex Patterns
 
@@ -198,14 +198,14 @@ echo "HELLO" | sed 's/./\l&/'
 
 ## Match Flags
 
-| Flag | Meaning |
-|------|---------|
-| `g` | Replace all occurrences on the line |
-| `i` | Case-insensitive match |
-| `p` | Print the line if a substitution was made (use with `-n`) |
-| `w file` | Write the line to `file` if a substitution was made |
-| *number* | Replace the *nth* occurrence only |
-| *number*`g` | Replace from the *nth* occurrence onward |
+| Flag        | Meaning                                                   |
+| ----------- | --------------------------------------------------------- |
+| `g`         | Replace all occurrences on the line                       |
+| `i`         | Case-insensitive match                                    |
+| `p`         | Print the line if a substitution was made (use with `-n`) |
+| `w file`    | Write the line to `file` if a substitution was made       |
+| _number_    | Replace the _nth_ occurrence only                         |
+| _number_`g` | Replace from the _nth_ occurrence onward                  |
 
 ```bash
 # Case-insensitive
@@ -319,15 +319,15 @@ Script files are useful when the sed program is complex or contains characters t
 
 sed has two buffers: **pattern space** (default, per-line) and **hold space** (auxiliary storage). Commands:
 
-| Command | Action |
-|---------|--------|
-| `h` | Copy pattern → hold |
-| `H` | Append pattern → hold (with newline) |
-| `g` | Copy hold → pattern |
-| `G` | Append hold → pattern (with newline) |
-| `x` | Exchange pattern and hold |
-| `n` | Read next line into pattern space |
-| `N` | Append next line to pattern space |
+| Command | Action                               |
+| ------- | ------------------------------------ |
+| `h`     | Copy pattern → hold                  |
+| `H`     | Append pattern → hold (with newline) |
+| `g`     | Copy hold → pattern                  |
+| `G`     | Append hold → pattern (with newline) |
+| `x`     | Exchange pattern and hold            |
+| `n`     | Read next line into pattern space    |
+| `N`     | Append next line to pattern space    |
 
 ```bash
 # Reverse file lines (tac-like)
@@ -511,7 +511,7 @@ GNU sed adds many extensions. To restrict to POSIX-compliant features, use `--po
 
 ### `-n` with `p` Flag
 
-The `s/pattern/replacement/p` flag prints the line *only if the substitution was made*, unlike `p` command which always prints:
+The `s/pattern/replacement/p` flag prints the line _only if the substitution was made_, unlike `p` command which always prints:
 
 ```bash
 echo -e "foo\nbar\nfoo" | sed -n 's/foo/XXX/p'
