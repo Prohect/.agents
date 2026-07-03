@@ -5,7 +5,7 @@
 | `read_file` / `list_directory` | project roots + `~/.agents/skills/` only |                 sees all                 |
 | `grep` / `find_path`           | project roots only                       | skips `.gitignore` + `.git/info/exclude` |
 | _`terminal` cat/grep/ls/find_  | anywhere (slow on large file trees)      |                 sees all                 |
-| `es` (Everything Search)       | anywhere (files, directories)            |                 sees all                 |
+| `es` (Everything Search)       | anywhere (files, directories, **fast**)  |                 sees all                 |
 
 **Search efficiently**
 
