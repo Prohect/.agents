@@ -30,9 +30,9 @@ No guessed syntax. Run each command against the demo directory, capture the actu
 - `\` → escape char → prefer forward slashes; double-escape if unavoidable
 - possible solution: **single-quote anything with `!` or `*`**
 
-### 4. Prefer literal code blocks over tables for syntax references
+### 4. Use literal code blocks for commands or syntax
 
-Markdown tables require escaping `|` inside code spans (`\|`), which obscures the actual syntax. A plain code block shows the syntax exactly as the user would type it.
+A plain code block shows the syntax exactly as the user would type it.
 
 ### 5. Verify independently — spawn a sub-agent
 
