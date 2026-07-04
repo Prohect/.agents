@@ -48,6 +48,10 @@ rm -rf "$HOME/.agents-old"
 │   └── sed/                #   GNU sed — stream editing
 ├── errors/                 # Error solution docs (referenced by errors skill)
 └── demo/                   # Deterministic test fixtures for each skill
+    │                       # Some subdirectories are .gitignored — they reference
+    │                       # local files (crash dumps, browser profiles, etc.)
+    │                       # that would leak private data or break on other machines.
+    │                       # See each skill's SKILL.md for how to set up your own.
 ```
 
 ## How Skills Work

@@ -1,2 +1,7 @@
 Zed/*
 !Zed/AGENTS.md
+
+# Demo fixtures that reference local files (crash dumps, browser profiles, etc.)
+# These contain paths or data specific to the author's machine and should not be shared.
+# Users: create your own demo fixtures by following each skill's instructions.
+demo/minidump-stackwalk/
