@@ -1,6 +1,7 @@
 ---
 name: sed
 description: Use `terminal` sed (GNU v4.9) for stream editing — substitution, deletion, insertion, regex text transformation on files or pipelines. Use when you need to find-and-replace, extract, filter, or transform text in a repeatable, scriptable way.
+disable-model-invocation: false
 ---
 
 # sed — Stream Editor

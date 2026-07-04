@@ -1,6 +1,7 @@
 ---
 name: ln
 description: Use `terminal` ln (GNU coreutils v8.32) for creating hard links and symbolic links. Use mklink (Windows native) as the reliable alternative when symlinks fail on MSYS2. Use when you need to mirror files without copying, create relative cross-directory references, or set up link farms.
+disable-model-invocation: false
 ---
 
 # ln — Link Files (GNU coreutils 8.32) + mklink (Windows)

@@ -1,6 +1,7 @@
 ---
 name: grep
 description: Use `terminal` grep (GNU v3.0) for text search — pattern matching, recursive search, context, filtering. Use when you need to search file content for patterns, find TODOs, filter command output, or search codebases by content.
+disable-model-invocation: false
 ---
 
 # grep — Text Search

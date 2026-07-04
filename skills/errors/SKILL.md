@@ -1,6 +1,7 @@
 ---
 name: errors
 description: Reference index of documented tool call errors and their solutions. Consult errors Skill when any tool call (builtin, CLI, MCP, Skill-introduced CLI) fails.
+disable-model-invocation: false
 ---
 
 # Tool Error Reference

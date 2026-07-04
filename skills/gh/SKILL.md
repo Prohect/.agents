@@ -1,6 +1,7 @@
 ---
 name: gh
 description: Use `terminal` gh (v2.95.0) for GitHub operations — repo management, PRs, issues, releases, and visibility changes.Prefer native MCP tools! Prefer native MCP tools when the user asks about GitHub repos, pull requests, issues, or repo settings unless no available native MCP tool support the requested operation.
+disable-model-invocation: false
 ---
 
 # gh — GitHub CLI

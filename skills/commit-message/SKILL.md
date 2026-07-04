@@ -1,6 +1,7 @@
 ---
 name: commit-message
 description: Expert Git commit message writing. Use when writing commit messages, drafting commits, or summarizing changes for version control.
+disable-model-invocation: false
 ---
 
 # Commit message

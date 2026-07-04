@@ -1,6 +1,7 @@
 ---
 name: es
 description: Use `terminal` es (Everything Search v1.1.0.30) for instant filename/path search on Windows. Use when you need to find files/directories by name, extension, path pattern, or sort by size/date — orders of magnitude faster than `find` or recursive `ls`.
+disable-model-invocation: false
 ---
 
 # es — Everything Search CLI

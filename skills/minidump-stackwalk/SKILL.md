@@ -1,6 +1,7 @@
 ---
 name: minidump-stackwalk
 description: Use `terminal` minidump-stackwalk (v0.26.1) to analyze Windows minidump (.mdmp) crash files — extract crash reason, backtrace, register state, loaded modules, and thread info in human-readable or JSON format. Use when you need to diagnose a crash dump, triage EXCEPTION_ACCESS_VIOLATION or other crash types, or extract structured crash data for further processing.
+disable-model-invocation: true
 ---
 
 # minidump-stackwalk — Minidump Crash Analyzer

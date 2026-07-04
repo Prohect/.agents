@@ -1,6 +1,7 @@
 ---
 name: awk
 description: Use `terminal` awk (GNU v5.4.0) for text processing — field extraction, filtering, reporting, CSV handling, and data transformation. Use when you need to parse columnar data, compute aggregates, or transform structured text in files or pipelines.
+disable-model-invocation: false
 ---
 
 # awk — GNU Pattern Scanning & Processing Language

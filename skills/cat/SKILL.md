@@ -1,6 +1,7 @@
 ---
 name: cat
 description: Use `terminal` cat (GNU coreutils v8.32) for reading, concatenating, and displaying files. Use when you need to inspect file contents, merge files, number lines, reveal special characters (tabs, line endings, non-printing), or squeeze blank lines.
+disable-model-invocation: false
 ---
 
 # cat — Concatenate & Display Files
