@@ -5,20 +5,20 @@
 | `read_file` / `list_directory` | project roots + `~/.agents/skills/` only |                 sees all                 |
 | `grep` / `find_path`           | project roots only                       | skips `.gitignore` + `.git/info/exclude` |
 | _`terminal` cat/grep/ls/find_  | anywhere (slow on large file trees)      |                 sees all                 |
-| `es` (Everything Search)       | anywhere (files, directories, **fast**)  |                 sees all                 |
+| _`terminal` es_                | anywhere (files, directories, **fast**)  |                 sees all                 |
 
 **Search efficiently**
 
 _`terminal` ls_ is slow on large trees and requires recursive tool calls. **always use `es` instead**:
 
-1. **`es`** - find likely files by filename, path (`-match-path`, `-path`), sort by size/date (`-sort`) - instant, index-based
+1. **_`terminal` es_** - find likely files by filename, path (`-match-path`, `-path`), sort by size/date (`-sort`) - instant, index-based
 2. _**`terminal` grep**_ - now grep a single file or small subtree, not the whole forest
 
 eg. To search inside gitignore directories (e.g. `mc-decompile-sources/`), use `es` to find files/directories by filename or path, then _`terminal` grep_ to read content.
 
 **Directory exploration: `es` Skill**
 
-`es` gives the whole tree ranked:
+_`terminal` es_ gives the whole tree ranked:
 
 - `es -n 50 -sort size-descending -size -path "..."`
 - `es -n 50 -sort date-modified-descending -dm '!path:git' -path "..."` - what's changed recently
@@ -26,6 +26,8 @@ eg. To search inside gitignore directories (e.g. `mc-decompile-sources/`), use `
 
 **While using `terminal`, never create or redirect to file named:** `nul`, `con`, `prn`, `aux`, `com1`-`com9`, `lpt1`-`lpt9` - these are Windows reserved device names.
 
+**While using `terminal` <tool>, always load `<tool>` Skill if available**
+**While using `terminal` <tool>, always load `<tool>` Skill if available**
 **While using `terminal` <tool>, always load `<tool>` Skill if available**
 
 **Check branches and list root**
