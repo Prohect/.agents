@@ -311,6 +311,10 @@ es -path "$HOME/proj" -export-csv files.csv "ext:java"
 
 ### Error 8: Everything IPC window not found
 
+```bash
+Error 8: Everything IPC window not found. Please make sure Everything is running.
+```
+
 `es.exe` is a thin CLI client that talks to the Everything GUI via IPC. If the Everything application isn't running, `es` has nothing to talk to and exits with code 8.
 
 **Fix:**
