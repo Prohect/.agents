@@ -7,42 +7,31 @@
 | _`terminal` cat/grep/ls/find_  | anywhere (slow on large file trees)      |                 sees all                 |
 | _`terminal` es_                | anywhere (files, directories, **fast**)  |                 sees all                 |
 
-**Search efficiently**
+**Search efficiently: `es` Skill**
 
-_`terminal` ls_ is slow on large trees and requires recursive tool calls. **always use `es` instead**:
+_`terminal` ls_ is slow on large trees and requires recursive tool calls. **use `es` instead**:
 
-1. **_`terminal` es_** - find likely files by filename, path (`-match-path`, `-path`), sort by size/date (`-sort`) - instant, index-based
-2. _**`terminal` grep**_ - now grep a single file or small subtree, not the whole forest
+eg. To search inside gitignore path (e.g. `minecraft-decompile-sources/`), use `es` to find files/directories by filename or path, then _`terminal` grep_ to read content
 
-eg. To search inside gitignore directories (e.g. `mc-decompile-sources/`), use `es` to find files/directories by filename or path, then _`terminal` grep_ to read content.
+**While using `terminal`, never create or redirect to file named:** `nul`, `con`, `prn`, `aux`, `com1`-`com9`, `lpt1`-`lpt9` - these are Windows reserved names.
 
-**Directory exploration: `es` Skill**
-
-_`terminal` es_ gives the whole tree ranked:
-
-- `es -n 50 -sort size-descending -size -path "..."`
-- `es -n 50 -sort date-modified-descending -dm '!path:git' -path "..."` - what's changed recently
-- Exclude noise: `'!path:git'` to suppress `.git`, filter by extension (`*.java`) to narrow further
-
-**While using `terminal`, never create or redirect to file named:** `nul`, `con`, `prn`, `aux`, `com1`-`com9`, `lpt1`-`lpt9` - these are Windows reserved device names.
-
-**While using `terminal` <tool>, always load `<tool>` Skill if available**
 **While using `terminal` <tool>, always load `<tool>` Skill if available**
 **While using `terminal` <tool>, always load `<tool>` Skill if available**
 
 **Check branches and list root**
 
-Always start with this to know where you are and what the project looks like:
+Alwats start with this to know where you are:
 
 ```bash
 git --no-pager branch --show-current; echo " "; git --no-pager branch --sort=-committerdate | head -n 50;
 ```
 
-Then call `list_directory` on the project root to see the top-level structure. If the project seems to have some directories, **load the `es` Skill** - it gives you the whole sorted tree in one call.
+Then call `list_directory` on the project root to see the top-level structure. If the project seems to have some directories, **load `es` Skill**.
 
 **Never commit or push without permission**
 
-Local stash are always allowed - they're safe, local version control. But `git commit` and `git push` (and `gh` operations or mcp tools that (potentially) write to remotes) require explicit user permission. Ask before pushing.
+Local `git stash` are always allowed - they're safe, local version control.
+But ask for permission before each `git commit` and `git push` (and `gh` operations or mcp tools that (potentially) write to remotes).
 
 **Use portable paths**
 
@@ -53,5 +42,5 @@ Harness $PATH and hardlink and symlink, maintain a clean CLI tool directory whic
 **Make minimal changes**
 
 - Make minimal changes with minimal doc (explain why is the code coding that way) while coding.
-- Make minimal changes to markdown files, minimal yet comprehensive mining,
+- Make minimal changes to markdown files, minimal yet comprehensive meaning,
   but not minimal length or tokens, the token is expected exactly as-is from the session.
