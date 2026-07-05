@@ -17,6 +17,7 @@ eg. To search inside gitignore path (e.g. `minecraft-decompile-sources/`), use `
 
 **While using `terminal` <tool>, always load `<tool>` Skill if available**
 **While using `terminal` <tool>, always load `<tool>` Skill if available**
+**While using `terminal` <tool>, always load `<tool>` Skill if available**
 
 **Check branches and list root**
 
