@@ -10,21 +10,22 @@ disable-model-invocation: false
 
 ## Quick Reference
 
-| Task                         | Command                             |
-| ---------------------------- | ----------------------------------- |
-| Find by extension            | `es -path "$HOME/proj" "*.java"`    |
-| Exclude `.git` noise         | `es -path "$HOME/proj" '!path:git'` |
-| Files only                   | add `file:` to search               |
-| Folders only                 | add `folder:` to search             |
-| Sort by size (largest first) | `-sort-size-descending`             |
-| Sort by date (newest first)  | `-sort-date-modified-descending`    |
-| Limit results                | `-n 50`                             |
-| Show size column             | `-size`                             |
-| Show date column             | `-date-modified` (or `-dm`)         |
-| Match path (not just name)   | `-match-path` (or `-p`)             |
-| Regex search                 | `-regex "pattern"`                  |
-| Case-sensitive               | `-case`                             |
-| Count results only           | `-get-result-count`                 |
+| Task                         | Command                                                           |
+| ---------------------------- | ----------------------------------------------------------------- |
+| Find by extension            | `es -path "$HOME/proj" "*.java"`                                  |
+| Exclude `.git` noise         | `es -path "$HOME/proj" '!path:git'`                               |
+| Files only                   | add `file:` to search                                             |
+| Folders only                 | add `folder:` to search                                           |
+| Sort by size (largest first) | `-sort-size-descending`                                           |
+| Sort by date (newest first)  | `-sort-date-modified-descending`                                  |
+| Limit results                | `-n 50`                                                           |
+| Show size column             | `-size`                                                           |
+| Show date column             | `-date-modified` (or `-dm`)                                       |
+| Match path (not just name)   | `-match-path` (or `-p`)                                           |
+| Regex search                 | `-regex "pattern"`                                                |
+| Case-sensitive               | `-case`                                                           |
+| Count results only           | `-get-result-count`                                               |
+| Fix Error 8 (IPC not found)  | `MSYS2_ARG_CONV_EXCL="/Run;/TN" schtasks.exe /Run /TN everything` |
 
 ## Basic Search
 
