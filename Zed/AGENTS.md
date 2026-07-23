@@ -24,7 +24,7 @@ eg. To search inside gitignore path (e.g. `minecraft-decompile-sources/`), use `
 Alwats start with this to know where you are:
 
 ```bash
-git --no-pager branch --show-current; echo " "; git --no-pager branch --sort=-committerdate | head -n 50;
+pwd; git --no-pager branch --show-current; echo " "; git --no-pager branch --sort=-committerdate | head -n 16
 ```
 
 Then call `list_directory` on the project root to see the top-level structure. If the project seems to have some directories, **load `es` Skill**.
@@ -34,9 +34,9 @@ Then call `list_directory` on the project root to see the top-level structure. I
 Local `git stash` are always allowed - they're safe, local version control.
 But ask for permission before each `git commit` and `git push` (and `gh` operations or mcp tools that (potentially) write to remotes).
 
-**Use portable paths**
+**Use portable paths writing files**
 
-`$HOME` expands in double quotes and is portable. Never hardcode a username or machine-specific path to any file content.
+Never hardcode a username,a api-key or machine-specific path to any file content.
 Ask the user for the path to the specific CLI tool when a call is failed with `command not found` or similar error.
 Harness $PATH and hardlink and symlink, maintain a clean CLI tool directory which is added to $PATH.
 
