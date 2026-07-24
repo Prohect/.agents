@@ -8,6 +8,7 @@
 | _`terminal` es_                | anywhere (files, directories, **fast**)  |                 sees all                 |
 
 **Search efficiently: `es` Skill**
+**Search efficiently: `es` Skill**
 
 _`terminal` ls_ is slow on large trees and requires recursive tool calls. **use `es` instead**:
 
@@ -15,7 +16,6 @@ eg. To search inside gitignore path (e.g. `minecraft-decompile-sources/`), use `
 
 **While using `terminal`, never create or redirect to file named:** `nul`, `con`, `prn`, `aux`, `com1`-`com9`, `lpt1`-`lpt9` - these are Windows reserved names.
 
-**While using `terminal` <tool>, always load `<tool>` Skill if available**
 **While using `terminal` <tool>, always load `<tool>` Skill if available**
 **While using `terminal` <tool>, always load `<tool>` Skill if available**
 
@@ -39,6 +39,14 @@ But ask for permission before each `git commit` and `git push` (and `gh` operati
 Never hardcode a username,a api-key or machine-specific path to any file content.
 Ask the user for the path to the specific CLI tool when a call is failed with `command not found` or similar error.
 Harness $PATH and hardlink and symlink, maintain a clean CLI tool directory which is added to $PATH.
+
+**Start independent (non-blocking, surviving) processes**
+
+`& disown` in MSYS2 bash does **not** survive the terminal session — the child dies when the shell exits. Use one of these instead:
+
+```bash
+cmd //c start \"\" '<exe>' '<arg1>' '<arg2>'
+```
 
 **Make minimal changes**
 
