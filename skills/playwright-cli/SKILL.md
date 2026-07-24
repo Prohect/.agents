@@ -199,11 +199,13 @@ playwright-cli --raw localstorage-get theme
 ```
 
 For structured output wrapping every reply as JSON, pass --json
+
 ```bash
 playwright-cli list --json
 ```
 
 ## Open parameters
+
 ```bash
 # Use specific browser when creating session
 playwright-cli open --browser=chrome
@@ -253,6 +255,8 @@ playwright-cli --% goto "https://example.com/?a=1&b=2"
 
 After each command, playwright-cli provides a snapshot of the current browser state.
 
+**Snapshots are saved as YAML files under `.playwright-cli/` in the current working directory (project root).** They persist across sessions and can be read with `read_file` to inspect page structure, refs, and element attributes — no need to re-query the live browser for static inspection.
+
 ```bash
 > playwright-cli goto https://example.com
 ### Page
@@ -260,6 +264,12 @@ After each command, playwright-cli provides a snapshot of the current browser st
 - Page Title: Example Domain
 ### Snapshot
 [Snapshot](.playwright-cli/page-2026-02-14T19-22-42-679Z.yml)
+```
+
+To read a saved snapshot from disk:
+
+```
+read_file .playwright-cli/page-2026-02-14T19-22-42-679Z.yml
 ```
 
 You can also take a snapshot on demand using `playwright-cli snapshot` command. All the options below can be combined as needed.
@@ -422,13 +432,13 @@ playwright-cli -s=bg show --annotate
 
 ## Specific tasks
 
-* **Running and Debugging Playwright tests** [references/playwright-tests.md](references/playwright-tests.md)
-* **Request mocking** [references/request-mocking.md](references/request-mocking.md)
-* **Running Playwright code** [references/running-code.md](references/running-code.md)
-* **Browser session management** [references/session-management.md](references/session-management.md)
-* **Spec-driven testing (plan / generate / heal)** [references/spec-driven-testing.md](references/spec-driven-testing.md)
-* **Storage state (cookies, localStorage)** [references/storage-state.md](references/storage-state.md)
-* **Test generation** [references/test-generation.md](references/test-generation.md)
-* **Tracing** [references/tracing.md](references/tracing.md)
-* **Video recording** [references/video-recording.md](references/video-recording.md)
-* **Inspecting element attributes** [references/element-attributes.md](references/element-attributes.md)
+- **Running and Debugging Playwright tests** [references/playwright-tests.md](references/playwright-tests.md)
+- **Request mocking** [references/request-mocking.md](references/request-mocking.md)
+- **Running Playwright code** [references/running-code.md](references/running-code.md)
+- **Browser session management** [references/session-management.md](references/session-management.md)
+- **Spec-driven testing (plan / generate / heal)** [references/spec-driven-testing.md](references/spec-driven-testing.md)
+- **Storage state (cookies, localStorage)** [references/storage-state.md](references/storage-state.md)
+- **Test generation** [references/test-generation.md](references/test-generation.md)
+- **Tracing** [references/tracing.md](references/tracing.md)
+- **Video recording** [references/video-recording.md](references/video-recording.md)
+- **Inspecting element attributes** [references/element-attributes.md](references/element-attributes.md)
