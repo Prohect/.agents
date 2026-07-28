@@ -1,0 +1,10 @@
+zed-reload check (rust)
+  self       : <install-dir>\zed-reload.exe
+  zed exe    : %LOCALAPPDATA%\Programs\Zed Nightly\Zed.exe
+  zed windows: 1
+    pid=<pid> hung=false title='<workspace-title>'
+  send key   : ctrl+enter (auto-detected)
+  log file   : <install-dir>\zed-reload.log
+
+; Sanitized capture of `zed-reload --check` (real output contains your
+; machine's install dir, Zed path, pid and window title).

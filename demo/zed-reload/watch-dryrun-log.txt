@@ -1,0 +1,7 @@
+[<ts>] [watch] [pid <pid>] === start: msgLen=23 wait=6s settle=10s grace=20s ===
+[<ts>] [watch] [pid <pid>] watching: timeout=12s unresponsive=off
+[<ts>] [watch] [pid <pid>] watch timeout, Zed stayed healthy
+[<ts>] [watch] [pid <pid>] === done: ok=true ===
+
+; Sanitized capture of a `zed-reload --watch --watch-timeout 12 "..."` dry-run
+; against a healthy Zed (timestamps and pids replaced by placeholders).

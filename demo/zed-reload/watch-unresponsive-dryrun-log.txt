@@ -1,0 +1,7 @@
+[<ts>] [watch] [pid <pid>] === start: msgLen=30 wait=6s settle=10s grace=20s ===
+[<ts>] [watch] [pid <pid>] watching: timeout=8s unresponsive=60s
+[<ts>] [watch] [pid <pid>] watch timeout, Zed stayed healthy
+[<ts>] [watch] [pid <pid>] === done: ok=true ===
+
+; Sanitized capture proving the --unresponsive flag path (hang detection
+; armed but not triggered; a hung-window revive is not safely testable).

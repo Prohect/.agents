@@ -1,0 +1,11 @@
+[<ts>] [restart] [pid <pid>] === start: msgLen=433 wait=25s settle=10s grace=20s ===
+[<ts>] [restart] [pid <pid>] WM_CLOSE pid=<pid> title='<workspace-title>'
+[<ts>] [restart] [pid <pid>] Zed exited gracefully
+[<ts>] [restart] [pid <pid>] starting %LOCALAPPDATA%\Programs\Zed Nightly\Zed.exe (bare, session restore)
+[<ts>] [restart] [pid <pid>] window found pid=<pid> title='<workspace-title>'; settling 10s
+[<ts>] [restart] [pid <pid>] foreground=true via AttachThreadInput (attempt 1)
+[<ts>] [restart] [pid <pid>] send key: ctrl+enter
+[<ts>] [restart] [pid <pid>] injected 433 chars
+[<ts>] [restart] [pid <pid>] === done: ok=true ===
+
+; Sanitized capture of a full reload+inject run (self-resurrection E2E).
