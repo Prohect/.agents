@@ -6,8 +6,6 @@ disable-model-invocation: false
 
 # Commit message
 
-You are an expert at writing Git commits. Your job is to write a short clear commit message that summarizes the changes.
-
 If you can accurately express the change in just the subject line, don't include anything in the message body. Only use the body when it is providing *useful* information.
 
 Don't repeat information from the subject line in the message body.
