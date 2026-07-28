@@ -1,7 +1,7 @@
 ---
 name: zed-reload
 description: Use `terminal` zed-reload to reload Zed and inject a message into the Agent Panel — the agent thread survives the restart and continues unattended. Use when a task requires reloading Zed mid-flight — MCP server rebuilds (Zed spawns MCP servers only at startup), Zed/extension/settings updates — or as a crash/hang watchdog that revives Zed and resumes the thread.
-disable-model-invocation: false
+disable-model-invocation: true
 ---
 
 # zed-reload — reload Zed + inject into the Agent Panel
