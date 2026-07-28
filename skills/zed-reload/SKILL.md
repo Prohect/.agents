@@ -1,6 +1,7 @@
 ---
 name: zed-reload
 description: Reload Zed and inject a message into the Agent Panel via the zed-reload CLI — the agent thread survives the restart and continues without user input. Use for MCP-server dev loops (Zed loads MCP servers at startup — reload after rebuilding one or changing MCP config, then auto-resume the benchmark/task), Zed/extension/settings updates, crash/hang watchdog revival, and any mid-task Zed restart.
+disable-model-invocation: true
 ---
 
 # zed-reload — reload Zed + inject into the Agent Panel
