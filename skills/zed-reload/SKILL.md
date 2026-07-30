@@ -68,7 +68,7 @@ Zed spawns MCP servers at startup; rebuilding a server or changing MCP config re
 
 ```bash
 # rebuild your MCP server first, then:
-zed-reload --settle 25 --wait 25 "[zed-reload] MCP server rebuilt and Zed reloaded. Servers may still be starting: verify the MCP tools are available (wait 15s and retry, up to ~2 min), then re-run the benchmark: <cmd>. Compare with <baseline> and report."
+zed-reload --settle 15 --wait 30 "[zed-reload] MCP server rebuilt and Zed reloaded. Servers may still be starting: verify the MCP tools are available (wait 15s and retry, up to ~2 min), then re-run the benchmark: <cmd>. Compare with <baseline> and report."
 ```
 
 **Note:** a fixed `--settle` is a guess; the revived agent can actually verify MCP readiness — put the retry loop in the message, as above.
