@@ -38,8 +38,8 @@ cat "$(dirname "$(command -v zed-reload)")/zed-reload.log"
 Arm the reload yourself; the detached worker reloads Zed (taking you with it), then injects your message into this thread — the next agent instance reads it as a user message:
 
 ```bash
-zed-reload --wait 25 --settle 20 "[zed-reload] Zed was reloaded. Read <file> for context and continue <task> from step <N>."
-# → zed-reload: launched detached worker pid=<pid> (mode=Restart, wait=25s, settle=20s)
+zed-reload --wait 30 --settle 10 "[zed-reload] Zed was reloaded. Read <file> for context and continue <task> from step <N>."
+# → zed-reload: launched detached worker pid=<pid> (mode=Restart, wait=30s, settle=10s)
 # → zed-reload: log -> <install-dir>\zed-reload.log
 ```
 
