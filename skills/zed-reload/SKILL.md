@@ -23,8 +23,8 @@ cat "$(dirname "$(command -v zed-reload)")/zed-reload.log"
 | Watchdog: revive on crash              | `zed-reload --watch "msg"`             |
 | Watchdog: also revive on hang          | add `--unresponsive 60`                |
 | Bound the watchdog (default 3600)      | `--watch-timeout N`                    |
-| Delay before reload (caller finishes)  | `--wait 25`                            |
-| Delay before injection (MCP load time) | `--settle 30`                          |
+| Delay before reload (caller finishes)  | `--wait 42`                            |
+| Delay before injection (MCP load time) | `--settle 16`                          |
 | Graceful-quit budget (default 20)      | `--grace N`                            |
 | Window wait budget (default 90)        | `--window-timeout N`                   |
 | Open a specific project                | `--project PATH`                       |
