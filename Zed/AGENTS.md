@@ -29,10 +29,10 @@ pwd; git --no-pager branch --show-current; echo " "; git --no-pager branch --sor
 
 Then call `list_directory` on the project root to see the top-level structure. If the project seems to have some directories, **load `es` Skill**.
 
-**Never commit or push without permission**
+**Never push without permission**
 
-Local `git stash` are always allowed - they're safe, local version control.
-But ask for permission before each `git commit` and `git push` (and `gh` operations or mcp tools that (potentially) write to remotes).
+Local `git stash` and `git commit` are always allowed - they're safe, local version control.
+But ask for permission before each `git push` (and `gh` operations or mcp tools that (potentially) write to remotes).
 
 **Use portable paths writing files**
 
