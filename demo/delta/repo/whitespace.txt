@@ -1,0 +1,2 @@
+line with trailing spaces    
+normal line
