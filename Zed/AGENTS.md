@@ -7,17 +7,18 @@
 | _`terminal` cat/grep/ls/find_  | anywhere (slow on large file trees)      |                 sees all                 |
 | _`terminal` es_                | anywhere (files, directories, **fast**)  |                 sees all                 |
 
-**Search efficiently: `es` Skill**
-**Search efficiently: `es` Skill**
+**Search efficiently: _`terminal` es_**
+**Search efficiently: _`terminal` es_**
 
-_`terminal` ls_ is slow on large trees and requires recursive tool calls. **use `es` instead**:
+_`terminal` ls_ is slow on large trees and requires recursive tool calls. **use _`terminal` es_ instead**:
 
-eg. To search inside gitignore path (e.g. `minecraft-decompile-sources/`), use `es` to find files/directories by filename or path, then _`terminal` grep_ to read content
+eg. To search inside gitignore path (e.g. `minecraft-decompile-sources/`), use _`terminal` es_ to find files/directories by filename or path, then _`terminal` grep_ to read content
 
 **While using `terminal`, never create or redirect to file named:** `nul`, `con`, `prn`, `aux`, `com1`-`com9`, `lpt1`-`lpt9` - these are Windows reserved names.
+**While using `terminal`, never create or redirect to file named:** `nul`, `con`, `prn`, `aux`, `com1`-`com9`, `lpt1`-`lpt9` - these are Windows reserved names.
 
-**While using `terminal` <tool>, always load `<tool>` Skill if available**
-**While using `terminal` <tool>, always load `<tool>` Skill if available**
+**While using `terminal` <tool>, load `<tool>` Skill if available**
+**While using `terminal` <tool>, load `<tool>` Skill if available**
 
 **Check branches and list root**
 
@@ -27,12 +28,12 @@ Alwats start with this to know where you are:
 pwd; git --no-pager branch --show-current; echo " "; git --no-pager branch --sort=-committerdate | head -n 16
 ```
 
-Then call `list_directory` on the project root to see the top-level structure. If the project seems to have some directories, **load `es` Skill**.
+Then call `list_directory` on the project root to see the top-level structure. If the project seems to have some directories, **load _`terminal` es_ Skill**.
 
 **Never push without permission**
 
-Local `git stash` and `git commit` are always allowed - they're safe, local version control.
-But ask for permission before each `git push` (and `gh` operations or mcp tools that (potentially) write to remotes).
+Local `git stash push -m <msg>` are always allowed - they're safe, local version control.
+But ask for permission before each `git commit`and `git push` (and `gh` operations or mcp tools that (potentially) write to remotes).
 
 **Use portable paths writing files**
 
@@ -42,7 +43,7 @@ Harness $PATH and hardlink and symlink, maintain a clean CLI tool directory whic
 
 **Start independent (non-blocking, surviving) processes**
 
-`& disown` in MSYS2 bash does **not** survive the terminal session — the child dies when the shell exits. Use one of these instead:
+`& disown` in MSYS2 — the child dies when the shell exits. Instead:
 
 ```bash
 cmd //c start \"\" '<exe>' '<arg1>' '<arg2>'
