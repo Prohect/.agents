@@ -1,47 +1,49 @@
-**Read Tool Scope**
+# AGENTS.md
 
-| tool                           | scope                                    |             gitignore-aware              |
-| ------------------------------ | ---------------------------------------- | :--------------------------------------: |
-| `read_file` / `list_directory` | project roots + `~/.agents/skills/` only |                 sees all                 |
-| `grep` / `find_path`           | project roots only                       | skips `.gitignore` + `.git/info/exclude` |
-| _`terminal` cat/grep/ls/find_  | anywhere (slow on large file trees)      |                 sees all                 |
-| _`terminal` es_                | anywhere (files, directories, **fast**)  |                 sees all                 |
+## Read Tool Scope
 
-**Search efficiently: _`terminal` es_**
-**Search efficiently: _`terminal` es_**
+| Tool                            | Scope                                    | Gitignore-Aware                          |
+| -------------------------------- | ------------------------------------------ | :-----------------------------------------: |
+| `read_file` / `list_directory`  | Project roots + `~/.agents/skills/` only | Sees all                                  |
+| `grep` / `find_path`            | Project roots only                       | Skips `.gitignore` + `.git/info/exclude`  |
+| `terminal` cat/grep/ls/find      | Anywhere (slow on large file trees)      | Sees all                                  |
+| `terminal` es                    | Anywhere (files, directories, **fast**)  | Sees all                                  |
 
-_`terminal` ls_ is slow on large trees and requires recursive tool calls. **use _`terminal` es_ instead**:
+## Terminal Usage Rules
 
-eg. To search inside gitignore path (e.g. `minecraft-decompile-sources/`), use _`terminal` es_ to find files/directories by filename or path, then _`terminal` grep_ to read content
+- While using `terminal`, never create or redirect to a file named `nul`, `con`, `prn`, `aux`, `com1`-`com9`, or `lpt1`-`lpt9` — these are Windows reserved names.
+- Never use a `terminal` tool to edit a file unless other tools cannot cover it (error or scope limitation).
+- While using a `terminal` tool, load that tool's Skill if one is available.
 
-**While using `terminal`, never create or redirect to file named:** `nul`, `con`, `prn`, `aux`, `com1`-`com9`, `lpt1`-`lpt9` - these are Windows reserved names.
-**While using `terminal`, never create or redirect to file named:** `nul`, `con`, `prn`, `aux`, `com1`-`com9`, `lpt1`-`lpt9` - these are Windows reserved names.
+## Efficient Search
 
-**While using `terminal` <tool>, load `<tool>` Skill if available**
-**While using `terminal` <tool>, load `<tool>` Skill if available**
+Use `terminal` es instead of `terminal` ls, which is slow on large file trees and requires recursive tool calls.
 
-**Check branches and list root**
+For example, to search inside a gitignored path (e.g. `minecraft-decompile-sources/`), use `terminal` es to find files or directories by name, then `terminal` grep to read their contents.
 
-Alwats start with this to know where you are:
+## Check Branches and List Root
+
+Always start with this to know where you are:
 
 ```bash
 pwd; git --no-pager branch --show-current; echo " "; git --no-pager branch --sort=-committerdate | head -n 16
 ```
 
-Then call `list_directory` on the project root to see the top-level structure. If the project seems to have some directories, **load _`terminal` es_ Skill**.
+Then call `list_directory` on the project root to see the top-level structure. If the project seems to have some directories, load the `es` Skill.
 
-**Never push without permission**
+## Never Push Without Permission
 
-Local `git stash push -m <msg>` are always allowed - they're safe, local version control.
-But ask for permission before each `git commit`and `git push` (and `gh` operations or mcp tools that (potentially) write to remotes).
+`git stash push -m <msg>` is always allowed.
 
-**Use portable paths writing files**
+Ask for permission before each `git commit` and `git push`, and before any `gh` operation or MCP tool call that writes to a remote.
 
-Never hardcode a username,a api-key or machine-specific path to any file content.
-Ask the user for the path to the specific CLI tool when a call is failed with `command not found` or similar error.
-Harness $PATH and hardlink and symlink, maintain a clean CLI tool directory which is added to $PATH.
+## Use Portable Paths When Writing Files
 
-**Start independent (non-blocking, surviving) processes**
+- Never hardcode a username, an API key, or a machine-specific path in any version-controlled file content.
+- Ask the user for the path to a specific CLI tool when a call fails with `command not found` or similar.
+- Leverage `$PATH`, hard links, and symlinks; maintain a clean CLI tool directory that's added to `$PATH`.
+
+## Start Independent (Non-Blocking, Surviving) Processes
 
 `& disown` in MSYS2 — the child dies when the shell exits. Instead:
 
@@ -49,8 +51,11 @@ Harness $PATH and hardlink and symlink, maintain a clean CLI tool directory whic
 cmd //c start \"\" '<exe>' '<arg1>' '<arg2>'
 ```
 
-**Make minimal changes**
+## Make Minimal Changes
 
-- Make minimal changes with minimal doc (explain why is the code coding that way) while coding.
-- Make minimal changes to markdown files, minimal yet comprehensive meaning,
-  but not minimal length or tokens, the token is expected exactly as-is from the session.
+- Make minimal changes with minimal documentation while coding (explain why the code is written that way).
+- Make minimal yet comprehensive changes to markdown files. Minimal here doesn't mean minimal length or tokens — tokens are expected exactly as-is from the session.
+
+## Parallel Sub-Agents
+
+Parallel sub-agents that write to the same working directory — whether targeting different git branches or sharing intersecting edit trees — are **unpredictable** and **unreliable**: they race on checkout, stomp each other's staged changes, and can leave the repo in an **unrecoverable** state if no git or chaos like detached HEAD, lost stashes, merge-conflict artifacts.
