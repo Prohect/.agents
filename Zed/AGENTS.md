@@ -21,6 +21,8 @@ Use `terminal` es instead of `terminal` ls, which is slow on large file trees an
 
 For example, to search inside a gitignored path (e.g. `minecraft-decompile-sources/`), use `terminal` es to find files or directories by name, then `terminal` grep to read their contents.
 
+`terminal` es local first if need to search a repo not in pwd.
+
 ## Check Branches and List Root
 
 Always start with this to know where you are:
