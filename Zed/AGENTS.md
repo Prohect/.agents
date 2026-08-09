@@ -2,12 +2,18 @@
 
 ## Read Tool Scope
 
-| Tool                           | Scope                                    |             Gitignore-Aware              |
-| ------------------------------ | ---------------------------------------- | :--------------------------------------: |
-| `read_file` / `list_directory` | Project roots + `~/.agents/skills/` only |                 Sees all                 |
-| `grep` / `find_path`           | Project roots only                       | Skips `.gitignore` + `.git/info/exclude` |
-| `terminal` cat/grep/ls/find    | Anywhere (slow on large file trees)      |                 Sees all                 |
-| `terminal` es                  | Anywhere (files, directories, **fast**)  |                 Sees all                 |
+- `read_file` / `list_directory`
+  - Scope: project roots + `~/.agents/skills/` only
+  - Gitignore-aware: no; sees all
+- `grep` / `find_path`
+  - Scope: project roots only
+  - Gitignore-aware: yes; skips `.gitignore` + `.git/info/exclude` + `.zed/settings.json::file_scan_exclusions`
+- `terminal` cat/grep/ls/find
+  - Scope: anywhere (slow on large file trees)
+  - Gitignore-aware: no; sees all
+- `terminal` es
+  - Scope: anywhere (files, directories, **fast**)
+  - Gitignore-aware: no; sees all
 
 ## Terminal Usage Rules
 
