@@ -4,22 +4,24 @@
 
 - `read_file`
   - Scope: project roots + `~/.agents/skills/`
-  - Gitignore-aware: false; access all
-  - Respects `.zed/settings.json::file_scan_exclusions`: true
+  - Respect `.gitignore`: false;
+  - Respect `.zed/settings.json::file_scan_exclusions`: true
 - `list_directory`
   - Scope: project roots + `~/.agents/skills/`
-  - Gitignore-aware: true;
-  - Respects `file_scan_exclusions`: true
+  - Respect `.gitignore`: true;
+  - Respect `file_scan_exclusions`: true
 - `grep` / `find_path`
   - Scope: project roots
-  - Gitignore-aware: true;
-  - Respects `file_scan_exclusions`: true
+  - Respect `.gitignore`: true;
+  - Respect `file_scan_exclusions`: true
 - `terminal` cat/grep/ls/find
   - Scope: anywhere (slow on large file trees)
-  - Gitignore-aware: false; access all
+  - Respect `.gitignore`: false;
+  - Respect `file_scan_exclusions`: false
 - `terminal` es
   - Scope: anywhere (files, directories, **fast**)
-  - Gitignore-aware: false; access all
+  - Respect `.gitignore`: false;
+  - Respect `file_scan_exclusions`: false
 
 ## Terminal Usage Rules
 
@@ -31,9 +33,9 @@
 
 Use `terminal` es instead of `terminal` ls, which is slow on large file trees and requires recursive tool calls.
 
-For example, to search inside a gitignored path (e.g. `minecraft-decompile-sources/`), use `terminal` es to find files or directories by name, then `terminal` grep to read their contents.
+For example, to search inside a gitignored path (e.g. `minecraft-decompile-sources`), use `terminal` es to find files or directories by name, then `terminal` grep to read their contents.
 
-`terminal` es local first if need to search a repo not in pwd.
+`terminal` es local machine first if need to search a repo not in pwd.
 
 ## Check Branches and List Root
 
