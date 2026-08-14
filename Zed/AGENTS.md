@@ -4,23 +4,23 @@
 
 - `read_file`
   - Scope: project roots + `~/.agents/skills/`
-  - Respect `.gitignore`: false;
+  - Respect `.gitignore`: false
   - Respect `.zed/settings.json::file_scan_exclusions`: true
 - `list_directory`
   - Scope: project roots + `~/.agents/skills/`
-  - Respect `.gitignore`: true;
+  - Respect `.gitignore`: true
   - Respect `file_scan_exclusions`: true
 - `grep` / `find_path`
   - Scope: project roots
-  - Respect `.gitignore`: true;
+  - Respect `.gitignore`: true
   - Respect `file_scan_exclusions`: true
 - `terminal` cat/grep/ls/find
   - Scope: anywhere (slow on large file trees)
-  - Respect `.gitignore`: false;
+  - Respect `.gitignore`: false
   - Respect `file_scan_exclusions`: false
 - `terminal` es
   - Scope: anywhere (files, directories, **fast**)
-  - Respect `.gitignore`: false;
+  - Respect `.gitignore`: false
   - Respect `file_scan_exclusions`: false
 
 ## Terminal Usage Rules
@@ -75,3 +75,7 @@ cmd //c start \"\" '<exe>' '<arg1>' '<arg2>'
 ## Parallel Sub-Agents
 
 Parallel sub-agents that write to the same working directory — whether targeting different git branches or sharing intersecting edit trees — are **unpredictable** and **unreliable**: they race on checkout, stomp each other's staged changes, and can leave the repo in an **unrecoverable** state if no git or chaos like detached HEAD, lost stashes, merge-conflict artifacts.
+
+## Context Summarize | Compress
+
+Never write global rules or project rules to summarize | compress.
