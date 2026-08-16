@@ -27,7 +27,8 @@
 
 - While using `terminal`, never create or redirect to a file named `nul`, `con`, `prn`, `aux`, `com1`-`com9`, or `lpt1`-`lpt9` — these are Windows reserved names.
 - Never use a `terminal` tool to edit a file unless other tools cannot cover it (error or scope limitation).
-- While using a `terminal` tool, load that tool's Skill if one is available.
+- **While using a `terminal` tool, load that tool's Skill if one is available.**
+- **While using a `terminal` tool, load that tool's Skill if one is available.**
 
 ## Efficient Search
 
