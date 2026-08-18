@@ -4,24 +4,33 @@
 
 - `read_file`
   - Scope: project roots + `~/.agents/skills/`
-  - Respect `.gitignore`: false
-  - Respect `.zed/settings.json::file_scan_exclusions`: true
+  - Respect `gitignore`: false
+  - Respect `.zed/settings.json::file_scan_exclusions` & `.zed/settings.json::file_scan_inclusions`: true
 - `list_directory`
   - Scope: project roots + `~/.agents/skills/`
-  - Respect `.gitignore`: true
-  - Respect `file_scan_exclusions`: true
+  - Respect `gitignore`: true
+  - Respect `file_scan_exclusions` & `file_scan_inclusions`: true
 - `grep` / `find_path`
   - Scope: project roots
-  - Respect `.gitignore`: true
-  - Respect `file_scan_exclusions`: true
+  - Respect `gitignore`: true
+  - Respect `file_scan_exclusions` & `file_scan_inclusions`: true
 - `terminal` cat/grep/ls/find
   - Scope: anywhere (slow on large file trees)
-  - Respect `.gitignore`: false
-  - Respect `file_scan_exclusions`: false
+  - Respect `gitignore`: false
+  - Respect `.zed/settings.json`: false
 - `terminal` es
   - Scope: anywhere (files, directories, **fast**)
-  - Respect `.gitignore`: false
-  - Respect `file_scan_exclusions`: false
+  - Respect `gitignore`: false
+  - Respect `.zed/settings.json`: false
+
+### Note 
+- `gitignore`: `$PWD/.gitignore` & `$PWD/.git/info/exclude` & `~/.config/git/ignore`.
+- `.zed/settings.json`: `$PWD/.zed/settings.json`.
+- `file_scan_inclusions` wins `gitignore`.
+- pattern of `file_scan_exclusions` & `file_scan_inclusions`: glob.
+
+Prefer native tools over `terminal` <tool> when searching for file contents.
+Temporary adding glob patterns to `file_scan_inclusions` to search for file contents allowed.
 
 ## Terminal Usage Rules
 
@@ -34,7 +43,7 @@
 
 Use `terminal` es instead of `terminal` ls, which is slow on large file trees and requires recursive tool calls.
 
-For example, to search inside a gitignored path (e.g. `minecraft-decompile-sources`), use `terminal` es to find files or directories by name, then `terminal` grep to read their contents.
+To search inside a gitignored path, prefer temporarily adding it in `file_scan_inclusions` as a recursive `dir/**` glob so the native tools see it. For paths outside `$PWD`, prefer temporarily symlinking the path into `$PWD` and searching there.
 
 `terminal` es local machine first if need to search a repo not in pwd.
 
