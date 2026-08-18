@@ -16,7 +16,7 @@ This Skill is the **entrance index** to the error documentation system.
 |------|-----------|------|
 | `read_file` | `path-not-in-project` | [~/.agents/errors/read_file/path-not-in-project/](~/.agents/errors/read_file/path-not-in-project/) |
 | `write_file` | — | *(none yet)* |
-| `edit_file` | — | *(none yet)* |
+| `edit_file` | `regex-pattern-failed-to-compile` | [~/.agents/errors/edit_file/regex-pattern-failed-to-compile/](~/.agents/errors/edit_file/regex-pattern-failed-to-compile/) |
 | `terminal` | — | *(none yet)* |
 | `grep` | — | *(none yet)* |
 | `find_path` | — | *(none yet)* |

@@ -1,0 +1,1 @@
+2026-08-18 first occurrence: glob '**/.zed/settings.json' in tool_permissions edit_file always_allow; fixed by rewriting as regex
