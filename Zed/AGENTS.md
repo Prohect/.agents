@@ -43,7 +43,7 @@ Temporary adding glob patterns to `file_scan_inclusions` to search for file cont
 
 Use `terminal` es instead of `terminal` ls, which is slow on large file trees and requires recursive tool calls.
 
-To search inside a gitignored path, prefer temporarily adding it in `file_scan_inclusions` as a recursive `dir/**` glob so the native tools see it. For paths outside `$PWD`, prefer temporarily symlinking the path into `$PWD` and searching there.
+To search inside a gitignored path, prefer adding it in `file_scan_inclusions` as a recursive `dir/**` glob so the native tools see it. For paths outside `$PWD`, native `grep` / `find_path` / `list_directory` cannot reach them — symlinking into `$PWD` does NOT help even with `file_scan_inclusions` globs. Use `terminal` tools (grep/cat/es) on the absolute path directly.
 
 `terminal` es local machine first if need to search a repo not in pwd.
 
