@@ -71,7 +71,7 @@ Ask for permission before each `git commit` and `git push`, and before any `gh` 
 
 ## Terminal waits
 
-Never hardcode a long `sleep <n>` to wait for something that consumes unknown time. Poll with a bounded 1s-interval loop instead, so the wait ends the moment the condition is true:
+Never hardcode a long `sleep <n>`. Poll with a bounded 1s-interval loop instead, so the wait ends the moment the condition is true:
 ```bash
 for i in $(seq 1 <limit>); do netstat -ano 2>/dev/null | grep -q "<port>.*LISTENING" && echo "Port <port> listening after ${i}s" && break; sleep 1; done
 ```
