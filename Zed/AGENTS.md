@@ -69,7 +69,7 @@ Ask for permission before each `git commit` and `git push`, and before any `gh` 
 - Ask the user for the path to a specific CLI tool when a call fails with `command not found` or similar.
 - Leverage `$PATH`, hard links, and symlinks; maintain a clean CLI tool directory that's added to `$PATH`.
 
-## Detached/Independent Processes
+## Detached Processes
 
 - never start a detached process -- harness `blocking` instead, unless you have to get rid of stdout from it.
 
