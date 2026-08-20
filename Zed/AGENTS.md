@@ -69,14 +69,6 @@ Ask for permission before each `git commit` and `git push`, and before any `gh` 
 - Ask the user for the path to a specific CLI tool when a call fails with `command not found` or similar.
 - Leverage `$PATH`, hard links, and symlinks; maintain a clean CLI tool directory that's added to `$PATH`.
 
-## Start Independent (Non-Blocking, Surviving) Processes
-
-`& disown` in MSYS2 — the child dies when the shell exits. Instead:
-
-```bash
-cmd //c start \"\" '<exe>' '<arg1>' '<arg2>'
-```
-
 ## Terminal waits
 
 Never hardcode a long `sleep <n>` to wait for something (e.g. the dev
