@@ -32,12 +32,6 @@
 Prefer native tools over `terminal` <tool> when searching for file contents.
 Temporary adding glob patterns to `file_scan_inclusions` to search for file contents allowed.
 
-### Tool-Visible Local Files
-
-- Paths native tools must see but whose local content must not be version controlled (e.g. preferences that should stay local): commit the file once with default/template content if new clone of the repo wont have it, then `git update-index --skip-worktree <path>`.
-- The path must not be covered by gitignore rules (`.gitignore`, `.git/info/exclude`), or native tools hide it.
-- Prefer this over `.git/info/exclude` + `.zed/settings.json::file_scan_inclusions`; propose migration for existing such combos.
-
 ## Terminal Usage Rules
 
 - While using `terminal`, never create or redirect to a file named `nul`, `con`, `prn`, `aux`, `com1`-`com9`, or `lpt1`-`lpt9` — these are Windows reserved names.
