@@ -71,7 +71,8 @@ Ask for permission before each `git commit` and `git push`, and before any `gh` 
 
 ## Detached Processes
 
-- never start a detached process -- harness `blocking` instead, unless you have to get rid of stdout from it.
+- **never start any detached process via blocking calls.**
+- **never start any detached process via blocking calls** -- you don't get stdout/stderr/tool_call_err from detached processes via blocking calls.
 
 ## Terminal waits
 
