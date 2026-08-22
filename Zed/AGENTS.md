@@ -69,10 +69,10 @@ Ask for permission before each `git commit` and `git push`, and before any `gh` 
 - Ask the user for the path to a specific CLI tool when a call fails with `command not found` or similar.
 - Leverage `$PATH`, hard links, and symlinks; maintain a clean CLI tool directory that's added to `$PATH`.
 
-## Detached Processes
+## Non-Blocking Calls
 
-- **never start any detached process via blocking calls.**
-- **never start any detached process via blocking calls** -- you don't get stdout/stderr/tool_call_err from detached processes via blocking calls.
+- **never use blocking tool call for non-blocking/asynchronous purpose**
+- **never use blocking tool call for non-blocking/asynchronous purpose** -- you never get real stdout/stderr/tool_call_err as-is from the non-blocking parts of the tool call you make via blocking calls, it's abandoned by yourself. 
 
 ## Terminal waits
 
