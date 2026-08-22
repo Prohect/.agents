@@ -32,10 +32,11 @@
 Prefer native tools over `terminal` <tool> when searching for file contents.
 Temporary adding glob patterns to `file_scan_inclusions` to search for file contents allowed.
 
-## Terminal Usage Rules
+## Terminal
 
 - While using `terminal`, never create or redirect to a file named `nul`, `con`, `prn`, `aux`, `com1`-`com9`, or `lpt1`-`lpt9` — these are Windows reserved names.
-- Never use a `terminal` tool to edit a file unless other tools cannot cover it (error or scope limitation).
+- Never use a `terminal` tool to find/read/edit a file unless other tools cannot cover it (error or scope limitation).
+- Never use a `terminal` tool to find/read/edit a file unless other tools cannot cover it (error or scope limitation).
 - **While using a `terminal` tool, load that tool's Skill if one is available.**
 - **While using a `terminal` tool, load that tool's Skill if one is available.**
 
