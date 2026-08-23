@@ -72,8 +72,8 @@ Ask for permission before each `git commit` and `git push`, and before any `gh` 
 
 ## Non-Blocking Calls
 
-- **never use blocking tool call for non-blocking/asynchronous purpose**
-- **never use blocking tool call for non-blocking/asynchronous purpose** -- you never get real stdout/stderr/tool_call_err as-is from the non-blocking parts of the tool call you make via blocking calls, it's abandoned by yourself. 
+- **never use blocking tool call for non-blocking purpose**
+- **never use blocking tool call for non-blocking purpose** -- you never get real stdout/stderr/tool_call_err as-is from the non-blocking parts of the tool call you make via blocking calls, it's abandoned by yourself. 
 
 ## Terminal waits
 
