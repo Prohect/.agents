@@ -1,6 +1,7 @@
 Zed/*
 !Zed/AGENTS.md
 !Zed/AGENTS.hbs
+!Zed/handlebars-built-in-helpers
 !Zed/tool_guidance
 
 # Demo fixtures that reference local files (crash dumps, browser profiles, etc.)
