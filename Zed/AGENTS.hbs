@@ -33,10 +33,113 @@ Blocks also work inline — `a {{#if is_windows}}x{{/if}} b` splices `x`
 mid-line. There is no ternary form: `{{if cond "yes" "no"}}` parses but
 renders nothing — always use the block.
 
-Partials (imports): `{{> agents_md}}` splices your `AGENTS.md` in place.
-Every other `*.hbs` file under this directory (recursively) is importable by
-its relative path without the extension, `/`-separated on every platform —
-`partials/style.hbs` → `{{> partials/style}}`. Use `/` even on Windows:
-`\` is the template escape character and cannot appear in a partial name.
+Partials (imports): every `*.hbs` file under this directory (recursively) is
+importable by its relative path without the extension, `/`-separated on
+every platform — `partials/style.hbs` → `{{> partials/style}}`. Use `/` even
+on Windows: `\` is the template escape character and cannot appear in a
+partial name. This file is self-contained and no longer splices `AGENTS.md`.
 --}}
-{{> agents_md}}
+# AGENTS.md
+
+## Read Tool Scope
+
+{{#if (contains available_tools 'read_file')}}- `read_file`
+  - Scope: project roots + `~/.agents/skills/`
+  - Respect `gitignore`: false
+  - Respect `.zed/settings.json::file_scan_exclusions` & `.zed/settings.json::file_scan_inclusions`: true
+{{/if}}
+{{#if (contains available_tools 'list_directory')}}- `list_directory`
+  - Scope: project roots + `~/.agents/skills/`
+  - Respect `gitignore`: true
+  - Respect `file_scan_exclusions` & `file_scan_inclusions`: true
+{{/if}}
+{{#if (or (contains available_tools 'grep') (contains available_tools 'find_path'))}}- {{#if (contains available_tools 'grep')}}`grep`{{/if}}{{#if (and (contains available_tools 'grep') (contains available_tools 'find_path'))}} / {{/if}}{{#if (contains available_tools 'find_path')}}`find_path`{{/if}}
+  - Scope: project roots
+  - Respect `gitignore`: true
+  - Respect `file_scan_exclusions` & `file_scan_inclusions`: true
+{{/if}}
+{{#if (contains available_tools 'terminal')}}- `terminal` cat/grep/ls/find
+  - Scope: anywhere (slow on large file trees)
+  - Respect `gitignore`: false
+  - Respect `.zed/settings.json`: false
+{{/if}}
+{{#if (contains available_tools 'terminal')}}- `terminal` es
+  - Scope: anywhere (files, directories, **fast**)
+  - Respect `gitignore`: false
+  - Respect `.zed/settings.json`: false
+{{/if}}
+
+### Note
+- `gitignore`: `$PWD/.gitignore` & `$PWD/.git/info/exclude`.
+- `.zed/settings.json`: `$PWD/.zed/settings.json`.
+- `file_scan_inclusions` wins `gitignore`.
+- pattern of `file_scan_exclusions` & `file_scan_inclusions`: glob.
+
+{{#if (contains available_tools 'terminal')}}Prefer native tools over `terminal` <tool> when searching for file contents.{{/if}}
+Temporary adding glob patterns to `file_scan_inclusions` to search for file contents allowed.
+
+{{#if (contains available_tools 'terminal')}}## Terminal
+
+- While using `terminal`, never create or redirect to a file named `nul`, `con`, `prn`, `aux`, `com1`-`com9`, or `lpt1`-`lpt9` — these are Windows reserved names.
+- Never use a `terminal` tool to find/read/edit a file unless other tools cannot cover it (error or scope limitation).
+- Never use a `terminal` tool to find/read/edit a file unless other tools cannot cover it (error or scope limitation).
+- **While using a `terminal` tool, load that tool's Skill if one is available.**
+- **While using a `terminal` tool, load that tool's Skill if one is available.**
+{{/if}}
+
+## Efficient Search
+
+{{#if (contains available_tools 'terminal')}}Use `terminal` es instead of `terminal` ls, which is slow on large file trees and requires recursive tool calls.{{/if}}
+
+To search inside a gitignored path, prefer adding it in `file_scan_inclusions` as a recursive `dir/**` glob so the native tools see it. {{#if (or (contains available_tools 'grep') (contains available_tools 'find_path') (contains available_tools 'list_directory'))}}For paths outside `$PWD`, native {{#if (contains available_tools 'grep')}}`grep`{{/if}}{{#if (and (contains available_tools 'grep') (or (contains available_tools 'find_path') (contains available_tools 'list_directory')))}} / {{/if}}{{#if (contains available_tools 'find_path')}}`find_path`{{/if}}{{#if (and (contains available_tools 'find_path') (contains available_tools 'list_directory'))}} / {{/if}}{{#if (contains available_tools 'list_directory')}}`list_directory`{{/if}} cannot reach them — symlinking into `$PWD` does NOT help even with `file_scan_inclusions` globs.{{/if}} {{#if (contains available_tools 'terminal')}}Use `terminal` tools (grep/cat/es) on the absolute path directly.{{/if}}
+
+{{#if (contains available_tools 'terminal')}}`terminal` es local machine first if need to search a repo not in pwd.{{/if}}
+
+## Check Branches and List Root
+
+{{#if (contains available_tools 'terminal')}}Always start with this to know where you are:
+
+```bash
+pwd; git --no-pager branch --show-current; echo " "; git --no-pager branch --sort=-committerdate | head -n 16
+```
+{{/if}}
+
+{{#if (contains available_tools 'list_directory')}}Then call `list_directory` on the project root to see the top-level structure. If the project seems to have some directories, load the `es` Skill.{{/if}}
+
+## Never Push Without Permission
+
+`git stash push -m <msg>` is always allowed.
+
+Ask for permission before each `git commit` and `git push`, and before any `gh` operation or MCP tool call that writes to a remote.
+
+## Use Portable Paths When Writing Files
+
+- Never hardcode a username, an API key, or a machine-specific path in any version-controlled file content.
+- Ask the user for the path to a specific CLI tool when a call fails with `command not found` or similar.
+- Leverage `$PATH`, hard links, and symlinks; maintain a clean CLI tool directory that's added to `$PATH`.
+
+## Non-Blocking Calls
+
+- **never use blocking tool call for non-blocking purpose**
+- **never use blocking tool call for non-blocking purpose** -- you never get real stdout/stderr/tool_call_err as-is from the non-blocking parts of the tool call you make via blocking calls, it's abandoned by yourself.
+
+{{#if (contains available_tools 'terminal')}}## Terminal waits
+
+Never hardcode a long `sleep <n>`. Poll with a bounded 1s-interval loop instead, so the wait ends the moment the condition is true:
+```bash
+for i in $(seq 1 <limit>); do netstat -ano 2>/dev/null | grep -q "<port>.*LISTENING" && echo "Port <port> listening after ${i}s" && break; sleep 1; done
+```
+{{/if}}
+
+## Make Minimal Changes
+
+- Make minimal changes with minimal documentation while coding (explain why the code is written that way).
+- Make minimal yet comprehensive changes to markdown files. Minimal here doesn't mean minimal length or tokens — tokens are expected exactly as-is from the session.
+
+## Parallel Sub-Agents
+
+Parallel sub-agents that write to the same working directory — whether targeting different git branches or sharing intersecting edit trees — are **unpredictable** and **unreliable**: they race on checkout, stomp each other's staged changes, and can leave the repo in an **unrecoverable** state if no git or chaos like detached HEAD, lost stashes, merge-conflict artifacts.
+
+## Context Summarize | Compress
+
+Never write global rules or project rules to summarize | compress.
