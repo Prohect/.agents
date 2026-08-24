@@ -41,7 +41,7 @@ partial name. This file is self-contained and no longer splices `AGENTS.md`.
 --}}
 # AGENTS.md
 
-## Read Tool Scope
+{{#if (or (contains available_tools 'read_file') (contains available_tools 'list_directory') (contains available_tools 'grep') (contains available_tools 'find_path') (contains available_tools 'terminal'))}}## Read Tool Scope
 
 {{#if (contains available_tools 'read_file')}}- `read_file`
   - Scope: project roots + `~/.agents/skills/`
@@ -74,6 +74,7 @@ partial name. This file is self-contained and no longer splices `AGENTS.md`.
 - `.zed/settings.json`: `$PWD/.zed/settings.json`.
 - `file_scan_inclusions` wins `gitignore`.
 - pattern of `file_scan_exclusions` & `file_scan_inclusions`: glob.
+{{/if}}
 
 {{#if (contains available_tools 'terminal')}}Prefer native tools over `terminal` <tool> when searching for file contents.{{/if}}
 Temporary adding glob patterns to `file_scan_inclusions` to search for file contents allowed.
