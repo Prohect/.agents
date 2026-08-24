@@ -1,5 +1,7 @@
 Zed/*
 !Zed/AGENTS.md
+!Zed/AGENTS.hbs
+!Zed/tool_guidance
 
 # Demo fixtures that reference local files (crash dumps, browser profiles, etc.)
 # These contain paths or data specific to the author's machine and should not be shared.
