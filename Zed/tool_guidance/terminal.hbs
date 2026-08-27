@@ -50,10 +50,10 @@ Ask the user for the path to a specific CLI tool when a call fails with `command
 `cat`/`grep`/`ls`/`find` via this tool can reach anywhere on the filesystem (slow on large file trees); they respect neither `gitignore` nor `.zed/settings.json`.
 {{#if is_windows}}
 - Never create or redirect to a file named `nul`, `con`, `prn`, `aux`, `com1`-`com9`, or `lpt1`-`lpt9` — these are Windows reserved names.
-- Use `es` (Everything Search) instead of `ls` for filename/path search — it reaches anywhere (files, directories, fast) while `ls` is slow on large file trees and requires recursive calls. Reach for `es` first when you need to search a repo not in `$PWD`.
+- Use `es` (Everything Search) instead of `ls` for filename/path search — it reaches anywhere, fast.{{!-- ##### why: `ls` is slow on large file trees and needs recursive calls. ##### --}} Reach for `es` first when you need to search a repo not in `$PWD`.
 {{/if}}
 
-Never hardcode a long `sleep <n>`. Poll with a bounded 1s-interval loop instead, so the wait ends the moment the condition is true:
+Never hardcode a long `sleep <n>`. Poll with a bounded 1s-interval loop instead:{{!-- ##### why: the wait ends the moment the condition is true ##### --}}
 ```bash
 for i in $(seq 1 <limit>); do netstat -ano 2>/dev/null | grep -q "<port>.*LISTENING" && echo "Port <port> listening after ${i}s" && break; sleep 1; done
 ```
