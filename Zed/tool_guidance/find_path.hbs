@@ -11,6 +11,7 @@ Find file paths that match a given pattern.
 --}}
 - Prefer the `grep` tool to this tool when searching for symbols unless you have specific information about paths.
 - Use this tool when you need to find files by name patterns
+- Limited to project roots; respects `gitignore`, `file_scan_exclusions` & `file_scan_inclusions`.
 {{!--
 - Results are paginated with 50 matches per page. Use the optional 'offset' parameter to request subsequent pages.
 --}}

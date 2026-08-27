@@ -36,3 +36,24 @@ The terminal is an interactive pty, so any command that blocks waiting for input
 - Prefer Git flags that avoid optional metadata writes when possible, such as `git --no-optional-locks status` instead of `git status`.
 - Always prepend `GIT_EDITOR=true ` to any git command that may invoke an editor, including `git rebase`, `git commit`, `git merge`, and `git tag`. Example: `GIT_EDITOR=true git rebase origin/main` (NOT `git rebase origin/main`).
 - For other commands that may open a pager or editor, set `PAGER=cat` and/or `EDITOR=true` similarly.
+
+{{#if (gt (len (intersect available_tools (array 'read_file' 'grep' 'find_path'))) 0)}}
+Never use this tool to find/read/edit a file unless the native file tools cannot cover it (error or scope limitation).
+Never use this tool to find/read/edit a file unless the native file tools cannot cover it (error or scope limitation) — prefer native tools over their `terminal` counterparts when searching for file contents.
+{{/if}}
+{{#if (contains available_tools 'skill')}}
+While using this tool to run a CLI tool, load that tool's Skill if one is available.
+While using this tool to run a CLI tool, load that tool's Skill if one is available.
+{{/if}}
+Ask the user for the path to a specific CLI tool when a call fails with `command not found` or similar.
+
+`cat`/`grep`/`ls`/`find` via this tool can reach anywhere on the filesystem (slow on large file trees); they respect neither `gitignore` nor `.zed/settings.json`.
+{{#if is_windows}}
+- Never create or redirect to a file named `nul`, `con`, `prn`, `aux`, `com1`-`com9`, or `lpt1`-`lpt9` — these are Windows reserved names.
+- Use `es` (Everything Search) instead of `ls` for filename/path search — it reaches anywhere (files, directories, fast) while `ls` is slow on large file trees and requires recursive calls. Reach for `es` first when you need to search a repo not in `$PWD`.
+{{/if}}
+
+Never hardcode a long `sleep <n>`. Poll with a bounded 1s-interval loop instead, so the wait ends the moment the condition is true:
+```bash
+for i in $(seq 1 <limit>); do netstat -ano 2>/dev/null | grep -q "<port>.*LISTENING" && echo "Port <port> listening after ${i}s" && break; sleep 1; done
+```

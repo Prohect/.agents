@@ -22,6 +22,7 @@ Spawn a sub-agent for a well-scoped task.
 - Split implementation into disjoint codebase slices and spawn multiple agents for them in parallel when the write scopes do not overlap.
 - When a plan has multiple independent steps, prefer delegating those steps in parallel rather than serializing them unnecessarily.
 - Reuse the returned session_id when you want to follow up on the same delegated subproblem instead of creating a duplicate session.
+- Never run parallel sub-agents that write to the same working directory — whether targeting different git branches or sharing intersecting edit trees: they are unpredictable and unreliable, race on checkout, stomp each other's staged changes, and can leave the repo in an unrecoverable state (detached HEAD, lost stashes, merge-conflict artifacts).
 
 ### Restricting subagent tools
 {{!--
