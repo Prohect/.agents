@@ -71,8 +71,15 @@ Markdown image: `![alt text](https://example.com/image.png)`. Remote URLs (http/
 
 Avoid HTML entity escaping; use plain characters.
 You do not need to ask permission for an operation unless there's a specific constraint.
-When a runtime-built-in-tool's schema defines a path parameter, the path should start with the name of a project root directory -- the workspace supports multiple root directories.
 
+{{#if (gt (len (intersect available_tools (array 'read_file' 'list_directory' 'grep' 'find_path' 'diagnostics' 'edit_file' 'write_file' 'create_directory' 'delete_path' 'move_path' 'copy_path' 'apply_code_action' 'get_code_actions' 'go_to_definition' 'find_references' 'rename_symbol'))) 0)}}
+### Paths & glob patterns
+
+Runtime-built-in tools resolve `path`/`glob` against the workspace's project root directories, so root every path and glob at a project root directory name — its first component must be a root directory name (e.g. `project/src/main.rs`). The workspace supports multiple root directories, so always include the root name to disambiguate; a bare relative path like `src/main.rs` can be ambiguous or fail to match.
+
+Globs are matched against paths that include the root directory name, so a recursive `**` glob with a literal directory prefix must be rooted too: `project/src/**/*.rs` matches, while `src/**/*.rs` silently matches nothing. A glob that begins with `**/` (e.g. `**/*.rs`) works because `**` consumes the root prefix.
+
+{{/if}}
 ## Task Execution
 
 If you are unsure how to fulfill the maintainer's request, gather more information with tool calls and/or clarifying questions.

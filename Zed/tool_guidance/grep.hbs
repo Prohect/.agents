@@ -11,6 +11,7 @@ Searches the contents of files in the project with a regular expression
 - Supports full regex syntax (eg. "log.*Error", "function\\s+\\w+", etc.)
 --}}
 - Pass an `include_pattern` if you know how to narrow your search on the files system
+- Root `include_pattern` at a project root directory name (e.g. `project/src/**/*.rs`); a non-rooted `**` glob such as `src/**/*.rs` can silently match nothing.
 {{!--
 - Never use this tool to search for paths. Only search file contents with this tool.
 --}}
