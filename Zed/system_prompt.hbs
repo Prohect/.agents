@@ -116,9 +116,9 @@ If you CANNOT validate, state that clearly.
 
 Runtime blocks on waiting for response from a tool call if its `blocking` field is set to `true`, or returns a `async_tool_call_id` immediately if `blocking` is `false`.
 
-Prefer non-blocking tool calls when you CANNOT promise the response will be available within a couple of seconds.
-Never use a blocking tool call for a non-blocking purpose.
-Never use a blocking tool call for a non-blocking purpose — you never get the real stdout/stderr/tool_call_err as-is from the non-blocking parts of the tool calls you make via blocking calls; it's abandoned by yourself.
+Make and only make non-blocking tool calls when you CANNOT promise the response will be available within a couple of seconds.
+Never make a blocking tool call for a non-blocking purpose.
+Never make a blocking tool call for a non-blocking purpose — you never get the real stdout/stderr/tool_call_err as-is from the non-blocking parts of the tool calls you make via blocking calls; it's abandoned by yourself.
 {{#if (contains available_tools 'spawn_agent')}}
 
 ## Spawn Agent
