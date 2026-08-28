@@ -169,6 +169,10 @@ Ask for permission before each `git commit` and `git push`, and before any `gh` 
 - Temporarily adding glob patterns to `file_scan_inclusions` to search for file contents is allowed.
 {{#if (contains available_tools 'terminal')}}
 - To search inside a gitignored path, prefer adding it to `file_scan_inclusions` as a recursive `dir/**` glob.{{!-- ##### why: makes the path visible to the native tools ##### --}} For paths outside `$PWD`, native `grep` / `find_path` / `list_directory` cannot reach them — symlinking into `$PWD` does NOT help even with `file_scan_inclusions` globs; use `terminal` tools (grep/cat/es) on the absolute path directly.
+
+## Parallel Tool Calls
+
+You can call multiple tools in a single response. Maximize use of parallel tool calls where possible.
 {{/if}}
 {{/if}}
 
