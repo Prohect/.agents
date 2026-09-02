@@ -1,3 +1,0 @@
-This file has CamelCase content.
-But not all words are CamelCase.
-ERROR here too!

@@ -1,3 +1,0 @@
-TODO: fix error handling in main module
-FIXME: refactor error codes
-NOTE: all errors should go through logError()

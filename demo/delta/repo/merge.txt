@@ -1,8 +1,0 @@
-<<<<<<< HEAD
-ours line 1
-ours line 2
-=======
-theirs line 1
-theirs line 2
-theirs line 3
->>>>>>> feature

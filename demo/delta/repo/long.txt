@@ -1,2 +1,0 @@
-This is a very long line that will exceed the default terminal width and should be wrapped by delta in side by side mode to demonstrate the wrapping feature of the delta diff viewer tool
-short line
