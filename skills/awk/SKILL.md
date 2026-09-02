@@ -16,7 +16,7 @@ cd ~/.agents/demo/awk
 
 ## ⚠️ Windows/MSYS2/Nushell Quirks
 
-### Backslashes in awk programs
+### Backslashes in awk Programs
 
 MSYS2, nu, and awk each process backslashes, creating multi-level escaping that depends on context (single quotes, double quotes, regex, strings). **The universal fix: use forward slashes in paths.**
 
@@ -36,7 +36,7 @@ rm -f $script
 
 If you see `warning: escape sequence \X treated as plain X`, you have a backslash count mismatch. In nu, single-quoted strings are raw (backslashes stay literal) while double-quoted strings interpret `\n`, `\t`, `\\`, etc. Prefer forward slashes or `save --raw` with a single-quoted string.
 
-### Single quotes inside the awk program
+### Single Quotes Inside the awk Program
 
 nu has no bash-style `'\''` trick inside single-quoted strings, and nu mangles single-quote characters in arguments passed to external commands. Use awk's octal escape `"\047"` to print a literal single quote:
 
@@ -48,7 +48,7 @@ awk '{print "\047" $1 "\047"}' names.txt
 
 Do not try the bash idiom `awk -v q="'" ...` in nu; the `'` does not survive nu's external-command argument handling.
 
-### `!` inside awk programs
+### `!` Inside awk Programs
 
 `!` inside single-quoted awk programs is safe in nu — there is no history expansion, and a single-quoted string is literal:
 
@@ -57,7 +57,7 @@ Do not try the bash idiom `awk -v q="'" ...` in nu; the `'` does not survive nu'
 awk '!seen[$0]++' dups.txt
 ```
 
-### Passing nu variables into awk
+### Passing nu Variables into awk
 
 nu only interpolates inside double-quoted strings, and a quote character in the middle of a bare token is literal (not a string delimiter). Build the `-v` assignment as a single interpolated string:
 
@@ -76,7 +76,7 @@ let threshold = 28
 awk -v $"t=($threshold)" '$2 > t' names.txt
 ```
 
-### `-F` values with spaces or brackets
+### `-F` Values with Spaces or Brackets
 
 Put a space between `-F` and its value when the value contains spaces or `[`:
 
@@ -339,7 +339,6 @@ awk '{printf "%\047d\n", $1}' big.txt
 - Default field separator is whitespace (spaces and tabs); use `-F,` for CSV, `-F '\t'` for TSV.
 - `$0` is the entire line; `$1` through `$NF` are individual fields.
 - `{print}` with no arguments prints `$0` (the whole line).
-- `-v` variables are set before `BEGIN` executes; pass nu variables with an interpolated string: `awk -v $"t=($threshold)" ...`.
-- **Do NOT use `$var` to reference fields** — `$i` works when `i` is a number variable, but for clarity prefer explicit field numbers when possible.
+- `-v` variables are set before `BEGIN` executes. To pass a nu value, build an interpolated string: `awk -v $"t=($threshold)" ...` — do not write a nu variable directly as `$name` inside the program; that `$` is awk's own field-reference syntax (`$i` reads field number `i`), not nu interpolation.
 - For complex multi-line programs, prefer a script file: `awk -f script.awk file.txt`.
 - On MSYS2, prefer forward slashes in paths to avoid backslash escaping headaches (see Quirks section above).

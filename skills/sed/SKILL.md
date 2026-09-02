@@ -183,7 +183,7 @@ GNU sed supports two regex dialects. The `-E` flag enables Extended Regular Expr
 #   three
 ```
 
-### Case Conversion in Replacement (GNU extensions)
+### Case Conversion in Replacement (GNU Extensions)
 
 ```nu
 # \U = uppercase until \E or end
@@ -271,7 +271,7 @@ sed '1i\START OF FILE' ~/.agents/demo/sed/numbers.txt
 sed '$a\END OF FILE' ~/.agents/demo/sed/numbers.txt
 ```
 
-## Transliteration (y command)
+## Transliteration (y Command)
 
 The `y` command translates characters one-to-one, like `tr`:
 
@@ -321,7 +321,7 @@ rm -f $script
 
 Script files are useful when the sed program is complex or contains characters that are painful to escape on the command line.
 
-## Advanced: Hold Space & Multi-line
+## Advanced: Hold Space & Multi-Line
 
 sed has two buffers: **pattern space** (default, per-line) and **hold space** (auxiliary storage). Commands:
 
@@ -414,8 +414,9 @@ GNU sed's `--debug` flag prints the program, each input line, the pattern space 
 
 ## Common Recipes
 
-```nu
 ### Code & Config
+
+```nu
 # Comment out lines matching a pattern (prefix with #)
 sed '/^host/s/^/# /' ~/.agents/demo/sed/config/settings.ini
 
@@ -424,27 +425,42 @@ sed '/^host/s/^/# /' ~/.agents/demo/sed/config/settings.ini
 
 # Replace version strings
 sed -E 's/VERSION "[0-9.]+"/VERSION "2.0.0"/' ~/.agents/demo/sed/src/config.h
+```
 
 ### Whitespace
+
+```nu
 # Strip leading/trailing whitespace
 sed 's/^[[:space:]]*//; s/[[:space:]]*$//' ~/.agents/demo/sed/spaces.txt
+```
 
 ### CSV
+
+```nu
 # Extract 2nd column (no backreference, avoids nu backslash quirks)
 sed -E 's/^[^,]*,//; s/,.*//' ~/.agents/demo/sed/data.csv
+```
 
 ### Logs
+
+```nu
 # Filter ERROR and WARN lines only (literal brackets need doubled backslashes in nu)
 sed -E -n '/\\[(ERROR|WARN)\\]/p' ~/.agents/demo/sed/logs/app.log
 
 # Redact IP addresses
 "Connected from 192.168.1.100" | sed -E 's/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/[REDACTED]/'
+```
 
 ### HTML/XML
+
+```nu
 # Strip tags
 "<p>Hello <b>World</b></p>" | sed 's/<[^>]*>//g'
+```
 
-### Extract a config section
+### Extract a Config Section
+
+```nu
 sed -n '/\\[server\\]/,/^\\[/p' ~/.agents/demo/sed/config/settings.ini | sed '$d'
 # → [server]
 #   host = 0.0.0.0
