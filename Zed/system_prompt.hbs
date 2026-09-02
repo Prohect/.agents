@@ -153,6 +153,11 @@ If the project seems to have some directories, load the `es` Skill.
 {{/if}}
 
 {{#if (contains available_tools 'terminal')}}
+{{#if is_windows}}
+## CLI_HOME
+$env.CLI_HOME
+{{/if}}
+
 ## Git Writes & Remote Operations
 
 `git stash push -m <msg>` is always allowed.
