@@ -141,8 +141,8 @@ If there is a task you want OR an obvious follow-up task the maintainer may want
 
 Always start with this to know where you are:
 
-```bash
-pwd; git --no-pager branch --show-current; echo " "; git --no-pager branch --sort=-committerdate | head -n 16
+```nu
+print (pwd); git --no-pager branch --show-current; print " "; git --no-pager branch --sort=-committerdate | lines | first 16 | to text
 ```
 {{#if (contains available_tools 'list_directory')}}
 Then call `list_directory` on the project root to see the top-level structure.
@@ -162,13 +162,13 @@ Ask for permission before each `git commit` and `git push`, and before any `gh` 
 {{#if (gt (len (intersect available_tools (array 'read_file' 'list_directory' 'grep' 'find_path'))) 0)}}
 ## File-Scan Semantics
 
-- `gitignore`: `$PWD/.gitignore` & `$PWD/.git/info/exclude`.
-- `.zed/settings.json`: `$PWD/.zed/settings.json`.
+- `gitignore`: `$env.PWD/.gitignore` & `$env.PWD/.git/info/exclude`.
+- `.zed/settings.json`: `$env.PWD/.zed/settings.json`.
 - `file_scan_inclusions` wins `gitignore`.
 - Patterns of `file_scan_exclusions` & `file_scan_inclusions` are globs.
 - Temporarily adding glob patterns to `file_scan_inclusions` to search for file contents is allowed.
 {{#if (contains available_tools 'terminal')}}
-- To search inside a gitignored path, prefer adding it to `file_scan_inclusions` as a recursive `dir/**` glob.{{!-- ##### why: makes the path visible to the native tools ##### --}} For paths outside `$PWD`, native `grep` / `find_path` / `list_directory` cannot reach them — symlinking into `$PWD` does NOT help even with `file_scan_inclusions` globs; use `terminal` tools (grep/cat/es) on the absolute path directly.
+- To search inside a gitignored path, prefer adding it to `file_scan_inclusions` as a recursive `dir/**` glob.{{!-- ##### why: makes the path visible to the native tools ##### --}} For paths outside `$env.PWD`, native `grep` / `find_path` / `list_directory` cannot reach them — symlinking into `$env.PWD` does NOT help even with `file_scan_inclusions` globs; use `terminal` tools (`rg` for content, `es` for paths, `open` for reading) on the absolute path directly.
 
 ## Parallel Tool Calls
 
@@ -200,7 +200,7 @@ The `terminal` tool runs commands inside a sandbox with these permissions:
 {{/each}}
   Protected Git metadata remains read-only. Writes anywhere else on the WSL filesystem and mounted Windows drives are blocked.{{else}}. No project directories are currently writable.{{/if}}{{!--#4--}}
 {{else}}
-- Writes: a per-thread temporary directory exposed via `$TMPDIR`, `$TMP`, and `$TEMP` is writable and persists across `terminal` calls in this thread{{#if worktrees}}{{!--#5--}}, along with these project directories:
+- Writes: a per-thread temporary directory exposed via `$env.TMPDIR`, `$env.TMP`, and `$env.TEMP` is writable and persists across `terminal` calls in this thread{{#if worktrees}}{{!--#5--}}, along with these project directories:
 {{#each worktrees}}
   - `{{abs_path}}`
 {{/each}}

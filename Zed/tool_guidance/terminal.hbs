@@ -16,9 +16,9 @@ The output results will be shown to the user already, only list it again if nece
 Always set the working directory with the `cd` parameter, never with `cd` inside `command`; otherwise it will error.
 --}}
 
-Do not generate terminal commands that use shell substitutions or interpolations such as `$VAR`, `${VAR}`, `$(...)`, backticks, `$((...))`, `<(...)`, or `>(...)`. Resolve those values yourself before calling this tool, or ask the user for the literal value to use.
+Do not generate terminal commands that rely on shell substitutions or interpolations to compute values; resolve those values yourself before calling this tool, or ask the user for the literal value to use.
 
-Do not pipe output to `head`, `tail`, or similar output-filtering commands just to reduce what you receive. Instead, use `head_lines` and/or `tail_lines`; this keeps the terminal output visible to the user in real time while limiting only the final output sent back to you. When both are specified, the first `head_lines` lines are returned, then a blank line, then the last `tail_lines` lines. Avoid requesting too many lines, or the response may waste tokens or exceed the context window.
+Do not pipe output to `first`, `last`, or similar output-filtering commands just to reduce what you receive. Instead, use `head_lines` and/or `tail_lines`; this keeps the terminal output visible to the user in real time while limiting only the final output sent back to you. When both are specified, the first `head_lines` lines are returned, then a blank line, then the last `tail_lines` lines. Avoid requesting too many lines, or the response may waste tokens or exceed the context window.
 
 Do not use this tool for commands that run indefinitely, such as servers (like `npm run start`, `npm run dev`, `python -m http.server`, etc) or file watchers that don't terminate on their own.
 
@@ -47,13 +47,14 @@ While using this tool to run a CLI tool, load that tool's Skill if one is availa
 {{/if}}
 Ask the user for the path to a specific CLI tool when a call fails with `command not found` or similar.
 
-`cat`/`grep`/`ls`/`find` via this tool can reach anywhere on the filesystem (slow on large file trees); they respect neither `gitignore` nor `.zed/settings.json`.
+`rg`, `es`, `open`, and nu's `ls`/`find` via this tool can reach anywhere on the filesystem; they respect neither `gitignore` nor `.zed/settings.json`.
 {{#if is_windows}}
 - Never create or redirect to a file named `nul`, `con`, `prn`, `aux`, `com1`-`com9`, or `lpt1`-`lpt9` — these are Windows reserved names.
-- Use `es` (Everything Search) instead of `ls` for filename/path search — it reaches anywhere, fast.{{!-- ##### why: `ls` is slow on large file trees and needs recursive calls. ##### --}} Reach for `es` first when you need to search a repo not in `$PWD`.
+- In `nu`, `\` inside a double-quoted string is an escape character, you may prefer single-quoted string e.g. `'C:\Program Files\Git\usr\bin'` or raw string e.g. `r#'C:\Program Files\Git\usr\bin'#`(delimiter hash characters > 0) for static args.
+- Use `es` (Everything Search) instead of `ls` for filename/path search — it reaches anywhere, fast.{{!-- ##### why: `ls` is slow on large file trees and needs recursive calls. ##### --}} Reach for `es` first when you need to search a repo not in `$env.PWD`.
 {{/if}}
 
 Never hardcode a long `sleep <n>`. Poll with a bounded 1s-interval loop instead:{{!-- ##### why: the wait ends the moment the condition is true ##### --}}
-```bash
-for i in $(seq 1 <limit>); do netstat -ano 2>/dev/null | grep -q "<port>.*LISTENING" && echo "Port <port> listening after ${i}s" && break; sleep 1; done
+```nu
+let limit = 60; for i in 1..$limit { if (netstat -ano | lines | any {|l| $l =~ "<port>.*LISTENING" }) { print $"Port <port> listening after ($i)s"; break }; sleep 1sec }
 ```

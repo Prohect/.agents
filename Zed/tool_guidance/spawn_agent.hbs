@@ -47,8 +47,8 @@ Quirk: sub-agents are never granted `spawn_agent` themselves (no nested spawning
 Mid-turn communication protocol:
 - Name a report channel in the spawn message: a file path (grant `write_file`) or an MCP write API the probe can call.
 - Watch the channel from your side with NON-BLOCKING calls.{{!-- ##### why: so you can steer while waiting ##### --}} For a file, a `terminal` polling call:
-  ```bash
-  for i in $(seq 1 60); do [ -s /tmp/probe_report.md ] && cat /tmp/probe_report.md && break; sleep 1; done
+  ```nu
+  let report = "probe_report.md"; for i in 1..60 { if ($report | path exists) and ((ls -s $report | first | get size) > 0b) { print (open --raw $report | decode utf-8); break }; sleep 1sec }
   ```
   For an MCP channel, poll the corresponding read API directly.
 - Steer mid-turn by sending a follow-up message on the probe's session_id; it is incorporated at the probe's next reasoning boundary.
