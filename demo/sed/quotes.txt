@@ -1,3 +1,0 @@
-He said "hello world"
-She said 'goodbye'
-"double quotes" and 'single quotes' mixed

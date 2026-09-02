@@ -25,11 +25,13 @@ MSYS2, nu, and awk each process backslashes, creating multi-level escaping that 
 awk '{print FILENAME}' ./names.txt
 ```
 
-If your data contains backslashes, prefer a script file (`-f`) to avoid shell escaping. Write the pattern file from nu with `save --raw` using a single-quoted string (single-quoted nu strings are raw — no escape processing):
+If your data contains backslashes, prefer a script file (`-f`) to avoid shell escaping. Write the pattern file from nu with `save --raw` using a single-quoted string (single-quoted nu strings are raw — no escape processing). Write it to `$nu.temp-dir` and clean up afterward so the demo directory stays pristine:
 
 ```nu
-'/C:\\Program Files\\/' | save --raw pattern.awk
-awk -f pattern.awk paths.txt
+let script = ($nu.temp-dir | path join 'pattern.awk')
+'/C:\\Program Files\\/' | save --raw -f $script
+awk -f $script paths.txt
+rm -f $script
 ```
 
 If you see `warning: escape sequence \X treated as plain X`, you have a backslash count mismatch. In nu, single-quoted strings are raw (backslashes stay literal) while double-quoted strings interpret `\n`, `\t`, `\\`, etc. Prefer forward slashes or `save --raw` with a single-quoted string.
