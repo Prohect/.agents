@@ -8,6 +8,8 @@ disable-model-invocation: false
 
 GNU sed v4.9. A non-interactive stream editor for filtering and transforming text. Reads input line by line, applies commands, and prints the result. Use it for substitution, deletion, insertion, extraction, and any regex-driven text manipulation in files or pipelines.
 
+Commands here are written for the `nu` shell. Paths use `~` (home) and demo files live under `~/.agents/demo/sed/`.
+
 ## Quick Reference
 
 | Task                          | Command                                |
@@ -30,36 +32,36 @@ GNU sed v4.9. A non-interactive stream editor for filtering and transforming tex
 
 ## Basic Substitution
 
-```bash
+```nu
 # Replace first occurrence on each line
-sed 's/Hello/Hi/' "$HOME/.agents/demo/sed/src/main.c"
+sed 's/Hello/Hi/' ~/.agents/demo/sed/src/main.c
 # → #include "config.h"
 #   ...
 #       printf("Hi World\n");
 #   ...
 
 # Replace ALL occurrences on each line (g flag)
-echo "foo foo foo" | sed 's/foo/bar/g'
+"foo foo foo" | sed 's/foo/bar/g'
 # → bar bar bar
 
 # Replace nth occurrence only (2nd)
-echo "foo foo foo" | sed 's/foo/bar/2'
+"foo foo foo" | sed 's/foo/bar/2'
 # → foo bar foo
 
 # Replace nth onward (2g: from 2nd to end)
-echo "foo foo foo foo" | sed 's/foo/bar/2g'
+"foo foo foo foo" | sed 's/foo/bar/2g'
 # → foo bar bar bar
 ```
 
 **Delimiters:** You can use any character, not just `/`. This avoids "leaning toothpick syndrome" when the pattern or replacement contains slashes:
 
-```bash
+```nu
 # Change delimiter to | (useful for paths/URLs)
-echo "http://example.com/path" | sed 's|http://|https://|'
+"http://example.com/path" | sed 's|http://|https://|'
 # → https://example.com/path
 
 # Change delimiter to # (for patterns with both / and |)
-echo "a/b|c" | sed 's#a/b#X#'
+"a/b|c" | sed 's#a/b#X#'
 # → X|c
 ```
 
@@ -69,24 +71,24 @@ Addresses select which lines a command applies to. Without an address, the comma
 
 ### Line Numbers
 
-```bash
+```nu
 # Single line
-sed -n '3p' "$HOME/.agents/demo/sed/numbers.txt"
+sed -n '3p' ~/.agents/demo/sed/numbers.txt
 # → 3 three
 
 # Range of lines
-sed -n '3,6p' "$HOME/.agents/demo/sed/numbers.txt"
+sed -n '3,6p' ~/.agents/demo/sed/numbers.txt
 # → 3 three
 #   4 four
 #   5 five
 #   6 six
 
 # From line 5 to end
-sed -n '5,$p' "$HOME/.agents/demo/sed/numbers.txt"
+sed -n '5,$p' ~/.agents/demo/sed/numbers.txt
 # → 5 five ... 10 ten
 
 # Every Nth line starting from M (GNU extension: M~N)
-sed -n '2~3p' "$HOME/.agents/demo/sed/numbers.txt"
+sed -n '2~3p' ~/.agents/demo/sed/numbers.txt
 # → 2 two
 #   5 five
 #   8 eight
@@ -94,34 +96,34 @@ sed -n '2~3p' "$HOME/.agents/demo/sed/numbers.txt"
 
 ### Pattern Matching
 
-```bash
+```nu
 # Lines matching a regex
-sed -n '/^5/p' "$HOME/.agents/demo/sed/numbers.txt"
+sed -n '/^5/p' ~/.agents/demo/sed/numbers.txt
 # → 5 five
 
 # Range between two patterns (inclusive)
-sed -n '/^3/,/^6/p' "$HOME/.agents/demo/sed/numbers.txt"
+sed -n '/^3/,/^6/p' ~/.agents/demo/sed/numbers.txt
 # → 3 three
 #   4 four
 #   5 five
 #   6 six
 
 # Negated match (lines NOT matching)
-sed -n '/TODO/!p' "$HOME/.agents/demo/sed/src/main.c"
+sed -n '/TODO/!p' ~/.agents/demo/sed/src/main.c
 # → (prints all lines except those with TODO)
 ```
 
 ### Combined Address + Command
 
-```bash
+```nu
 # Substitute only on lines matching a different pattern
-echo -e "server: localhost\nserver: myserver\nclient: localhost" | sed '/server/s/localhost/127.0.0.1/'
+"server: localhost\nserver: myserver\nclient: localhost" | sed '/server/s/localhost/127.0.0.1/'
 # → server: 127.0.0.1
 #   server: myserver
 #   client: localhost
 
 # Delete lines 1 and 3
-sed '1d; 3d' "$HOME/.agents/demo/sed/src/main.c"
+sed '1d; 3d' ~/.agents/demo/sed/src/main.c
 ```
 
 ## Regular Expressions
@@ -130,13 +132,13 @@ sed '1d; 3d' "$HOME/.agents/demo/sed/src/main.c"
 
 GNU sed supports two regex dialects. The `-E` flag enables Extended Regular Expressions where `+`, `?`, `|`, `(`, `)`, `{`, `}` have special meaning without backslashes.
 
-```bash
-# Basic regex: special chars need backslash
-echo "abc123 def456" | sed 's/[0-9]\+/NUM/'
+```nu
+# Basic regex: one-or-more is expressed with [0-9][0-9]*
+"abc123 def456" | sed 's/[0-9][0-9]*/NUM/'
 # → abcNUM def456
 
 # Extended regex: special chars are bare (prefer -E for readability)
-echo "abc123 def456" | sed -E 's/[0-9]+/NUM/'
+"abc123 def456" | sed -E 's/[0-9]+/NUM/'
 # → abcNUM def456
 ```
 
@@ -144,56 +146,58 @@ echo "abc123 def456" | sed -E 's/[0-9]+/NUM/'
 | ------------- | ----------- | --------------------- |
 | One or more   | `\+`        | `+`                   |
 | Zero or one   | `\?`        | `?`                   |
-| Alternation   | `\|`        | `\|`                  |
+| Alternation   | `\|`        | `|`                   |
 | Grouping      | `\( \)`     | `( )`                 |
 | Repetition    | `\{n,m\}`   | `{n,m}`               |
 | Word boundary | `\b`, `\B`  | `\b`, `\B`            |
 | Backreference | `\1`–`\9`   | `\1`–`\9`             |
 
+> ⚠️ In `nu`, inline scripts that rely on `\(`, `\)`, `\{`, `\}`, `\?`, `\[`, or `\]` are unreliable (the backslashes can be stripped on the way to sed). Prefer `-E`, or use a `-f` script file for BRE scripts. See **Quirks & Platform Notes**.
+
 ### Common Regex Patterns
 
-```bash
+```nu
 # Backreferences — swap two words
-echo "foo bar" | sed -E 's/(foo) (bar)/\2 \1/'
+"foo bar" | sed -E 's/(foo) (bar)/\2 \1/'
 # → bar foo
 
 # & in replacement = entire match
-echo "The quick brown fox" | sed 's/quick/(&)/'
+"The quick brown fox" | sed 's/quick/(&)/'
 # → The (quick) brown fox
 
 # Character classes
-echo "The year is 2024" | sed -E 's/[0-9]{4}/2026/'
+"The year is 2024" | sed -E 's/[0-9]+/2026/'
 # → The year is 2026
 
 # Word boundaries (GNU extension)
-echo "cat catalog scat cat" | sed 's/\bcat\b/dog/g'
+"cat catalog scat cat" | sed 's/\bcat\b/dog/g'
 # → dog catalog scat dog
 
 # Start/end anchors
-echo -e "one\ntwo\nthree" | sed -n '/^t/p'
+"one\ntwo\nthree" | sed -n '/^t/p'
 # → two
 #   three
 
-echo -e "one\ntwo\nthree" | sed -n '/e$/p'
+"one\ntwo\nthree" | sed -n '/e$/p'
 # → one
 #   three
 ```
 
 ### Case Conversion in Replacement (GNU extensions)
 
-```bash
+```nu
 # \U = uppercase until \E or end
 # \L = lowercase until \E or end
 # \u = uppercase next character only
 # \l = lowercase next character only
 
-echo "HELLO world" | sed -E 's/(.*) (.*)/\L\1 \U\2/'
+"HELLO world" | sed -E 's/(.*) (.*)/\L\1 \U\2/'
 # → hello WORLD
 
-echo "hello" | sed 's/./\u&/'
+"hello" | sed 's/./\u&/'
 # → Hello
 
-echo "HELLO" | sed 's/./\l&/'
+"HELLO" | sed 's/./\l&/'
 # → hELLO
 ```
 
@@ -208,18 +212,18 @@ echo "HELLO" | sed 's/./\l&/'
 | _number_    | Replace the _nth_ occurrence only                         |
 | _number_`g` | Replace from the _nth_ occurrence onward                  |
 
-```bash
+```nu
 # Case-insensitive
-echo "Hello HELLO hello" | sed 's/hello/hi/ig'
+"Hello HELLO hello" | sed 's/hello/hi/ig'
 # → hi hi hi
 
 # Print only lines where substitution happened
-echo -e "foo\nbar\nfoo" | sed -n 's/foo/REPLACED/p'
+"foo\nbar\nfoo" | sed -n 's/foo/REPLACED/p'
 # → REPLACED
 #   REPLACED
 
-# Write matched lines to file
-sed -n 's/Error/ISSUE/w /dev/stdout' "$HOME/.agents/demo/sed/logs/error.log"
+# Write matched lines to stdout
+sed -n 's/Error/ISSUE/w /dev/stdout' ~/.agents/demo/sed/logs/error.log
 # → ISSUE on line 42: null pointer
 #   ISSUE on line 57: out of memory
 #   ISSUE on line 142: null pointer
@@ -227,55 +231,55 @@ sed -n 's/Error/ISSUE/w /dev/stdout' "$HOME/.agents/demo/sed/logs/error.log"
 
 ## Delete, Print, Quit
 
-```bash
+```nu
 # Delete lines matching pattern
-sed '/TODO/d' "$HOME/.agents/demo/sed/src/main.c"
+sed '/TODO/d' ~/.agents/demo/sed/src/main.c
 
 # Delete empty lines
-echo -e "line1\n\nline2\n\nline3" | sed '/^$/d'
+"line1\n\nline2\n\nline3" | sed '/^$/d'
 # → line1
 #   line2
 #   line3
 
 # Print only matching lines (quiet mode)
-sed -n '/TODO/p' "$HOME/.agents/demo/sed/src/main.c"
+sed -n '/TODO/p' ~/.agents/demo/sed/src/main.c
 
 # Quit after first match
-sed '/FIXME/q' "$HOME/.agents/demo/sed/src/main.c"
+sed '/FIXME/q' ~/.agents/demo/sed/src/main.c
 # → (prints up to and including the FIXME line, then stops)
 
 # Double-space a file (append blank line after each line)
-sed G "$HOME/.agents/demo/sed/numbers.txt"
+sed G ~/.agents/demo/sed/numbers.txt
 ```
 
 ## Insert, Append, Change
 
-```bash
+```nu
 # Append text AFTER matching line
-sed '/TODO/a\// NEW: implement feature' "$HOME/.agents/demo/sed/src/main.c"
+sed '/TODO/a\// NEW: implement feature' ~/.agents/demo/sed/src/main.c
 
 # Insert text BEFORE matching line
-sed '/FIXME/i\// PRIORITY: critical bug' "$HOME/.agents/demo/sed/src/main.c"
+sed '/FIXME/i\// PRIORITY: critical bug' ~/.agents/demo/sed/src/main.c
 
 # Change (replace) entire matching line
-sed '/FIXME/c\// DONE: all bugs resolved' "$HOME/.agents/demo/sed/src/main.c"
+sed '/FIXME/c\// DONE: all bugs resolved' ~/.agents/demo/sed/src/main.c
 
 # Insert before first line
-sed '1i\START OF FILE' "$HOME/.agents/demo/sed/numbers.txt"
+sed '1i\START OF FILE' ~/.agents/demo/sed/numbers.txt
 
 # Append after last line
-sed '$a\END OF FILE' "$HOME/.agents/demo/sed/numbers.txt"
+sed '$a\END OF FILE' ~/.agents/demo/sed/numbers.txt
 ```
 
 ## Transliteration (y command)
 
 The `y` command translates characters one-to-one, like `tr`:
 
-```bash
-echo "hello world" | sed 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/'
+```nu
+"hello world" | sed 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/'
 # → HELLO WORLD
 
-echo "abc123" | sed 'y/abc/xyz/'
+"abc123" | sed 'y/abc/xyz/'
 # → xyz123
 ```
 
@@ -283,12 +287,12 @@ The source and target character sets must have the same length.
 
 ## In-Place Editing (`-i`)
 
-```bash
+```nu
 # Edit file in-place (no backup)
-sed -i 's/TODO/DONE/g' "$HOME/.agents/demo/sed/src/main.c"
+sed -i 's/TODO/DONE/g' ~/.agents/demo/sed/src/main.c
 
 # Edit with backup (creates file.bak)
-sed -i.bak 's/TODO/DONE/g' "$HOME/.agents/demo/sed/src/main.c"
+sed -i.bak 's/TODO/DONE/g' ~/.agents/demo/sed/src/main.c
 # → file is modified, original saved as file.bak
 
 # In-place on multiple files (use -s for per-file address scoping)
@@ -297,21 +301,22 @@ sed -i -s '1s/Error/ISSUE/' file1.log file2.log
 # With -s: line 1 means first line of each file separately
 ```
 
-⚠️ **`-i` overwrites files.** Always test with `sed ... file | head` first, or use `-i.bak` for a safety net.
+⚠️ **`-i` overwrites files.** Always preview with `sed ... file | lines | first` first, or use `-i.bak` for a safety net. The commands above modify the demo file — run them on a copy if you want to keep the fixtures pristine.
 
 ## Multiple Expressions
 
-```bash
+```nu
 # With semicolons
-sed 's/TODO/DONE/; s/FIXME/FIXED/' "$HOME/.agents/demo/sed/src/main.c"
+sed 's/TODO/DONE/; s/FIXME/FIXED/' ~/.agents/demo/sed/src/main.c
 
 # With multiple -e flags
-sed -e 's/TODO/DONE/' -e 's/FIXME/FIXED/' "$HOME/.agents/demo/sed/src/main.c"
+sed -e 's/TODO/DONE/' -e 's/FIXME/FIXED/' ~/.agents/demo/sed/src/main.c
 
 # With a script file
-echo 's/TODO/DONE/' > /tmp/edits.sed
-echo 's/FIXME/FIXED/' >> /tmp/edits.sed
-sed -f /tmp/edits.sed "$HOME/.agents/demo/sed/src/main.c"
+let script = ($nu.temp-dir | path join 'edits.sed')
+"s/TODO/DONE/\ns/FIXME/FIXED/" | save -f $script
+sed -f $script ~/.agents/demo/sed/src/main.c
+rm -f $script
 ```
 
 Script files are useful when the sed program is complex or contains characters that are painful to escape on the command line.
@@ -330,21 +335,21 @@ sed has two buffers: **pattern space** (default, per-line) and **hold space** (a
 | `n`     | Read next line into pattern space    |
 | `N`     | Append next line to pattern space    |
 
-```bash
+```nu
 # Reverse file lines (tac-like)
-sed -n '1!G; h; $p' "$HOME/.agents/demo/sed/numbers.txt"
+sed -n '1!G; h; $p' ~/.agents/demo/sed/numbers.txt
 # → 10 ten
 #   9 nine
 #   ... (reversed)
 
 # Join line pairs with N
-echo -e "TODO:\n  implement feature\nFIXME:\n  fix bug" | sed '/TODO:/{N; s/\n  / /}'
+"TODO:\n  implement feature\nFIXME:\n  fix bug" | sed '/TODO:/{N; s/\n  / /}'
 # → TODO: implement feature
 #   FIXME:
 #     fix bug
 
 # Swap adjacent line pairs
-echo -e "line1\nline2\nline3\nline4" | sed -n 'h; n; p; g; p'
+"line1\nline2\nline3\nline4" | sed -n 'h; n; p; g; p'
 # → line2
 #   line1
 #   line4
@@ -353,14 +358,15 @@ echo -e "line1\nline2\nline3\nline4" | sed -n 'h; n; p; g; p'
 
 ## The `=` Command (Line Numbers)
 
-```bash
+```nu
 # Print line numbers of matches
-sed -n '/TODO/=' "$HOME/.agents/demo/sed/src/main.c"
+sed -n '/TODO/=' ~/.agents/demo/sed/src/main.c
 # → 6
 #   8
 
 # Number all lines (like cat -n)
-sed = "$HOME/.agents/demo/sed/numbers.txt" | sed 'N; s/\n/\t/'
+# Quoting '=' is required in nu, because a bare `sed = file` is parsed as an assignment.
+sed '=' ~/.agents/demo/sed/numbers.txt | sed 'N; s/\n/\t/'
 # → 1	1 one
 #   2	2 two
 #   ...
@@ -370,8 +376,8 @@ sed = "$HOME/.agents/demo/sed/numbers.txt" | sed 'N; s/\n/\t/'
 
 Shows non-printable characters in a line — tabs as `\t`, line ends as `$`:
 
-```bash
-echo -e "hello\tworld" | sed -n 'l'
+```nu
+"hello\tworld" | sed -n 'l'
 # → hello\tworld$
 ```
 
@@ -379,10 +385,10 @@ Useful for debugging whitespace and control characters.
 
 ## Null-Separated Mode (`-z`)
 
-Treats NUL characters (`\0`) as line separators instead of newlines. Useful for processing `find ... -print0` output:
+Treats NUL characters (`\0`) as line separators instead of newlines:
 
-```bash
-printf 'line1\0line2\0line3\0' | sed -z 's/line/LINE/g' | tr '\0' '\n'
+```nu
+"line1\0line2\0line3\0" | sed -z 's/line/LINE/g' | str replace --all (char nul) "\n"
 # → LINE1
 #   LINE2
 #   LINE3
@@ -392,8 +398,8 @@ printf 'line1\0line2\0line3\0' | sed -z 's/line/LINE/g' | tr '\0' '\n'
 
 GNU sed's `--debug` flag prints the program, each input line, the pattern space before/after each command, and the final output:
 
-```bash
-echo "hello" | sed --debug 's/h/H/' 2>&1
+```nu
+"hello" | sed --debug 's/h/H/'
 # → SED PROGRAM:
 #     s/h/H/
 #   INPUT:   'STDIN' line 1
@@ -408,38 +414,38 @@ echo "hello" | sed --debug 's/h/H/' 2>&1
 
 ## Common Recipes
 
-```bash
+```nu
 ### Code & Config
 # Comment out lines matching a pattern (prefix with #)
-sed '/^host/s/^/# /' "$HOME/.agents/demo/sed/config/settings.ini"
+sed '/^host/s/^/# /' ~/.agents/demo/sed/config/settings.ini
 
 # Uncomment lines (remove leading "# ")
-echo "# this is commented" | sed 's/^# //'
+"# this is commented" | sed 's/^# //'
 
 # Replace version strings
-sed -E 's/VERSION "[0-9.]+"/VERSION "2.0.0"/' "$HOME/.agents/demo/sed/src/config.h"
+sed -E 's/VERSION "[0-9.]+"/VERSION "2.0.0"/' ~/.agents/demo/sed/src/config.h
 
 ### Whitespace
 # Strip leading/trailing whitespace
-sed 's/^[[:space:]]*//; s/[[:space:]]*$//' "$HOME/.agents/demo/sed/spaces.txt"
+sed 's/^[[:space:]]*//; s/[[:space:]]*$//' ~/.agents/demo/sed/spaces.txt
 
 ### CSV
-# Extract 2nd column
-sed -E 's/^[^,]*,([^,]*).*/\1/' "$HOME/.agents/demo/sed/data.csv"
+# Extract 2nd column (no backreference, avoids nu backslash quirks)
+sed -E 's/^[^,]*,//; s/,.*//' ~/.agents/demo/sed/data.csv
 
 ### Logs
-# Filter ERROR and WARN lines only
-sed -n '/\[ERROR\]\|\[WARN\]/p' "$HOME/.agents/demo/sed/logs/app.log"
+# Filter ERROR and WARN lines only (literal brackets need doubled backslashes in nu)
+sed -E -n '/\\[(ERROR|WARN)\\]/p' ~/.agents/demo/sed/logs/app.log
 
 # Redact IP addresses
-echo "Connected from 192.168.1.100" | sed -E 's/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/[REDACTED]/'
+"Connected from 192.168.1.100" | sed -E 's/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/[REDACTED]/'
 
 ### HTML/XML
 # Strip tags
-echo "<p>Hello <b>World</b></p>" | sed 's/<[^>]*>//g'
+"<p>Hello <b>World</b></p>" | sed 's/<[^>]*>//g'
 
 ### Extract a config section
-sed -n '/\[server\]/,/^\[/p' "$HOME/.agents/demo/sed/config/settings.ini" | sed '$d'
+sed -n '/\\[server\\]/,/^\\[/p' ~/.agents/demo/sed/config/settings.ini | sed '$d'
 # → [server]
 #   host = 0.0.0.0
 #   port = 8080
@@ -447,52 +453,80 @@ sed -n '/\[server\]/,/^\[/p' "$HOME/.agents/demo/sed/config/settings.ini" | sed 
 
 ## Quirks & Platform Notes
 
-### ⚠️ Literal Backslash in Patterns (MSYS2 Shell)
+### ⚠️ Inline scripts lose some backslashes and braces (nu → MSYS2 sed)
 
-On this MSYS2/Windows shell, `\\\\` must be used in the terminal command to pass `\\` to sed. The shell consumes one level of escaping, even inside single quotes:
+`sed` here is a `nu` wrapper around the MSYS2 `sed.exe`. When `nu` passes a script argument to that executable, the Windows command line is rebuilt and the MSYS2 runtime re-parses it. As a result, some characters in inline scripts are dropped or reinterpreted:
 
-```bash
-# ❌ Fails — sed sees s|\|/|g (unterminated)
-sed 's|\\|/|g' /tmp/bs_test.txt
+- Bare `{` and `}` are removed. `-E 's/[0-9]{4}/2026/'` reaches sed as `s/[0-9]4/2026/`.
+- Backslashes before `(`, `)`, `{`, `}`, `?`, `[`, `]` are stripped.
+- In some contexts (e.g. scripts containing commas) backslashes before `1`/`2`/`+` are also stripped.
+- Commas can trigger argument splitting, which mangles scripts such as `a{1,2}`.
 
-# ✅ Works — sed sees s|\\|/|g (literal backslash → forward slash)
-sed 's|\\\\|/|g' /tmp/bs_test.txt
-# → C:/Users/username/project/src/main.c
+**Workarounds, in order of preference:**
+
+1. Use `-E` (ERE) so `+`, `?`, `|`, `(`, `)` need no backslashes.
+2. For ERE `{n,m}` intervals, escape the braces — `\{4\}` arrives as `{4}`.
+3. For a literal `[`/`]` in a pattern, double the backslash — `\\[` arrives as `\[`.
+4. For BRE scripts that need `\(`, `\)`, `\{`, `\}`, `\?`, put the script in a file and use `-f`.
+
+```nu
+# ❌ bare braces vanish → sed sees s/[0-9]4/2026/
+"2024" | sed -E 's/[0-9]{4}/2026/'
+# → 202026
+
+# ✅ escaped braces arrive as {4}
+"2024" | sed -E 's/[0-9]\{4\}/2026/'
+# → 2026
+
+# ❌ \ and [ are stripped → [ERROR] becomes a character class and every line matches
+sed -E -n '/\[ERROR\]|\[WARN\]/p' ~/.agents/demo/sed/logs/app.log
+
+# ✅ double the backslash before literal brackets
+sed -E -n '/\\[(ERROR|WARN)\\]/p' ~/.agents/demo/sed/logs/app.log
+# → 2024-01-01 10:01:00 [ERROR] Connection refused
+#   2024-01-01 10:02:00 [WARN] High memory usage
+#   2024-01-01 10:04:00 [ERROR] Timeout
 ```
 
-This only affects consecutive backslashes. Single backslash patterns (`\n`, `\t`, `\+`, `\(`, `\1`) work normally because they're already a single backslash in the sed script.
+### Literal Backslash in Patterns
+
+`nu` single quotes are fully literal, so write exactly what sed needs: `\\` matches a literal backslash. Use single quotes for Windows paths too (`\U` is an invalid escape in nu double quotes).
+
+```nu
+# ✅ two backslashes in the script = one literal backslash in sed
+'C:\Users\me' | sed 's|\\|/|g'
+# → C:/Users/me
+```
+
+### Prefer Single Quotes for sed Scripts
+
+`nu` single quotes do no escaping or interpolation. Double quotes process escape sequences (`\n`, `\t`, `\0`) and reject unknown ones (`\1`, `\2`, `\U`). Interpolated strings (`$"..."`) evaluate `(expr)`; use them deliberately, not for sed scripts. There is no `!` history expansion in `nu`.
+
+```nu
+# ❌ double quotes reject \2
+"foo bar" | sed -E "s/(foo) (bar)/\2 \1/"
+# → nu::parser::error: unrecognized escape sequence '\2'
+
+# ✅ single quotes
+"foo bar" | sed -E 's/(foo) (bar)/\2 \1/'
+# → bar foo
+```
 
 ### CRLF Handling
 
 By default, GNU sed treats `\r\n` line endings: it strips the `\r` on input and adds it back on output (if the input had CRLF). This means patterns won't match `\r` unless you use `-b`:
 
-```bash
+```nu
 # Default: \r is stripped
-printf 'hello\r\n' | sed 's/hello/HELLO/' | od -c
-# → HELLO\n  (no \r)
+"hello\r\n" | sed 's/hello/HELLO/' | sed -n 'l'
+# → HELLO$
 
 # Binary mode: \r is preserved
-printf 'hello\r\n' | sed -b 's/hello/HELLO/' | od -c
-# → HELLO\r\n
+"hello\r\n" | sed -b 's/hello/HELLO/' | sed -b -n 'l'
+# → HELLO\r$
 ```
 
 For Windows text files with CRLF endings, the default behavior is usually what you want. Use `-b` when you need to match or preserve `\r` literally.
-
-### Macros in Double Quotes
-
-The shell expands `$VAR` and backticks inside double quotes. Prefer single quotes for sed scripts:
-
-```bash
-# ❌ Shell expands $100 to 00 before sed runs
-echo "price: $100" | sed "s/\$100/USD 100/"
-# → price: 00
-
-# ✅ Single quotes prevent expansion
-echo 'price: $100' | sed 's/\$100/USD 100/'
-# → price: USD 100
-```
-
-Also use single quotes around `!` in patterns to prevent history expansion in bash.
 
 ### `-i` on Symlinks
 
@@ -514,8 +548,8 @@ GNU sed adds many extensions. To restrict to POSIX-compliant features, use `--po
 
 The `s/pattern/replacement/p` flag prints the line _only if the substitution was made_, unlike `p` command which always prints:
 
-```bash
-echo -e "foo\nbar\nfoo" | sed -n 's/foo/XXX/p'
+```nu
+"foo\nbar\nfoo" | sed -n 's/foo/XXX/p'
 # → XXX
 #   XXX
 # (bar is not printed because no substitution occurred on that line)
