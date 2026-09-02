@@ -8,51 +8,89 @@ disable-model-invocation: false
 
 `awk` v5.4.0 (GNU). Present in the MSYS2/Git Bash environment. Use for field-based text processing, filtering by pattern or condition, computing sums/averages/counts, and transforming structured data.
 
-All examples use files from `$HOME/.agents/demo/awk/`. cd there to run them.
+All examples use files from `~/.agents/demo/awk/`. cd there to run them:
 
-## ⚠️ Windows/MSYS2 Quirks
+```nu
+cd ~/.agents/demo/awk
+```
+
+## ⚠️ Windows/MSYS2/Nushell Quirks
 
 ### Backslashes in awk programs
 
-MSYS2, bash, and awk each process backslashes, creating multi-level escaping that depends on context (single quotes, double quotes, regex, strings). **The universal fix: use forward slashes in paths.**
+MSYS2, nu, and awk each process backslashes, creating multi-level escaping that depends on context (single quotes, double quotes, regex, strings). **The universal fix: use forward slashes in paths.**
 
-```bash
+```nu
 # ✅ Forward slashes — zero escaping issues
 awk '{print FILENAME}' ./names.txt
+```
 
-# If your data contains backslashes, prefer a script file (-f) to avoid shell escaping.
-# Use printf with octal to bypass shell backslash processing:
-printf '/C:\134\134Program Files/\n' > pattern.awk
+If your data contains backslashes, prefer a script file (`-f`) to avoid shell escaping. Write the pattern file from nu with `save --raw` using a single-quoted string (single-quoted nu strings are raw — no escape processing):
+
+```nu
+'/C:\\Program Files\\/' | save --raw pattern.awk
 awk -f pattern.awk paths.txt
 ```
 
-If you see `warning: escape sequence \X treated as plain X`, you have a backslash count mismatch. Common causes: `echo` reduces `\\` to `\` even in single quotes; `printf` needs either `\134\134` (octal) or `\\\\` (8 backslashes) to produce `\\` in the file. Prefer forward slashes or `printf` with octal.
+If you see `warning: escape sequence \X treated as plain X`, you have a backslash count mismatch. In nu, single-quoted strings are raw (backslashes stay literal) while double-quoted strings interpret `\n`, `\t`, `\\`, etc. Prefer forward slashes or `save --raw` with a single-quoted string.
 
 ### Single quotes inside the awk program
 
-Bash single-quote escaping is awkward. Two approaches:
+nu has no bash-style `'\''` trick inside single-quoted strings, and nu mangles single-quote characters in arguments passed to external commands. Use awk's octal escape `"\047"` to print a literal single quote:
 
-```bash
-# Approach 1: End quote, escaped quote, resume quote
-awk '{print "'\''" $1 "'\''"}' names.txt
+```nu
+# ✅ Works in nu — single quote via awk octal escape
+awk '{print "\047" $1 "\047"}' names.txt
 # Output: 'Alice'
-
-# Approach 2: Use -v to pass the quote character
-awk -v q="'" '{print q $1 q}' names.txt
 ```
+
+Do not try the bash idiom `awk -v q="'" ...` in nu; the `'` does not survive nu's external-command argument handling.
 
 ### `!` inside awk programs
 
-`!` inside single-quoted awk programs is safe — bash history expansion only applies to unquoted `!`. No special escaping needed:
+`!` inside single-quoted awk programs is safe in nu — there is no history expansion, and a single-quoted string is literal:
 
-```bash
+```nu
 # Safe — single-quoted, no history expansion
-awk '!seen[$0]++' file.txt
+awk '!seen[$0]++' dups.txt
 ```
+
+### Passing nu variables into awk
+
+nu only interpolates inside double-quoted strings, and a quote character in the middle of a bare token is literal (not a string delimiter). Build the `-v` assignment as a single interpolated string:
+
+```nu
+let threshold = 28
+awk -v $"t=($threshold)" '$2 > t' names.txt
+```
+
+```nu
+# ❌ Not interpolated — awk receives the literal text q=$threshold
+let threshold = 28
+awk -v q=$threshold '$2 > q' names.txt
+
+# ✅ Interpolated
+let threshold = 28
+awk -v $"t=($threshold)" '$2 > t' names.txt
+```
+
+### `-F` values with spaces or brackets
+
+Put a space between `-F` and its value when the value contains spaces or `[`:
+
+```nu
+# ✅ Space before the value
+awk -F '[ ,]' '{print $1, $3}' scores.csv
+
+# ❌ Attached quoted value reaches awk with the quotes, so it does not split as intended
+awk -F'[ ,]' '{print $1, $3}' scores.csv
+```
+
+A plain attached separator such as `-F,` is fine; only quoted/space/bracket values need the space.
 
 ## Basic Usage
 
-```bash
+```nu
 # Print specific fields (default FS is whitespace)
 awk '{print $1, $3}' names.txt
 
@@ -65,9 +103,9 @@ awk '$2 > 28 {print $1, $2}' names.txt
 # Use a different field separator
 awk -F, '{print $1, $3}' scores.csv
 
-# Pass a shell variable into awk
-threshold=28
-awk -v t="$threshold" '$2 > t' names.txt
+# Pass a nu variable into awk
+let threshold = 28
+awk -v $"t=($threshold)" '$2 > t' names.txt
 
 # BEGIN and END blocks
 awk 'BEGIN {print "---start---"} {print $0} END {print "---end---"}' names.txt
@@ -75,7 +113,7 @@ awk 'BEGIN {print "---start---"} {print $0} END {print "---end---"}' names.txt
 
 ## Built-in Variables
 
-```bash
+```nu
 # NF — number of fields on the current line
 awk '{print NF, $0}' names.txt
 
@@ -95,12 +133,12 @@ awk 'BEGIN {OFS=":"} {print $1, $2, $3}' names.txt
 awk 'BEGIN {ORS="|"} {print $1}' names.txt
 
 # FS — input field separator, can be a regex
-awk -F'[ ,]' '{print $1, $3}' scores.csv
+awk -F '[ ,]' '{print $1, $3}' scores.csv
 ```
 
 ## Field Operations
 
-```bash
+```nu
 # Conditional field extraction
 awk '$3 == "Engineer" {print $1}' names.txt
 
@@ -121,7 +159,7 @@ awk '/Bob/,/David/' names.txt
 
 ## Aggregation & Math
 
-```bash
+```nu
 # Sum a column
 awk '{sum += $2} END {print sum}' names.txt
 
@@ -140,7 +178,7 @@ awk '$2 > max {max = $2; name = $1} END {print name, max}' names.txt
 
 ## String Functions
 
-```bash
+```nu
 # toupper / tolower
 awk '{print toupper($1)}' names.txt
 
@@ -168,7 +206,7 @@ awk '{print sprintf("%s (%d)", $1, $2)}' names.txt
 
 ## Formatted Output (printf)
 
-```bash
+```nu
 # Column-aligned output
 awk '{printf "%-10s %3d\n", $1, $2}' names.txt
 
@@ -178,7 +216,7 @@ awk -F, '{printf "\"%s\",\"%s\"\n", $1, $3}' scores.csv
 
 ## Deduplication & Counting
 
-```bash
+```nu
 # Print unique lines (first occurrence only)
 awk '!seen[$0]++' dups.txt
 
@@ -191,7 +229,7 @@ awk '{arr[$2] = $1} END {n = asorti(arr, dest); for (i = 1; i <= n; i++) print d
 
 ## Flow Control
 
-```bash
+```nu
 # if / else
 awk '{if ($2 >= 30) print $1, "senior"; else print $1, "junior"}' names.txt
 
@@ -210,7 +248,7 @@ awk 'BEGIN {for (i = 1; i <= 5; i++) print i}'
 
 ## Array Operations
 
-```bash
+```nu
 # Check if key exists in array
 awk 'BEGIN {a["Alice"] = 1; print ("Alice" in a)}'
 
@@ -223,12 +261,12 @@ awk '{count[$3]++} END {for (role in count) print role, count[role]}' names.txt
 
 ## Input Sources
 
-```bash
+```nu
 # Pipe input
-echo "hello world" | awk '{print $2, $1}'
+"hello world" | awk '{print $2, $1}'
 
 # Redirect file via stdin
-awk '{print NR": "$0}' < names.txt
+open names.txt | awk '{print NR": "$0}'
 
 # Multiple input files
 awk '{print FILENAME": "$0}' names.txt dups.txt
@@ -237,12 +275,12 @@ awk '{print FILENAME": "$0}' names.txt dups.txt
 awk 'NF > 0' file.txt
 
 # Multi-character record separator
-printf 'a##b##c\n' | awk 'BEGIN {RS = "##"} {print $0}'
+"a##b##c\n" | awk 'BEGIN {RS = "##"} {print $0}'
 ```
 
 ## Advanced
 
-```bash
+```nu
 # Case-insensitive matching
 awk 'BEGIN {IGNORECASE = 1} /alice/' names.txt
 
@@ -261,9 +299,9 @@ awk -e '{print $1}' -e '{print $2}' names.txt
 
 ## Common Recipes
 
-```bash
+```nu
 # Extract column N from whitespace-separated file
-awk '{print $3}' file.txt
+awk '{print $3}' names.txt
 
 # Extract column N from CSV
 awk -F, '{print $2}' file.csv
@@ -279,27 +317,27 @@ awk 'END {print NR}' file.txt
 awk '{sum += $2} END {print sum}' file.txt
 
 # Print lines between START and END markers
-awk '/START/,/END/' file.txt
+awk '/START/,/END/' multiline.txt
 
 # Remove duplicate lines while preserving order
-awk '!seen[$0]++' file.txt
+awk '!seen[$0]++' dups.txt
 
 # CSV to TSV conversion
 awk -F, 'BEGIN {OFS = "\t"} {$1 = $1; print}' file.csv
 
 # Extract unique values from a column
-awk '{print $1}' file.txt | awk '!seen[$0]++'
+awk '{print $1}' dups.txt | awk '!seen[$0]++'
 
 # Format numbers with thousands separator
-awk '{printf "%'\''d\n", $1}' file.txt
+awk '{printf "%\047d\n", $1}' big.txt
 ```
 
 ## Notes
 
-- Default field separator is whitespace (spaces and tabs); use `-F,` for CSV, `-F'\t'` for TSV.
+- Default field separator is whitespace (spaces and tabs); use `-F,` for CSV, `-F '\t'` for TSV.
 - `$0` is the entire line; `$1` through `$NF` are individual fields.
 - `{print}` with no arguments prints `$0` (the whole line).
-- `-v` variables are set before `BEGIN` executes; shell variable interpolation works: `awk -v t="$var"`.
+- `-v` variables are set before `BEGIN` executes; pass nu variables with an interpolated string: `awk -v $"t=($threshold)" ...`.
 - **Do NOT use `$var` to reference fields** — `$i` works when `i` is a number variable, but for clarity prefer explicit field numbers when possible.
 - For complex multi-line programs, prefer a script file: `awk -f script.awk file.txt`.
 - On MSYS2, prefer forward slashes in paths to avoid backslash escaping headaches (see Quirks section above).
