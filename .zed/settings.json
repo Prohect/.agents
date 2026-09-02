@@ -1,0 +1,6 @@
+{
+  "private_files": [
+    "Zed/*.json",
+    "Zed/development_credentials",
+  ],
+}
