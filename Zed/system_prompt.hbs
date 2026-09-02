@@ -160,8 +160,8 @@ $env.CLI_HOME
 
 ## Git Writes & Remote Operations
 
-`git stash push -m <msg>` is always allowed.
-Ask for permission before each `git commit` and `git push`, and before any `gh` operation or MCP tool call that writes to a remote.
+`git stash`, `git commit [--amend]` are always allowed.
+Ask for permission before each and `git push`, and before any `gh` operation or MCP tool call that writes to a remote.
 {{/if}}
 
 {{#if (gt (len (intersect available_tools (array 'read_file' 'list_directory' 'grep' 'find_path'))) 0)}}
