@@ -148,13 +148,16 @@ print (pwd); git --no-pager branch --show-current; print " "; git --no-pager bra
 Then call `list_directory` on the project root to see the top-level structure.
 {{/if}}
 {{#if (and is_windows (contains available_tools 'skill'))}}
-If the project seems to have some directories, load the `es` Skill.
+### es: `Error 8: Everything IPC window not found`
+```nu
+schtasks /run /tn everything
+```
 {{/if}}
 {{/if}}
 
 {{#if (contains available_tools 'terminal')}}
 {{#if is_windows}}
-## CLI_HOME
+## CLI_HOME is where you should deploy CLI tools, not belonging to `C:\` surviving OS clean install
 $env.CLI_HOME
 {{/if}}
 
