@@ -139,11 +139,12 @@ If there is a task you want OR an obvious follow-up task the maintainer may want
 {{#if (and (contains available_tools 'terminal') (gt (len (intersect available_tools (array 'list_directory' 'read_file' 'grep' 'find_path'))) 0))}}
 ## Session Start
 
-Always start with this to know where you are:
+Always start with these to get shell context:
 
 ```nu
-print (pwd); git --no-pager branch --show-current; print " "; git --no-pager branch --sort=-committerdate | lines | first 16 | to text
+pwd; git --no-pager branch --show-current; git --no-pager branch --sort=-committerdate | lines | first 8 | to text ; help commands | where command_type !~ built-in and command_type !~ keyword | reject params input_output search_terms is_const | to text
 ```
+
 {{#if (contains available_tools 'list_directory')}}
 Then call `list_directory` on the project root to see the top-level structure.
 {{/if}}
