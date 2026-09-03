@@ -1,10 +1,10 @@
 ---
 name: sed
-description: Use `terminal` sed (GNU v4.9) for stream editing — substitution, deletion, insertion, regex text transformation on files or pipelines. Use when you need to find-and-replace, extract, filter, or transform text in a repeatable, scriptable way.
+description: Use `terminal` sed (GNU v4.9) for stream editing -- substitution, deletion, insertion, regex text transformation on files or pipelines. Use when you need to find-and-replace, extract, filter, or transform text in a repeatable, scriptable way.
 disable-model-invocation: false
 ---
 
-# sed — Stream Editor
+# sed -- Stream Editor
 
 GNU sed v4.9. A non-interactive stream editor for filtering and transforming text. Reads input line by line, applies commands, and prints the result. Use it for substitution, deletion, insertion, extraction, and any regex-driven text manipulation in files or pipelines.
 
@@ -157,7 +157,7 @@ GNU sed supports two regex dialects. The `-E` flag enables Extended Regular Expr
 ### Common Regex Patterns
 
 ```nu
-# Backreferences — swap two words
+# Backreferences -- swap two words
 "foo bar" | sed -E 's/(foo) (bar)/\2 \1/'
 # → bar foo
 
@@ -301,7 +301,7 @@ sed -i -s '1s/Error/ISSUE/' file1.log file2.log
 # With -s: line 1 means first line of each file separately
 ```
 
-⚠️ **`-i` overwrites files.** Always preview with `sed ... file | lines | first` first, or use `-i.bak` for a safety net. The commands above modify the demo file — run them on a copy if you want to keep the fixtures pristine.
+⚠️ **`-i` overwrites files.** Always preview with `sed ... file | lines | first` first, or use `-i.bak` for a safety net. The commands above modify the demo file -- run them on a copy if you want to keep the fixtures pristine.
 
 ## Multiple Expressions
 
@@ -374,7 +374,7 @@ sed '=' ~/.agents/demo/sed/numbers.txt | sed 'N; s/\n/\t/'
 
 ## The `l` Command (Visual Debugging)
 
-Shows non-printable characters in a line — tabs as `\t`, line ends as `$`:
+Shows non-printable characters in a line -- tabs as `\t`, line ends as `$`:
 
 ```nu
 "hello\tworld" | sed -n 'l'
@@ -481,8 +481,8 @@ sed -n '/\\[server\\]/,/^\\[/p' ~/.agents/demo/sed/config/settings.ini | sed '$d
 **Workarounds, in order of preference:**
 
 1. Use `-E` (ERE) so `+`, `?`, `|`, `(`, `)` need no backslashes.
-2. For ERE `{n,m}` intervals, escape the braces — `\{4\}` arrives as `{4}`.
-3. For a literal `[`/`]` in a pattern, double the backslash — `\\[` arrives as `\[`.
+2. For ERE `{n,m}` intervals, escape the braces -- `\{4\}` arrives as `{4}`.
+3. For a literal `[`/`]` in a pattern, double the backslash -- `\\[` arrives as `\[`.
 4. For BRE scripts that need `\(`, `\)`, `\{`, `\}`, `\?`, put the script in a file and use `-f`.
 
 ```nu

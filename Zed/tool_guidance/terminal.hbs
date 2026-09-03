@@ -1,4 +1,4 @@
-{{!-- Commented sections below document this tool's fixed API contract — already
+{{!-- Commented sections below document this tool's fixed API contract -- already
 sent with the tool's schema and stripped from the prompt. Keep the guidance
 consistent with them. --}}
 
@@ -39,7 +39,7 @@ The terminal is an interactive pty, so any command that blocks waiting for input
 
 {{#if (gt (len (intersect available_tools (array 'read_file' 'grep' 'find_path'))) 0)}}
 Never use this tool to find/read/edit a file unless the native file tools cannot cover it (error or scope limitation).
-Never use this tool to find/read/edit a file unless the native file tools cannot cover it (error or scope limitation) — prefer native tools over their `terminal` counterparts when searching for file contents.
+Never use this tool to find/read/edit a file unless the native file tools cannot cover it (error or scope limitation) -- prefer native tools over their `terminal` counterparts when searching for file contents.
 {{/if}}
 {{#if (contains available_tools 'skill')}}
 While using this tool to run a CLI tool, load that tool's Skill if one is available.
@@ -49,9 +49,9 @@ Ask the user for the path to a specific CLI tool when a call fails with `command
 
 `rg`, `es`, `open`, and nu's `ls`/`find` via this tool can reach anywhere on the filesystem; they respect neither `gitignore` nor `.zed/settings.json`.
 {{#if is_windows}}
-- Never create or redirect to a file named `nul`, `con`, `prn`, `aux`, `com1`-`com9`, or `lpt1`-`lpt9` — these are Windows reserved names.
+- Never create or redirect to a file named `nul`, `con`, `prn`, `aux`, `com1`-`com9`, or `lpt1`-`lpt9` -- these are Windows reserved names.
 - In `nu`, `\` inside a double-quoted string is an escape character, you may prefer single-quoted string e.g. `'C:\Program Files\Git\usr\bin'` or raw string e.g. `r#'C:\Program Files\Git\usr\bin'#`(delimiter hash characters > 0) for static args.
-- Use `es` (Everything Search) instead of `ls` for filename/path search — it reaches anywhere, fast.{{!-- ##### why: `ls` is slow on large file trees and needs recursive calls. ##### --}} Reach for `es` first when you need to search a repo not in `$env.PWD`.
+- Use `es` (Everything Search) instead of `ls` for filename/path search -- it reaches anywhere, fast.{{!-- ##### why: `ls` is slow on large file trees and needs recursive calls. ##### --}} Reach for `es` first when you need to search a repo not in `$env.PWD`.
 {{/if}}
 
 Never hardcode a long `sleep <n>`. Poll with a bounded 1s-interval loop instead:{{!-- ##### why: the wait ends the moment the condition is true ##### --}}

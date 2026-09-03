@@ -53,7 +53,7 @@ inline, `union` (list1, list2), `intersect` (list1, list2), `differ` (list1, lis
 
 Partials (imports):
 Every other `*.hbs` file under this directory (recursively) is inplace-appendable by
-its relative path without the extension, `/`-separated on every platform —
+its relative path without the extension, `/`-separated on every platform --
 `partials/style.hbs` → `{{> partials/style}}`. Use `/` even on Windows:
 `\` is the template escape character and cannot appear in a partial name.
 ######################################################################################
@@ -103,7 +103,7 @@ You can call multiple tools in a single response. Maximize use of parallel tool 
 #### Paths in Builtin Tools
 These tools [{{join (intersect available_tools (array "apply_code_action" "copy_path" "create_directory" "delete_path" "diagnostics" "edit_file" "find_path" "find_references" "get_code_actions" "go_to_definition" "grep" "list_directory" "move_path" "read_file" "rename_symbol" "write_file")) ", "}}]
 respect file-scan semantics, and resolve `path`/`glob` against workspace which supports multiple root directories.
-Always include the root name to disambiguate when using those tools. 
+Always include the root name to disambiguate when using those tools.
 
 Globs are matched against paths that include the root directory name, so disambiguate recursive `**` glob specified to certain path too.
 `project/src/**/*.rs` might matches, while `src/**/*.rs` might matches nothing without erroring or warning.
@@ -191,7 +191,7 @@ You have access to the following Skills - modular capabilities that provide spec
 {{!--
   `name` and `description` use `{{...}}` and are HTML-escaped as defense in
   depth. `location` uses `{{{...}}}` (no escaping) because it's a filesystem
-  path the model mimght pass back to `read_file` verbatim — escaping characters
+  path the model mimght pass back to `read_file` verbatim -- escaping characters
   like `&` or `<` would corrupt the path and break the lookup.
 --}}
 <available_skills>

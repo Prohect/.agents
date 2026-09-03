@@ -1,10 +1,10 @@
 ---
 name: gh
-description: Use `terminal` gh (v2.95.0) for GitHub operations — repo management, PRs, issues, releases, and visibility changes.Prefer native MCP tools! Prefer native MCP tools when the user asks about GitHub repos, pull requests, issues, or repo settings unless no available native MCP tool support the requested operation.
+description: Use `terminal` gh (v2.95.0) for GitHub operations -- repo management, PRs, issues, releases, and visibility changes.Prefer native MCP tools! Prefer native MCP tools when the user asks about GitHub repos, pull requests, issues, or repo settings unless no available native MCP tool support the requested operation.
 disable-model-invocation: false
 ---
 
-# gh — GitHub CLI
+# gh -- GitHub CLI
 
 `gh` v2.95.0 is installed and authenticated. Use it for GitHub operations that need repo-level access.
 
@@ -83,7 +83,7 @@ gh auth token                   # Get token (for API use)
 
 ## Notes
 
-- `gh` uses the same auth as git — no separate login needed once authenticated.
+- `gh` uses the same auth as git -- no separate login needed once authenticated.
 - Prefer `--json` output for scripting; it parses cleanly.
 - For PR/issue-heavy workflows, `gh` is faster than the GitHub API tools.
-- Token has `repo` scope — can read/write private repos.
+- Token has `repo` scope -- can read/write private repos.

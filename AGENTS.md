@@ -21,7 +21,7 @@ This makes results **deterministic and reproducible**.
 
 ### 2. Test every example before writing it
 
-No guessed syntax. Run each command against the demo directory, capture the actual output, and use that as the documented expected output. If something behaves unexpectedly, investigate and document it — don't paper over it.
+No guessed syntax. Run each command against the demo directory, capture the actual output, and use that as the documented expected output. If something behaves unexpectedly, investigate and document it -- don't paper over it.
 
 ### 3. Watch shell vs tool syntax conflicts
 
@@ -34,7 +34,7 @@ No guessed syntax. Run each command against the demo directory, capture the actu
 
 A plain code block shows the syntax exactly as the user would type it.
 
-### 5. Verify independently — spawn a sub-agent
+### 5. Verify independently -- spawn a sub-agent
 
 After writing the skill, spawn a sub-agent to load the skill fresh and run **every single code block** against the demo directory. Fresh eyes catch errors you've become blind to. Report pass/fail for each example and suggest fixes.
 

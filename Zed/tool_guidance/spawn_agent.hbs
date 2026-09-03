@@ -1,57 +1,47 @@
-{{!-- Commented sections below document this tool's fixed API contract — already
+{{!-- Commented sections below document this tool's fixed API contract -- already
 sent with the tool's schema and stripped from the prompt. Keep the guidance
 consistent with them. --}}
 {{!--
 Spawn a sub-agent for a well-scoped task.
 --}}
 
-A sub-agent starts with a clean context — none of this conversation's history. When your context has grown heavy with information useless to a specific task, delegate that task: fresh context means better focus and fewer tokens on both sides. Include everything the agent needs (file paths, requirements, constraints) in the message; it sees nothing else.
+A sub-agent starts with a clean context -- none of this session's history.
+When your context has grown heavy with information useless to a specific task, delegate that task: fresh context means better focus and fewer tokens on both sides.
+Sub-agent sees nothing except system prompt, tools (schema, guidance), and your spawn message.
+Thus do NOT include what system prompt or tools already covers in your spawn message.
 
 ### Designing delegated subtasks
-- Subtasks must be concrete, well-defined, and self-contained, and must materially advance the main task.
-- Do not use this tool for tasks you could accomplish directly with one or two tool calls. For example, don't ask the agent to read a single file and return the contents, you can do this yourself.
-- Do not duplicate work between your work and delegated subtasks; focus on coordinating and synthesizing results.
-- Avoid issuing multiple delegate calls for the same unresolved subproblem unless the new delegated task is genuinely different and necessary.
-- Narrow the delegated ask to the concrete output you need next.
+- Do not use this tool for tasks you could accomplish directly with one or two tool calls. For example, don't ask one to read a single file and return it RAW contents, do it yourself.
+- Do not duplicate work between your work and their subtasks.
+- Narrow the finnal summary from one to the output you care.
 - For code-edit subtasks, decompose work so each delegated task has a disjoint write set.
-- When sending a follow-up using an existing agent session_id, send only a short, direct message — the agent already has the context from the previous turn. Do NOT repeat the original task or context.
+- When distributing a follow-up subtask using an existing agent session_id, send only direct message -- the agent already has the context from the previous turn. Do NOT repeat the original task or context.
 
 ### Parallel delegation patterns
 - Run multiple independent information-seeking subtasks in parallel when you have distinct questions that can be answered independently.
 - Split implementation into disjoint codebase slices and spawn multiple agents for them in parallel when the write scopes do not overlap.
 - When a plan has multiple independent steps, prefer delegating those steps in parallel rather than serializing them unnecessarily.
 - Reuse the returned session_id when you want to follow up on the same delegated subproblem instead of creating a duplicate session.
-- Never run parallel sub-agents that write to the same working directory — whether targeting different git branches or sharing intersecting edit trees: they are unpredictable and unreliable, race on checkout, stomp each other's staged changes, and can leave the repo in an unrecoverable state (detached HEAD, lost stashes, merge-conflict artifacts).
+- Never run parallel sub-agents that write to working directories with non-empty intersection -- whether targeting different git branches or sharing intersecting edit trees: they are unpredictable and unreliable, race on checkout, stomp each other's staged changes, and can leave the repo in an unrecoverable state (detached HEAD, lost stashes, merge-conflict artifacts).
 
 ### Restricting subagent tools
 {{!--
-- By default a subagent inherits all of your tools. Pass `tools` to restrict it to an allowlist — for example read-only tools like ["read_file", "grep", "find_path"] for a search task, or an empty list for a pure reasoning task over content in the message.
+- By default a subagent inherits all of your tools. Pass `tools` to restrict it to an allowlist -- for example read-only tools like ["read_file", "grep", "find_path"] for a search task, or an empty list for a pure reasoning task over content in the message.
 --}}
 - A scoped allowlist keeps focused subtasks from performing side effects you did not intend.
 
-### E2E / pure-context probes
-{{!--
-##### why: tool access != capability or role; a probe's role comes entirely
-##### from its spawn message, so the message must say explicitly that it is a
-##### test subject. MCP-only probes reveal real API usage instead of guessed
-##### contracts.
---}}
-A scoped allowlist doubles as a controlled test subject: spawn an agent with only the tools under test — built-in, MCP, or a mix — and define its role in the spawn message (a probe granted `write_file` or an MCP write API is a test subject, not a coding agent; say so).
+A scoped allowlist doubles as a controlled test subject: spawn an agent with only the tools under test -- built-in, MCP, or a mix -- and define its role in the spawn message (an agent granted `write_file` or an MCP write API is a test subject, not a coding agent; say so).
 
-Use cases:
-- Prompt/context introspection: report which system-prompt sections and tool guidance a given tool set actually receives, verbatim.
-- MCP API E2E: an agent with only one server's tools exercises that API end-to-end.
+Quirk: sub-agents are never granted `spawn_agent` themselves (no nested spawning) -- it is stripped even when listed in `tools`.
 
-Quirk: sub-agents are never granted `spawn_agent` themselves (no nested spawning) — it is stripped even when listed in `tools`.{{!-- ##### why: verified empirically via a live probe ##### --}}
-
-Mid-turn communication protocol:
-- Name a report channel in the spawn message: a file path (grant `write_file`) or an MCP write API the probe can call.
-- Watch the channel from your side with NON-BLOCKING calls.{{!-- ##### why: so you can steer while waiting ##### --}} For a file, a `terminal` polling call:
+A example design of mid-turn communication protocol:
+- Name a report channel in the spawn message: a file path (grant `write_file`) or an MCP write API the agent can call.
+- Watch the channel from your side with NON-BLOCKING calls. For a file, a `terminal` polling call:
   ```nu
-  let report = "probe_report.md"; for i in 1..60 { if ($report | path exists) and ((ls -s $report | first | get size) > 0b) { print (open --raw $report | decode utf-8); break }; sleep 1sec }
+  let report = 'report.md'; for i in 1..240 { if ($report | path exists) and ((ls -s $report | first | get size) > 0b) { print (open --raw $report | decode utf-8); break }; sleep 1sec }
   ```
-  For an MCP channel, poll the corresponding read API directly.
-- Steer mid-turn by sending a follow-up message on the probe's session_id; it is incorporated at the probe's next reasoning boundary.
+  For an MCP channel, poll the corresponding read API directly if possible and no-side-effecting.
+- Steer mid-turn by sending a follow-up message on the agent's session_id; it is incorporated at the one's next reasoning boundary.
 
 {{!--
 ### Output

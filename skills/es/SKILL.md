@@ -1,12 +1,12 @@
 ---
 name: es
-description: Use `terminal` es (Everything Search v1.1.0.30) for instant filename/path search on Windows. Use when you need to find files/directories by name, extension, path pattern, or sort by size/date — orders of magnitude faster than `find` or recursive `ls`.
+description: Use `terminal` es (Everything Search v1.1.0.30) for instant filename/path search on Windows. Use when you need to find files/directories by name, extension, path pattern, or sort by size/date -- orders of magnitude faster than `find` or recursive `ls`.
 disable-model-invocation: false
 ---
 
-# es — Everything Search CLI
+# es -- Everything Search CLI
 
-`es.exe` v1.1.0.30, the command-line interface to Voidtools Everything. Searches filenames and paths via the Everything index — instant results, even across the entire filesystem. Use it whenever you need to locate files or directories by name, extension, or path pattern.
+`es.exe` v1.1.0.30, the command-line interface to Voidtools Everything. Searches filenames and paths via the Everything index -- instant results, even across the entire filesystem. Use it whenever you need to locate files or directories by name, extension, or path pattern.
 
 ## Quick Reference
 
@@ -48,10 +48,10 @@ es -path "$HOME/.agents/demo/es" -p "test"
 ## Filtering: Files vs Folders
 
 ```bash
-# Files only — add `file:` to the search
+# Files only -- add `file:` to the search
 es -path "$HOME/.agents/demo/es" file:
 
-# Folders only — add `folder:` to the search
+# Folders only -- add `folder:` to the search
 es -path "$HOME/.agents/demo/es" folder:
 
 # Combine with other filters
@@ -69,7 +69,7 @@ The `!` prefix negates a search term. Use Everything's function syntax for preci
 # Exclude anything with ".git" in the path
 es -path "$HOME/.agents/demo/es" '!path:git'
 
-# Exclude multiple patterns — chain ! terms
+# Exclude multiple patterns -- chain ! terms
 es -path "$HOME/proj" '!path:git' '!path:node_modules' '!path:target'
 
 # Exclude hidden files
@@ -138,7 +138,7 @@ es -path "$HOME/.agents/demo/es" -size -size-format 2 -sort-size-descending -n 2
 
 ```
 a|b          Match a or b
-gr(a|e)y     Group with alternation — matches gray or grey
+gr(a|e)y     Group with alternation -- matches gray or grey
 .            Match any single character
 [abc]        Match a single character a, b or c
 [^abc]       Match any single character except a, b, c
@@ -157,7 +157,7 @@ $            Match the end of the filename
 {x,}         Match the preceding element x or more times
 {x,y}        Match the preceding element between x and y times
 \            Escape special character
-\Q...\E      Literal sequence — treat everything between as literal chars
+\Q...\E      Literal sequence -- treat everything between as literal chars
 \a           Alarm, the BEL character (hex 07)
 \cx          "Control-x", where x is any ASCII character
 \e           Escape (hex 1B)
@@ -194,7 +194,7 @@ $            Match the end of the filename
 ### Verified Examples
 
 ```bash
-# Alternation — use | without parentheses
+# Alternation -- use | without parentheses
 es -path "$HOME/.agents/demo/es" -regex "Main|Utils"
 # → src/Main.java, src/main.rs, test/test_main.rs, src/Utils.java
 
@@ -264,7 +264,7 @@ es -path "$HOME/.agents/demo/es" -get-total-size "ext:java"
 ## Paths with Spaces
 
 ```bash
-# Double-quote output — safe for piping to xargs
+# Double-quote output -- safe for piping to xargs
 es -path "$HOME/.agents/demo/es" -double-quote "notes"
 # → "C:\Users\...\demo\es\my notes.txt"
 
@@ -330,4 +330,4 @@ es -reindex; es -path "$HOME\.agents\demo\es" "*.java"
 - **Omit `-n` to return all results.** The default has no upper limit. Use `-n <num>` to cap results. Avoid `-n 0` (it returns zero results).
 - **Combine filters in the search text.** `es -path "..." "ext:java" file: "Main"` finds Java files containing "Main" in the name. Each space-separated token is AND-ed together.
 - **`-s` sorts by full path** (shortcut for `-sort-path-ascending`).
-- **`-no-result-error`** sets a non-zero exit code when no results are found — useful in scripts.
+- **`-no-result-error`** sets a non-zero exit code when no results are found -- useful in scripts.

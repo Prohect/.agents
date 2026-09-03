@@ -1,6 +1,6 @@
 ---
 name: playwright-cli
-description: Use `terminal` playwright-cli for browser interaction — navigate pages, fill forms, click elements, capture snapshots, debug with DevTools and tracing, mock network requests, manage cookies/storage, record video, and scrape content. Use when the user asks to browse the web, test a UI, search the internet, or automate any web interaction.
+description: Use `terminal` playwright-cli for browser interaction -- navigate pages, fill forms, click elements, capture snapshots, debug with DevTools and tracing, mock network requests, manage cookies/storage, record video, and scrape content. Use when the user asks to browse the web, test a UI, search the internet, or automate any web interaction.
 disable-model-invocation: false
 ---
 
@@ -21,7 +21,7 @@ playwright-cli -s=bg type "page.click"
 playwright-cli -s=bg press Enter
 # take a screenshot (rarely used, as snapshot is more common)
 playwright-cli -s=bg screenshot
-# do NOT close headed sessions — leave the window open
+# do NOT close headed sessions -- leave the window open
 ```
 
 ## Commands
@@ -169,7 +169,7 @@ playwright-cli video-stop
 playwright-cli video-show-actions --duration=600 --position=top-right
 playwright-cli video-hide-actions
 
-# launch the dashboard for UI review / design feedback — user annotates the page, you receive the annotated screenshot, snapshot, and notes
+# launch the dashboard for UI review / design feedback -- user annotates the page, you receive the annotated screenshot, snapshot, and notes
 playwright-cli show --annotate
 
 # generate a Playwright locator for an element from its ref or selector
@@ -255,7 +255,7 @@ playwright-cli --% goto "https://example.com/?a=1&b=2"
 
 After each command, playwright-cli provides a snapshot of the current browser state.
 
-**Snapshots are saved as YAML files under `.playwright-cli/` in the current working directory (project root).** They persist across sessions and can be read with `read_file` to inspect page structure, refs, and element attributes — no need to re-query the live browser for static inspection.
+**Snapshots are saved as YAML files under `.playwright-cli/` in the current working directory (project root).** They persist across sessions and can be read with `read_file` to inspect page structure, refs, and element attributes -- no need to re-query the live browser for static inspection.
 
 ```bash
 > playwright-cli goto https://example.com
@@ -339,7 +339,7 @@ playwright-cli kill-all
 
 When using `--headed`, launching a new browser window steals keyboard/mouse focus (OS behavior). To minimize disruption:
 
-**Check before opening:** always run `playwright-cli list` first. If a headed session already exists, reuse it via `-s=<name>` instead of opening a new one. Only `open` creates a new window — `tab-new`, `goto`, `click`, `type`, etc. operate on the existing window without stealing focus.
+**Check before opening:** always run `playwright-cli list` first. If a headed session already exists, reuse it via `-s=<name>` instead of opening a new one. Only `open` creates a new window -- `tab-new`, `goto`, `click`, `type`, etc. operate on the existing window without stealing focus.
 
 **Never close headed sessions' window.** Do not run `close-all`, or `kill-all` on headed browser sessions. Keep the Chrome window open. This avoids re-triggering the focus grab from a fresh `open`.
 

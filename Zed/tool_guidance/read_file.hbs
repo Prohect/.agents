@@ -1,4 +1,4 @@
-{{!-- Commented sections below document this tool's fixed API contract — already
+{{!-- Commented sections below document this tool's fixed API contract -- already
 sent with the tool's schema and stripped from the prompt. Keep the guidance
 consistent with them. --}}
 {{!--
@@ -11,7 +11,7 @@ Reads the content of the given file in the project.
   Do NOT retry reading the same file without line numbers if you receive an outline.
 - This tool supports reading image files. Supported formats: PNG, JPEG, WebP, GIF, BMP, TIFF.
   Image files are returned as visual content that you can analyze directly.
-- Does not respect `gitignore`; respects `.zed/settings.json::file_scan_exclusions` & `file_scan_inclusions`.
+- Does NOT respect `gitignore`; respects `file_scan_exclusions` & `file_scan_inclusions`.
 
 {{!--
 The only supported path outside the project is `~/.agents/skills` or a descendant, for global agent skills.

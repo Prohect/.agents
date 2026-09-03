@@ -1,10 +1,10 @@
-# .agents — Zed Coding Agent Skills & Rules
+# .agents -- Zed Coding Agent Skills & Rules
 
 A curated collection of [Zed](https://zed.dev) coding agent skills, error references, and project rules. Each skill teaches the agent how to use a specific CLI tool effectively.
 
 ## Quick Deploy
 
-The repo itself is the deploy target — clone it directly into `~/`:
+The repo itself is the deploy target -- clone it directly into `~/`:
 
 ```bash
 git clone https://github.com/Prohect/.agents.git "$HOME/"
@@ -37,18 +37,18 @@ rm -rf "$HOME/.agents-old"
 │   └── AGENTS.md           # Global agent rule, you may override or combine with your old global AGENTS.md
 │                           # Recommand to use directory symlink to keep this one synced with your global AGENTS.md
 ├── skills/                 # Agent skills (one per CLI tool)
-│   ├── awk/                #   GNU awk — text processing
-│   ├── cat/                #   GNU cat — file display
+│   ├── awk/                #   GNU awk -- text processing
+│   ├── cat/                #   GNU cat -- file display
 │   ├── commit-message/     #   Git commit message writing
 │   ├── errors/             #   Tool error reference index
-│   ├── es/                 #   Everything Search — instant file/directory search, only on Windows
+│   ├── es/                 #   Everything Search -- instant file/directory search, only on Windows
 │   ├── gh/                 #   GitHub CLI
-│   ├── grep/               #   GNU grep — content search
-│   ├── ln/                 #   GNU ln + mklink — links & junctions, only on Windows
-│   └── sed/                #   GNU sed — stream editing
+│   ├── grep/               #   GNU grep -- content search
+│   ├── ln/                 #   GNU ln + mklink -- links & junctions, only on Windows
+│   └── sed/                #   GNU sed -- stream editing
 ├── errors/                 # Error solution docs (referenced by errors skill)
 └── demo/                   # Deterministic test fixtures for each skill
-    │                       # Some subdirectories are .gitignored — they reference
+    │                       # Some subdirectories are .gitignored -- they reference
     │                       # local files (crash dumps, browser profiles, etc.)
     │                       # that would leak private data or break on other machines.
     │                       # See each skill's SKILL.md for how to set up your own.
@@ -64,12 +64,12 @@ name: cat
 description: Use GNU cat for reading, concatenating, and displaying files.
 ---
 
-# cat — Concatenate & Display Files
+# cat -- Concatenate & Display Files
 
 ...reference docs, examples, quirks, and edge cases...
 ```
 
-The agent loads a skill when a task matches its description. The SKILL.md teaches the agent the tool's full CLI surface — flags, quirks, platform notes, and worked examples — so it uses the tool correctly on the first try.
+The agent loads a skill when a task matches its description. The SKILL.md teaches the agent the tool's full CLI surface -- flags, quirks, platform notes, and worked examples -- so it uses the tool correctly on the first try.
 
 ## The `errors` Skill
 

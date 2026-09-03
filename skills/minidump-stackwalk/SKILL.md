@@ -1,10 +1,10 @@
 ---
 name: minidump-stackwalk
-description: Use `terminal` minidump-stackwalk (v0.26.1) to analyze Windows minidump (.mdmp) crash files — extract crash reason, backtrace, register state, loaded modules, and thread info in human-readable or JSON format. Use when you need to diagnose a crash dump, triage EXCEPTION_ACCESS_VIOLATION or other crash types, or extract structured crash data for further processing.
+description: Use `terminal` minidump-stackwalk (v0.26.1) to analyze Windows minidump (.mdmp) crash files -- extract crash reason, backtrace, register state, loaded modules, and thread info in human-readable or JSON format. Use when you need to diagnose a crash dump, triage EXCEPTION_ACCESS_VIOLATION or other crash types, or extract structured crash data for further processing.
 disable-model-invocation: true
 ---
 
-# minidump-stackwalk — Minidump Crash Analyzer
+# minidump-stackwalk -- Minidump Crash Analyzer
 
 rust-minidump v0.26.1. A CLI tool that parses Windows minidump (`.mdmp`) files and produces structured crash reports. Outputs human-readable summaries, JSON for programmatic consumption, or raw dumps for debugging the minidump format itself.
 
@@ -69,12 +69,12 @@ minidump-stackwalk --json "$HOME/.agents/demo/minidump-stackwalk/cs2_2026_0703_2
 
 The root object contains:
 
-- `crash_info` — crash type, address, instruction, memory accesses
-- `crashing_thread` — frame array with register state, trust level, module offsets
-- `modules` — all loaded modules with base/end addresses, debug IDs, versions
-- `threads` — all threads (frame arrays, thread IDs, names if available)
-- `system_info` — OS, CPU, CPU count
-- `status` — `"OK"` or error information
+- `crash_info` -- crash type, address, instruction, memory accesses
+- `crashing_thread` -- frame array with register state, trust level, module offsets
+- `modules` -- all loaded modules with base/end addresses, debug IDs, versions
+- `threads` -- all threads (frame arrays, thread IDs, names if available)
+- `system_info` -- OS, CPU, CPU count
+- `status` -- `"OK"` or error information
 
 #### `--pretty`
 
@@ -105,7 +105,7 @@ minidump-stackwalk --cyborg /tmp/crash.json "$HOME/.agents/demo/minidump-stackwa
 
 ### `--dump`
 
-Produces a "raw" dump of the minidump's internal structure — streams, directories, headers. This is primarily for debugging minidump-stackwalk itself or a misbehaving minidump generator.
+Produces a "raw" dump of the minidump's internal structure -- streams, directories, headers. This is primarily for debugging minidump-stackwalk itself or a misbehaving minidump generator.
 
 ```bash
 minidump-stackwalk --dump --brief "$HOME/.agents/demo/minidump-stackwalk/cs2_2026_0703_211823_0_accessviolation.mdmp"
@@ -138,10 +138,10 @@ Memory accessed by instruction:
 
 Common crash reasons:
 
-- `EXCEPTION_ACCESS_VIOLATION_READ` / `EXCEPTION_ACCESS_VIOLATION_WRITE` — null/invalid pointer dereference
-- `EXCEPTION_ILLEGAL_INSTRUCTION` — corrupted code, jumped to data, or unsupported instruction
-- `EXCEPTION_STACK_OVERFLOW` — stack exhaustion
-- `EXCEPTION_BREAKPOINT` — intentional debug break
+- `EXCEPTION_ACCESS_VIOLATION_READ` / `EXCEPTION_ACCESS_VIOLATION_WRITE` -- null/invalid pointer dereference
+- `EXCEPTION_ILLEGAL_INSTRUCTION` -- corrupted code, jumped to data, or unsupported instruction
+- `EXCEPTION_STACK_OVERFLOW` -- stack exhaustion
+- `EXCEPTION_BREAKPOINT` -- intentional debug break
 
 The crash address is the address that was being accessed (for access violations) or the instruction pointer (for illegal instructions).
 
@@ -156,13 +156,13 @@ Each frame in the crashing thread includes:
     Found by: given as instruction pointer in context
 ```
 
-- **Module** + **offset** — the DLL and relative offset within it (e.g., `rendersystemdx11.dll + 0x5ce3b`)
-- **Registers** — values at the time of the crash (frame 0) or as recovered by the unwinder (subsequent frames)
-- **Found by** (trust level) — how the unwinder discovered this frame:
-  - `given as instruction pointer in context` — directly from the CPU context (highest trust)
-  - `call frame info` — from unwind metadata (`.pdata` / `.eh_frame`)
-  - `stack scanning` — heuristically found on the stack (lowest trust, may be false positives)
-  - `frame pointer` — via frame-pointer-based unwinding (EBP/RBP chain)
+- **Module** + **offset** -- the DLL and relative offset within it (e.g., `rendersystemdx11.dll + 0x5ce3b`)
+- **Registers** -- values at the time of the crash (frame 0) or as recovered by the unwinder (subsequent frames)
+- **Found by** (trust level) -- how the unwinder discovered this frame:
+  - `given as instruction pointer in context` -- directly from the CPU context (highest trust)
+  - `call frame info` -- from unwind metadata (`.pdata` / `.eh_frame`)
+  - `stack scanning` -- heuristically found on the stack (lowest trust, may be false positives)
+  - `frame pointer` -- via frame-pointer-based unwinding (EBP/RBP chain)
 
 Without symbols, only module + offset is shown. With symbols, you'd see function names, file paths, and line numbers.
 
@@ -182,10 +182,10 @@ The modules section lists every DLL/EXE loaded at crash time:
 }
 ```
 
-- `base_addr` / `end_addr` — load range in virtual memory
-- `code_id` — timestamp + size-of-image hex string (used for symbol server lookups)
-- `debug_file` / `debug_id` — PDB filename and identifier
-- `version` — file version string (when available)
+- `base_addr` / `end_addr` -- load range in virtual memory
+- `code_id` -- timestamp + size-of-image hex string (used for symbol server lookups)
+- `debug_file` / `debug_id` -- PDB filename and identifier
+- `version` -- file version string (when available)
 
 ## Filtering & Detail Level
 
@@ -197,7 +197,7 @@ Trims output for quick inspection:
 - In `--dump` mode: omits memory hexdumps.
 
 ```bash
-# Quick triage — just the crash and crashing thread
+# Quick triage -- just the crash and crashing thread
 minidump-stackwalk --human --brief "$HOME/.agents/demo/minidump-stackwalk/cs2_2026_0703_211823_0_accessviolation.mdmp"
 # → Crash reason: EXCEPTION_ACCESS_VIOLATION_READ
 #   Thread 38 (crashed) - tid: 14300
@@ -381,7 +381,7 @@ done
 
 ## Quirks & Platform Notes
 
-### ⚠️ Large Output — Use `--json` for Programmatic Consumers
+### ⚠️ Large Output -- Use `--json` for Programmatic Consumers
 
 The `--human` format has no specification and may change. For scripting or automated pipelines, always use `--json`. The JSON schema is documented and stable within a major version.
 
@@ -395,7 +395,7 @@ The `--human` format has no specification and may change. For scripting or autom
 
 ### Stack Scanning Frames
 
-Frames found by `stack scanning` are heuristic — they inspect the stack for values that look like return addresses. They can be false positives, especially deep in the trace. Higher trust should be given to `call frame info` and `context` frames.
+Frames found by `stack scanning` are heuristic -- they inspect the stack for values that look like return addresses. They can be false positives, especially deep in the trace. Higher trust should be given to `call frame info` and `context` frames.
 
 ### Missing Symbols
 
@@ -403,11 +403,11 @@ Without `--symbols-url`, `--symbols-path`, or `--use-local-debuginfo`, all frame
 
 ### Module Offsets in JSON vs Human
 
-In `--json`, offsets are hex strings with leading zeros (e.g., `"0x000000000005ce3b"`). In `--human`, they're compact hex (e.g., `0x5ce3b`). Both represent the same offset — the zero-padding in JSON is for fixed-width alignment.
+In `--json`, offsets are hex strings with leading zeros (e.g., `"0x000000000005ce3b"`). In `--human`, they're compact hex (e.g., `0x5ce3b`). Both represent the same offset -- the zero-padding in JSON is for fixed-width alignment.
 
 ### Long-Running Analysis
 
-Large minidumps (many threads, large memory regions) can take seconds to process. The `--no-interactive` flag disables progress bars. The symbol download timeout (`--symbols-download-timeout-secs`) defaults to 1000 seconds — large PDBs from Microsoft's server can be slow on first download.
+Large minidumps (many threads, large memory regions) can take seconds to process. The `--no-interactive` flag disables progress bars. The symbol download timeout (`--symbols-download-timeout-secs`) defaults to 1000 seconds -- large PDBs from Microsoft's server can be slow on first download.
 
 ### `--cyborg` Requires a Path
 
