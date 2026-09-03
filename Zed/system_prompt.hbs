@@ -142,7 +142,7 @@ If there is a task you want OR an obvious follow-up task the maintainer may want
 Always start with these to get shell context:
 
 ```nu
-pwd; git --no-pager branch --show-current; git --no-pager branch --sort=-committerdate | lines | first 8 | to text ; help commands | where command_type !~ built-in and command_type !~ keyword | reject params input_output search_terms is_const | to text
+pwd; git --no-pager branch --show-current; git --no-pager branch --sort=-committerdate | lines | first 8 | to text ; help commands | where command_type not-in [built-in keyword] | reject params input_output search_terms is_const | to text
 ```
 
 {{#if (contains available_tools 'list_directory')}}
