@@ -1,60 +1,40 @@
 {{!-- Commented sections below document this tool's fixed API contract -- already
 sent with the tool's schema and stripped from the prompt. Keep the guidance
-consistent with them. --}}
-
-{{!--
+consistent with them. --}}{{!--
 Executes a shell one-liner and returns the combined output.
---}}
-
-{{!--
+--}}{{!--
 This tool spawns a process using the user's shell, reads from stdout and stderr (preserving the order of writes), and returns a string with the combined output result.
 --}}
-
-The output results will be shown to the user already, only list it again if necessary, avoid being redundant.
-
-{{!--
+The output results will be shown to the user already, only list it again if necessary, avoid being redundant.{{!--
 Always set the working directory with the `cd` parameter, never with `cd` inside `command`; otherwise it will error.
 --}}
 
-Do not generate terminal commands that rely on shell substitutions or interpolations to compute values; resolve those values yourself before calling this tool, or ask the user for the literal value to use.
-
-Do not pipe output to `first`, `last`, or similar output-filtering commands just to reduce what you receive. Instead, use `head_lines` and/or `tail_lines`; this keeps the terminal output visible to the user in real time while limiting only the final output sent back to you. When both are specified, the first `head_lines` lines are returned, then a blank line, then the last `tail_lines` lines. Avoid requesting too many lines, or the response may waste tokens or exceed the context window.
-
-Do not use this tool for commands that run indefinitely, such as servers (like `npm run start`, `npm run dev`, `python -m http.server`, etc) or file watchers that don't terminate on their own.
-
-For potentially long-running commands, prefer specifying `timeout_ms` to bound runtime and prevent indefinite hangs.
-
-{{!--
+For potentially long-running commands, prefer specifying `timeout_ms` to bound runtime and prevent indefinite hangs.{{!--
 Remember that each invocation of this tool will spawn a new shell process, so you can't rely on any state from previous invocations.
---}}
-
-{{!--
+--}}{{!--
 The terminal is an interactive pty, so any command that blocks waiting for input will hang the tool until it times out. To avoid this:
 --}}
 
 - Always insert `--no-pager` immediately after `git` for any read-only git command, including `git log`, `git diff`, `git show`, `git blame`, and `git stash show`. Example: `git --no-pager log -n 5` (NOT `git log -n 5`).
-- Prefer Git flags that avoid optional metadata writes when possible, such as `git --no-optional-locks status` instead of `git status`.
 - Always prepend `GIT_EDITOR=true ` to any git command that may invoke an editor, including `git rebase`, `git commit`, `git merge`, and `git tag`. Example: `GIT_EDITOR=true git rebase origin/main` (NOT `git rebase origin/main`).
 - For other commands that may open a pager or editor, set `PAGER=cat` and/or `EDITOR=true` similarly.
-
-{{#if (gt (len (intersect available_tools (array 'read_file' 'grep' 'find_path'))) 0)}}
+{{#if (gt (len (intersect available_tools (array "read_file" "grep" "find_path"))) 0)}}
 Never use this tool to find/read/edit a file unless the native file tools cannot cover it (error or scope limitation).
 Never use this tool to find/read/edit a file unless the native file tools cannot cover it (error or scope limitation) -- prefer native tools over their `terminal` counterparts when searching for file contents.
-{{/if}}
-{{#if (contains available_tools 'skill')}}
+{{/if}}{{#if (contains available_tools 'skill')}}
 While using this tool to run a CLI tool, load that tool's Skill if one is available.
 While using this tool to run a CLI tool, load that tool's Skill if one is available.
 {{/if}}
 Ask the user for the path to a specific CLI tool when a call fails with `command not found` or similar.
 
-`rg`, `es`, `open`, and nu's `ls`/`find` via this tool can reach anywhere on the filesystem; they respect neither `gitignore` nor `.zed/settings.json`.
+`rg`, `es`, `open`, and nu's `ls`/`find` via this tool can reach anywhere on the filesystem; shell respect neither `gitignore` nor `.zed/settings.json`.
 {{#if is_windows}}
 - Never create or redirect to a file named `nul`, `con`, `prn`, `aux`, `com1`-`com9`, or `lpt1`-`lpt9` -- these are Windows reserved names.
-- In `nu`, `\` inside a double-quoted string is an escape character, you may prefer single-quoted string e.g. `'C:\Program Files\Git\usr\bin'` or raw string e.g. `r#'C:\Program Files\Git\usr\bin'#`(delimiter hash characters > 0) for static args.
-- Use `es` (Everything Search) instead of `ls` for filename/path search -- it reaches anywhere, fast.{{!-- ##### why: `ls` is slow on large file trees and needs recursive calls. ##### --}} Reach for `es` first when you need to search a repo not in `$env.PWD`.
+- In `nu`, `\` inside a double-quoted string is an escape character, you may prefer single-quoted string e.g. `'C:\Program Files\Git\usr\bin'` or raw string e.g. `r#'C:\Program Files\Git\usr\bin'#`(delimiter hash characters >= 1) for static args.
+- Use `es` (Everything Search) instead of `ls` for filename/path search -- it reaches anywhere, fast. Reach for `es` first when you need to search a repo not in `$env.PWD`.
 {{/if}}
 
-Never hardcode a long `sleep <n>`. Poll with a bounded 1s-interval loop instead:{{!-- ##### why: the wait ends the moment the condition is true ##### --}}
+Never hardcode a long `sleep <n>`. Poll with a bounded 1s-interval loop instead:
 ```nu
-let limit = 60; for i in 1..$limit { if (netstat -ano | lines | any {|l| $l =~ "<port>.*LISTENING" }) { print $"Port <port> listening after ($i)s"; break }; sleep 1sec }
+let limit = 240; for i in 1..$limit { if (netstat -ano | lines | any {|l| $l =~ "<port>.*LISTENING" }) { print $"Port <port> listening after ($i)s"; break }; sleep 1sec }
 ```

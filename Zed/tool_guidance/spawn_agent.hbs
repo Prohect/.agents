@@ -1,10 +1,8 @@
 {{!-- Commented sections below document this tool's fixed API contract -- already
 sent with the tool's schema and stripped from the prompt. Keep the guidance
-consistent with them. --}}
-{{!--
+consistent with them. --}}{{!--
 Spawn a sub-agent for a well-scoped task.
 --}}
-
 A sub-agent starts with a clean context -- none of this session's history.
 When your context has grown heavy with information useless to a specific task, delegate that task: fresh context means better focus and fewer tokens on both sides.
 Sub-agent sees nothing except system prompt, tools (schema, guidance), and your spawn message.
@@ -24,8 +22,7 @@ Thus do NOT include what system prompt or tools already covers in your spawn mes
 - Reuse the returned session_id when you want to follow up on the same delegated subproblem instead of creating a duplicate session.
 - Never run parallel sub-agents that write to working directories with non-empty intersection -- whether targeting different git branches or sharing intersecting edit trees: they are unpredictable and unreliable, race on checkout, stomp each other's staged changes, and can leave the repo in an unrecoverable state (detached HEAD, lost stashes, merge-conflict artifacts).
 
-### Restricting subagent tools
-{{!--
+### Restricting subagent tools{{!--
 - By default a subagent inherits all of your tools. Pass `tools` to restrict it to an allowlist -- for example read-only tools like ["read_file", "grep", "find_path"] for a search task, or an empty list for a pure reasoning task over content in the message.
 --}}
 - A scoped allowlist keeps focused subtasks from performing side effects you did not intend.
