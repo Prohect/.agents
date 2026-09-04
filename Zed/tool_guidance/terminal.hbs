@@ -30,7 +30,7 @@ Ask the user for the path to a specific CLI tool when a call fails with `command
 `rg`, `es`, `open`, and nu's `ls`/`find` via this tool can reach anywhere on the filesystem; shell respect neither `gitignore` nor `.zed/settings.json`.
 {{#if is_windows}}
 - Never create or redirect to a file named `nul`, `con`, `prn`, `aux`, `com1`-`com9`, or `lpt1`-`lpt9` -- these are Windows reserved names.
-- In `nu`, `\` inside a double-quoted string is an escape character, you may prefer single-quoted string e.g. `'C:\Program Files\Git\usr\bin'` or raw string e.g. `r#'C:\Program Files\Git\usr\bin'#`(delimiter hash characters >= 1) for static args.
+- In `nu`, `\` inside a double-quoted string is an escape character, you may prefer single-quoted string e.g. `'C:\Program Files\Git\usr\bin'` or [**RAW STRING**](`r#'C:\Program Files\Git\usr\bin'#`) (delimiter hash characters >= 1) for shell parser level static args.
 - Use `es` (Everything Search) instead of `ls` for filename/path search -- it reaches anywhere, fast. Reach for `es` first when you need to search a repo not in `$env.PWD`.
 {{/if}}
 
