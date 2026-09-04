@@ -161,7 +161,8 @@ Call `list_directory` on each project root to see the top-level structure.
 {{/if}}{{#if (contains available_tools "terminal")}}
 ### Shell Context
 
-You MUST call this once AS-IS before using terminal.
+**You MUST call this once AS-IS before using terminal**.
+**You MUST call this once AS-IS before using terminal**.
 
 ```nu
 which | where type not-in [built-in keyword] and path !~ 'C:\\WINDOWS' | $in.command | to text | print; pwd | print; git branch --show-current; git branch --sort=-committerdate | lines | first 8 | to text | print
