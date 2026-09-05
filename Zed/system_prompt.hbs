@@ -184,7 +184,7 @@ Nushell does not support `2>&1`.
 Nushell provides more powerful mechanisms for handling command responses.
 
 ```nu
-cargo build|complete|do {$in|to text|save -f temp\complete;print $in.exit_code;$in.stdout|lines|last 10|print;print SERR;$in.stderr|lines|where {|l| $l !~ 'Compiling' and $l !~ 'LINK : warning'}|to text|print}
+cargo build|complete|do {$in|to text|save -f temp\complete;print $in.exit_code;$in.stdout|lines|slice (-13)..-2|print;print SERR;$in.stderr|lines|where {|l| $l !~ 'Compiling' and $l !~ 'LINK : warning'}|to text|print}
 ```
 
 ### when CLI tool es throws Error 8: Everything IPC window not found
