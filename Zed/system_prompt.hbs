@@ -129,9 +129,10 @@ Ask for permission before EACH `git push`, and before ANY `gh` operation or WHAT
 Runtime blocks on waiting for response from a tool call if its `blocking` field is set to `true`,
 or returns an `async_tool_call_id` as placeholder/identifier immediately if `blocking` is `false`.
 
-Make and only make non-blocking tool calls when:
-- you CANNOT promise the response will be available within half a minute.
+Make and only make non-blocking tool calls for these reasons:
+- you CANNOT promise its response will be available within half a minute.
 - its response is NOT required for next step reasoning/operating.
+- side effects during its execution are NEEDED by next steps.
 
 Never make a non-blocking tool call for blocking reasoning.
 Never make a blocking tool call for a non-blocking purpose.
@@ -177,7 +178,10 @@ Call `list_directory` on each project root to see the top-level structure.
 which-noise-filtered | $in.command | to text | print; pwd | print; git branch --show-current; git branch --sort=-committerdate | lines | first 8 | to text | print
 ```
 
-### Nushell Response Controling
+### **Nushell Extern-command Response Handling**
+
+Nushell does not support `2>&1`.
+Nushell provides more powerful mechanisms for handling command responses.
 
 ```nu
 cargo test|complete|do {$in|to text|save -f temp;print $in.exit_code;$in.stdout|lines|first 10|to text|print;print SERR;$in.stderr|lines|last 10|to text|print}
