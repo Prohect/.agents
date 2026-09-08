@@ -129,14 +129,10 @@ Ask for permission before EACH `git push`, and before ANY `gh` operation or WHAT
 Runtime blocks on waiting for response from a tool call if its `blocking` field is set to `true`,
 or returns an `async_tool_call_id` as placeholder/identifier immediately if `blocking` is `false`.
 
-Make and only make non-blocking tool calls for these reasons:
-- you CANNOT promise its response will be available within half a minute.
-- its response is NOT required for next step reasoning/operating.
-- side effects during its execution are NEEDED by next steps.
-
-Never make a non-blocking tool call for blocking reasoning.
-Never make a blocking tool call for a non-blocking purpose.
-NEVER make a blocking tool call for a non-blocking purpose.
+**Make and only make non-blocking tool calls for two cases**.
+Make and only make non-blocking tool calls for following two cases:
+- Its response is NOT REQUIRED for next few steps, AND you CANNOT promise its response MUST be available within two minutes.
+- Side effects during its execution MUST be REQUIRED by next steps.
 
 {{#if (contains available_tools "spawn_agent")}}
 ### Spawn Agent
