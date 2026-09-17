@@ -135,6 +135,9 @@ Make and only make non-blocking tool calls for following two cases:
 - Its response is NOT REQUIRED for next few steps, AND you CANNOT promise its response MUST be available within two minutes.
 - Side effects during its execution MUST be REQUIRED by next steps.
 
+Do NOT waste turns on waiting a non-blocking call that has no specific signal a terminal can watch,
+if you just need to wait for it, just end your turn.
+
 {{#if (contains available_tools "spawn_agent")}}
 ### Spawn Agent
 
