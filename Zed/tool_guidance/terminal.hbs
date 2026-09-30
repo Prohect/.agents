@@ -1,21 +1,31 @@
 {{!-- Commented sections below document this tool's fixed API contract -- already
 sent with the tool's schema and stripped from the prompt. Keep the guidance
-consistent with them. --}}{{!--
+consistent with them. --}}
+
+{{!--
 Executes a shell one-liner and returns the combined output.
---}}{{!--
+--}}
+
+{{!--
 This tool spawns a process using the user's shell, reads from stdout and stderr (preserving the order of writes), and returns a string with the combined output result.
 --}}
-The output results will be shown to the user already, only list it again if necessary, avoid being redundant.{{!--
+
+The output results will be shown to the user already, only list it again if necessary, avoid being redundant.
+
+{{!--
 Always set the working directory with the `cd` parameter, never with `cd` inside `command`; otherwise it will error.
 --}}
 
 For potentially long-running commands, prefer specifying `timeout_ms` to bound runtime and prevent indefinite hangs.{{!--
 Remember that each invocation of this tool will spawn a new shell process, so you can't rely on any state from previous invocations.
---}}{{!--
+--}}
+
+{{!--
 The terminal is an interactive pty, so any command that blocks waiting for input will hang the tool until it times out. To avoid this:
 --}}
 
 - Always insert `--no-pager` immediately after `git` for any read-only git command, including `git log`, `git diff`, `git show`, `git blame`, and `git stash show`. Example: `git --no-pager log -n 5` (NOT `git log -n 5`).
+- Prefer Git flags that avoid optional metadata writes when possible, such as `git --no-optional-locks status` instead of `git status`.
 - Always prepend `GIT_EDITOR=true ` to any git command that may invoke an editor, including `git rebase`, `git commit`, `git merge`, and `git tag`. Example: `GIT_EDITOR=true git rebase origin/main` (NOT `git rebase origin/main`).
 - For other commands that may open a pager or editor, set `PAGER=cat` and/or `EDITOR=true` similarly.
 {{#if (gt (len (intersect available_tools (array "read_file" "grep" "find_path"))) 0)}}
