@@ -1,6 +1,6 @@
 ---
 name: playwright-cli
-description: Use `terminal` playwright-cli for browser interaction -- navigate pages, fill forms, click elements, capture snapshots, debug with DevTools and tracing, mock network requests, manage cookies/storage, record video, and scrape content. Use when the user asks to browse the web, test a UI, search the internet, or automate any web interaction.
+description: Use `terminal` playwright-cli for browser interaction -- navigate pages, fill forms, click elements, capture snapshots, debug with DevTools and tracing, mock network requests, manage cookies/storage, record video, and scrape content. Use when the maintainer asks to browse the web, test a UI, search the internet, or automate any web interaction.
 disable-model-invocation: true
 ---
 

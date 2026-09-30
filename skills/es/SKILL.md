@@ -310,7 +310,7 @@ es -path "$HOME/proj" -export-csv files.csv "ext:java"
 
 ## Troubleshooting
 
-If es is not in your $PATH, ask the user the full path and document it below or add it to $PATH if the contents of the parent directory of everything.exe seems clean.
+If es is not in your $PATH, ask the maintainer the full path and document it below or add it to $PATH if the contents of the parent directory of everything.exe seems clean.
 
 ### Stale index: `-reindex`
 
