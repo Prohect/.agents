@@ -1,6 +1,6 @@
 # .agents -- Zed Coding Agent Skills & Rules
 
-A curated collection of [Zed](https://zed.dev) coding agent skills, error references, and project rules. Each skill teaches the agent how to use a specific CLI tool effectively.
+A curated collection of [Zed](https://zed.dev) coding agent skills, and project rules. Each skill teaches the agent how to use a specific CLI tool effectively.
 
 ## Quick Deploy
 
@@ -40,13 +40,11 @@ rm -rf "$HOME/.agents-old"
 │   ├── awk/                #   GNU awk -- text processing
 │   ├── cat/                #   GNU cat -- file display
 │   ├── commit-message/     #   Git commit message writing
-│   ├── errors/             #   Tool error reference index
 │   ├── es/                 #   Everything Search -- instant file/directory search, only on Windows
 │   ├── gh/                 #   GitHub CLI
 │   ├── grep/               #   GNU grep -- content search
 │   ├── ln/                 #   GNU ln + mklink -- links & junctions, only on Windows
 │   └── sed/                #   GNU sed -- stream editing
-├── errors/                 # Error solution docs (referenced by errors skill)
 └── demo/                   # Deterministic test fixtures for each skill
     │                       # Some subdirectories are .gitignored -- they reference
     │                       # local files (crash dumps, browser profiles, etc.)
@@ -70,10 +68,6 @@ description: Use GNU cat for reading, concatenating, and displaying files.
 ```
 
 The agent loads a skill when a task matches its description. The SKILL.md teaches the agent the tool's full CLI surface -- flags, quirks, platform notes, and worked examples -- so it uses the tool correctly on the first try.
-
-## The `errors` Skill
-
-The `errors` skill is special: it's an index of documented tool-call errors and their solutions. When the agent hits a new error, it could consults `errors/` for a known fix instead of guessing. Each error has its own directory with a `SOLUTION.md`.
 
 ## Tool Dependencies
 
