@@ -1,7 +1,7 @@
 Create a new agent thread that runs in parallel with this one.
 
-Only use this after the user explicitly asks for or approves another thread.
-The new thread appears in the agent sidebar just like a thread the user created
+Only use this after the maintainer explicitly asks for or approves another thread.
+The new thread appears in the agent sidebar just like a thread the maintainer created
 themselves, and runs independently — you will NOT receive its output and you
 cannot interact with it afterwards. Use `spawn_agent` instead if you need the
 results back.
@@ -10,9 +10,9 @@ A successful call returns only the title, agent ID, and model used; there is
 currently no way to look up or control a sibling thread by session ID.
 
 ### When to use
-- The user explicitly asks you to create or start another thread.
+- The maintainer explicitly asks you to create or start another thread.
 - You may suggest a new thread for a separable task, but call this tool only
-  after the user explicitly agrees.
+  after the maintainer explicitly agrees.
 
 ### Prompt design
 The new thread has no access to this conversation's history. Include in `prompt`
@@ -23,12 +23,12 @@ context. Assume the new thread starts from a blank slate in the same project.
 - If you don't know what agents or models are available, call `list_agents_and_models`.
 - For bulk / lightweight work (e.g., spawning many parallel threads), prefer a
   cheaper / faster model over the default.
-- Leave `agent` and `model` unset to use the user's current defaults.
+- Leave `agent` and `model` unset to use the maintainer's current defaults.
 
 ### Worktree support
 Set `use_new_worktree` to true to spawn the sibling inside a brand-new
 workspace (a new tab) backed by linked git worktrees of each git
-repository in the current project. This mirrors what the user gets when
+repository in the current project. This mirrors what the maintainer gets when
 they manually pick "Create worktree" from the worktree picker.
 
 - The new workspace opens in its own tab; switch to it manually to see
@@ -43,5 +43,5 @@ they manually pick "Create worktree" from the worktree picker.
   call fails.
 
 Use this when the sibling needs to make changes that shouldn't touch the
-user's current working tree (e.g., risky refactors, parallel experiments,
-or work the user wants to review independently).
+maintainer's current working tree (e.g., risky refactors, parallel experiments,
+or work the maintainer wants to review independently).
