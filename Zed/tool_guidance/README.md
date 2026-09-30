@@ -46,6 +46,5 @@ The `extract_builtin_tool_docs` utility test in `../tool_guidance.rs` dumps the
 current code-authored descriptions into this tree as the starting point for
 moving prose into files.
 
-The `scaffold_builtin_tool_docs` utility test in `../tool_guidance.rs` dumps the
-current code-authored descriptions into this tree as the starting point for
-moving prose into files.
+The `scaffold_builtin_tool_docs` utility test in `../tool_guidance.rs` incremental creates
+stubs for new tool / tool parameter.
