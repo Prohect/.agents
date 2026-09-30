@@ -64,7 +64,7 @@ its relative path without the extension, `/`-separated on every platform --
 ## Communication
 
 Runtime renders your **finnal summary** as markdown.
-Markdown image: `![alt text](https://example.com/image.png)`. Remote URLs (http/https){{#if (gt (len (intersect available_tools (array "terminal" "read_file" "find_path" "list_directory" "search_web"))) 0)}}, absolute file paths, and relative paths within workspace{{/if}} are supported.
+Markdown image: `![alt text](https://example.com/image.png)`. Remote URLs (http/https){{#if (gt (len (intersect available_tools (array "terminal" "read_file" "find_path" "list_directory" "search_web"))) 0)}}, absolute file paths, and relative paths within project{{/if}} are supported.
 
 {{#if (gt (len available_tools) 0)}}
 ## Environment
@@ -72,9 +72,9 @@ Markdown image: `![alt text](https://example.com/image.png)`. Remote URLs (http/
 Operating System: {{os}}
 Shell: {{shell}}
 
-## Workspace
+## Project
 
-The current workspace contains the following root directories:
+The current project contains the following root directories:
 
 {{#each worktrees}}
 - `{{abs_path}}`
@@ -101,17 +101,17 @@ You can call multiple tools in a single response. **Maximize use of parallel too
 - `file_scan_inclusions` wins `gitignore`.
 - To search inside gitignored paths, consider temporally adding them to `file_scan_inclusions` as recursive `dir/**` globs.
 {{#if (contains available_tools "terminal")}}
-- For paths outside workspace, use CLI tools on the absolute path directly.
+- For paths outside project, use CLI tools on the absolute path directly.
 {{/if}}
 
 #### Paths in Builtin Tools
 
-These tools [{{join (intersect available_tools (array "apply_code_action" "copy_path" "create_directory" "delete_path" "diagnostics" "edit_file" "find_path" "find_references" "get_code_actions" "go_to_definition" "grep" "list_directory" "move_path" "read_file" "rename_symbol" "write_file")) ", "}}] respect file-scan semantics, and resolve `path`/`glob` against workspace which supports multiple root directories.
-Always include the root name to disambiguate when using those tools.
+These tools [{{join (intersect available_tools (array "apply_code_action" "copy_path" "create_directory" "delete_path" "diagnostics" "edit_file" "find_path" "find_references" "get_code_actions" "go_to_definition" "grep" "list_directory" "move_path" "read_file" "rename_symbol" "write_file")) ", "}}] respect file-scan semantics, resolve `path`/`glob` against project which supports multiple root directories AND resolve `path` under `~/.agents/skills/`.
+Always include the root directory to disambiguate when using those tools.
 
-Globs are matched against paths that include the root directory name, so disambiguate recursive `**` glob specified to certain path too.
+Globs are matched against paths that include the root directory, so disambiguate recursive `**` glob specified to certain path too.
 `project/src/**/*.rs` might matches, while `src/**/*.rs` might matches nothing without erroring or warning.
-A glob that begins with `**/` (e.g. `**/*.rs`) works because `**` consumes the root prefix.
+A glob that begins with `**/` (e.g. `**/*.rs`) works because `**` consumes the root directory prefix.
 
 {{/if}}
 {{#if (contains available_tools "terminal")}}
@@ -154,7 +154,7 @@ OR until you are stuck somewhere lacking access to what you need.
 ## Session Start
 
 {{#if (contains available_tools "list_directory")}}
-Call `list_directory` on each project root to see the top-level structure.
+Call `list_directory` on each project root directory to see the top-level structure.
 
 {{/if}}
 {{#if (contains available_tools "terminal")}}

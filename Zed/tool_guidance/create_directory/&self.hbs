@@ -2,8 +2,6 @@ Creates a new directory at the specified path, and all necessary parent director
 
 Use this whenever you need to create new directories. Paths inside the project are created directly.
 
-{{#if is_windows}}
-The only supported path outside the project is `~/.agents/skills` or a descendant, for global agent skills.
-{{else}}{{!-- or is_linux is_macos --}}
-This tool can also create a directory **outside** the project. When agent terminal commands are sandboxed, doing so grants those commands write access to exactly that new directory — so, rather than requesting write access to a broad existing parent (e.g. your home directory) just to create something inside it, create the specific directory here first and then write into it. The only other supported path outside the project is `~/.agents/skills` or a descendant, for global agent skills.
+{{#if is_windows}}{{else}}{{!-- or is_linux is_macos --}}
+This tool can also create a directory **outside** the project. When agent terminal commands are sandboxed, doing so grants those commands write access to exactly that new directory — so, rather than requesting write access to a broad existing parent (e.g. your home directory) just to create something inside it, create the specific directory here first and then write into it.
 {{/if}}
