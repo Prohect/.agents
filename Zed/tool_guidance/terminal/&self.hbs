@@ -1,15 +1,15 @@
 {{#if (not sandboxing)}}
-Executes a shell one-liner and returns the combined output.
+Executes a shell one-liner and returns the combined result.
 
 This tool spawns a process using the maintainer's shell, reads from stdout and stderr (preserving the order of writes), and returns a string with the combined output result.
 
 The output results will be shown to the maintainer already, only list it again if necessary, avoid being redundant.
 
-Always set the working directory with the `cd` parameter, never with `cd` inside `command`; otherwise it will error.
+Prefer set the working directory with the tool parameter `cd`.
 
-Do not pipe output to `head`, `tail`, or similar output-filtering commands just to truncate the full result payload. Instead, use `head_lines` and/or `tail_lines`; this keeps the terminal output visible to the maintainer in real time and thus can help you with catching issues while limiting only the final output sent back to you. When `head_lines` OR `tail_lines` specified, the first `head_lines` lines are returned, then a blank line, then the last `tail_lines` lines, otherwise you get full result payload.
+Do not pipe output to `head`, `tail`, or similar output-filtering commands simply just to truncate the full final result. Instead, use tool parameter `head_lines` and/or `tail_lines`; this keeps the terminal output visible to the maintainer in real time and thus can help you with catching issues while limiting the final result sent back to you. When `head_lines` OR `tail_lines` specified, the first `head_lines` lines are returned, then a blank line, then the last `tail_lines` lines, otherwise you get full result.
 
-Do not use this tool for commands that run indefinitely while not detached, such as servers (like `npm run start`, `npm run dev`, `python -m http.server`, etc) or file watchers that don't terminate on their own.
+Do not use this tool for commands that run indefinitely NOT detached/asynchronous, such as servers (like `npm run start`, `npm run dev`, `python -m http.server`, etc) or file watchers that don't terminate on their own.
 
 For potentially long-running commands, prefer specifying `timeout_ms` to bound runtime and prevent indefinite hangs.
 

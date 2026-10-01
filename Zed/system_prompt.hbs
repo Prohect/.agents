@@ -157,11 +157,10 @@ OR until you are stuck somewhere lacking access to what you need.
 Call `list_directory` on each project root directory to see the top-level structure (optionnally, parallel with other tool calls you want).
 
 {{/if}}
-{{#if (contains available_tools "terminal")}}
+{{#if and (contains available_tools "terminal") (eq shell "nu")}}
 ### Shell Context
 
-**You MUST call this once AS-IS before using terminal**.
-**You MUST call this once AS-IS before using terminal**.
+**You should call this once AS-IS before using terminal**.
 
 ```nu
 which | where type == 'external' | where path !~ '(?i)^c:\\windows' | where path !~ '(?i)\\WindowsApps\\' | get command | sort | to text | print; pwd | print; git branch --show-current | to text | print; git branch --sort=-committerdate | lines | first 8 | to text | print
@@ -179,7 +178,7 @@ cargo build|complete|do {$in|to text|save -f temp\complete;print $in.exit_code;$
 {{#if (contains available_tools "terminal")}}
 ### when CLI tool es throws Error 8: Everything IPC window not found
 
-```nu
+```{{shell}}
 schtasks /run /tn everything
 ```
 

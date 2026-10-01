@@ -1,1 +1,4 @@
-Lists files and directories in a given path. Prefer the `grep` or `find_path` tools when searching the codebase.
+Lists files and directories in a given path.
+{{#if (gt (len (intersect available_tools (array "grep" "find_path"))) 0)}}
+Prefer [{{join (intersect available_tools (array "grep" "find_path")) ", "}}] when searching the codebase for specific contents.
+{{/if}}
