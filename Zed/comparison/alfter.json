@@ -1,0 +1,369 @@
+{
+  "model": "local",
+  "messages": [
+    {
+      "role": "system",
+      "content": "## Communication\r\n\r\nRuntime renders your **finnal summary** as markdown.\r\nMarkdown image: `![alt text](https://example.com/image.png)`. Remote URLs (http/https), absolute file paths, and relative paths within project are supported.\r\n\r\n## Environment\r\n\r\nOperating System: windows\r\nShell: nu\r\n\r\n## Project\r\n\r\nThe current project contains the following root directories:\r\n\r\n- `[maintainer]filtered`\r\n\r\n## Tool Use\r\n\r\nYou do not need to ask permission for an operation unless there's a specific constraint.\r\nAvoid HTML entity escaping; use plain characters.\r\n\r\n### Parallel Tool Calls\r\n\r\nYou can call multiple tools in a single response. **Maximize use of parallel tool calls where possible**.\r\n\r\n### Paths & glob patterns\r\n\r\n#### File-Scan Semantics\r\n\r\n- `gitignore`: `**/.gitignore` & `**/.git/info/exclude`.\r\n- `.zed/settings.json`: `**/.zed/settings.json`.\r\n- `.zed/settings.json` could contain `file_scan_inclusions` and/or `file_scan_exclusions`.\r\n- Patterns of `file_scan_exclusions` & `file_scan_inclusions` are globs.\r\n- `file_scan_inclusions` wins `gitignore`.\r\n- To search inside gitignored paths, consider temporally adding them to `file_scan_inclusions` as recursive `dir/**` globs.\r\n- For paths outside project, use CLI tools on the absolute path directly.\r\n\r\n#### Paths in Builtin Tools\r\n\r\nThese tools [copy_path, create_directory, delete_path, edit_file, find_path, grep, list_directory, move_path, read_file, write_file] respect file-scan semantics, resolve `path`/`glob` against project which supports multiple root directories AND resolve `path` under `~/.agents/skills/`.\r\nAlways include the root directory to disambiguate when using those tools.\r\n\r\nGlobs are matched against paths that include the root directory, so disambiguate recursive `**` glob specified to certain path too.\r\n`project/src/**/*.rs` might matches, while `src/**/*.rs` might matches nothing without erroring or warning.\r\nA glob that begins with `**/` (e.g. `**/*.rs`) works because `**` consumes the root directory prefix.\r\n\r\n### CLI_HOME\r\n\r\n$env.CLI_HOME, not belonging to `C:\\` and surviving OS clean install, is where you should deploy new CLI tools.\r\n\r\n### Git Writes & Remote Operations\r\n\r\n`git stash`, `git commit [--amend]` are always allowed.\r\nAsk for permission before EACH `git push`, and before ANY `gh` operation or WHATEVER call that writes to remote.\r\n\r\n### Spawn Agent\r\n\r\nOnly give sub-agent accesses his task needs.\r\nPrepare what he would need before spawning.\r\n\r\n## Making Changes\r\n\r\nChanges should be focused on the task.\r\nKeep changes consistent with the style of the existings.\r\nDo not touch changes you did not make unless the task MUST requires them.\r\nStay inside the scope of your task, solve issues you caused.\r\nDo not solve unrelated issues, you may mention them in your finnal summary.\r\n\r\n## Task Execution\r\n\r\nKeep going before ending your turn until the task is resolved\r\nOR until you need to gather information from the maintainer\r\nOR until you are stuck somewhere lacking access to what you need.\r\n\r\n## Session Start\r\n\r\nCall `list_directory` on each project root directory to see the top-level structure (optionnally, parallel with other tool calls you want).\r\n\r\n### when CLI tool es throws Error 8: Everything IPC window not found\r\n\r\n```nu\r\nschtasks /run /tn everything\r\n```\r\n\r\n## Finnal Report\r\n\r\nSummarize about the task, and current state.\r\nIf there is a task you want OR an obvious follow-up task the maintainer may want, offer it as a question rather than doing it.\r\n\r\n"
+    },
+    { "role": "user", "content": "[maintainer]filtered" }
+  ],
+  "stream": true,
+  "stream_options": { "include_usage": true },
+  "max_tokens": 1024000,
+  "temperature": 1.0,
+  "parallel_tool_calls": true,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "copy_path",
+        "description": "Copies a file or directory in the project, and returns confirmation that the copy succeeded. Directory contents will be copied recursively.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "source_path": {
+              "type": "string",
+              "description": "The source path of the file or directory to copy."
+            },
+            "destination_path": {
+              "type": "string",
+              "description": "The destination path where the file or directory should be copied to."
+            }
+          },
+          "required": ["source_path", "destination_path"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "create_directory",
+        "description": "Creates a new directory at the specified path, and all necessary parent directories, or NOP if target directory already exists. Returns confirmation that the directory was created.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "The path of the new directory."
+            },
+            "reason": {
+              "type": ["string", "null"],
+              "default": null,
+              "description": "Ignored on this platform."
+            }
+          },
+          "required": ["path"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "delete_path",
+        "description": "Deletes the file or directory (and the directory's contents, recursively) at the specified path in the project, and returns confirmation of the deletion.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "The path of the file or directory to delete."
+            }
+          },
+          "required": ["path"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "edit_file",
+        "description": "Apply edits to an existing file.\r\n\r\nBefore using this tool, use the `read_file` tool to understand the file's contents and context.\r\nTo create a new file or overwrite an existing one with completely new contents, use the `write_file` tool instead.\r\n\r\nWhen you derive `old_text` or `new_text`, pass only actual verbatim line contents, stripping formatting frames if there are.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "The path of the file to edit in the project."
+            },
+            "edits": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "old_text": {
+                    "type": "string",
+                    "description": "The exact text to find in the file. This will be matched using fuzzy matching to handle minor differences in whitespace or formatting.\r\n\r\nBe minimal with replacements:\r\n- For unique lines, include only those lines.\r\n- For non-unique lines, include enough context to identify them."
+                  },
+                  "new_text": {
+                    "type": "string",
+                    "description": "The text to replace it with."
+                  }
+                },
+                "required": ["old_text", "new_text"],
+                "description": "A single edit operation that replaces old text with new text."
+              },
+              "description": "List of edit operations to apply sequentially. Each edit finds `old_text` in the file and replaces it with `new_text`."
+            }
+          },
+          "required": ["path", "edits"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "find_path",
+        "description": "Find file paths that match a given pattern.\r\n\r\n- Supports glob patterns like \"**/*.js\" or \"project_root-directory/src/*.ts\".\r\n- Returns matching file paths sorted alphabetically.\r\n- Results are paginated with 50 matches per page.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "glob": {
+              "type": "string",
+              "description": "The glob to match against every path in the project.\r\n\r\n<example>\r\nIf the project has the following files:\r\n\r\n- directory1/a/something.txt\r\n- directory2/a/things.txt\r\n- directory3/a/other.txt\r\n\r\nYou can get back the first two paths by providing a glob of \"*thing*.txt\".\r\n</example>"
+            },
+            "offset": {
+              "type": "integer",
+              "format": "uint",
+              "minimum": 0,
+              "default": 0,
+              "description": "Optional starting position for paginated results (0-based). When not provided, starts from the beginning."
+            }
+          },
+          "required": ["glob"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "grep",
+        "description": "Searches the contents of files in the project with a regular expression.\r\n\r\n- Supports full regex syntax (eg. \"log.*Error\", \"function\\\\s+\\\\w+\", etc.).\r\n- Pass an `include_pattern` if you know how to narrow your search on the files system.\r\n- Results are paginated with 20 matches per page. Use the optional 'offset' parameter to request subsequent pages.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "regex": {
+              "type": "string",
+              "description": "A regex pattern to search for in the entire project. Note that the regex will be parsed by the Rust `regex` crate.\r\nDo NOT specify a path here! This will only be matched against the **content**."
+            },
+            "include_pattern": {
+              "type": ["string", "null"],
+              "description": "A glob pattern for the paths of files to include in the search.\r\nSupports standard glob patterns like \"**/*.rs\" or \"frontend/src/**/*.ts\".\r\nIf omitted, all files in the project will be searched.\r\n\r\nThe glob pattern is matched against the full path including the project root directory.\r\n\r\n<example>\r\nIf the project has the following root directories:\r\n\r\n- /a/b/backend\r\n- /c/d/frontend\r\n\r\nUse \"backend/**/*.rs\" to search only Rust files in the backend root directory.\r\nUse \"frontend/src/**/*.ts\" to search TypeScript files only in the frontend root directory (sub-directory \"src\").\r\nUse \"**/*.rs\" to search Rust files across all root directories.\r\n</example>"
+            },
+            "offset": {
+              "type": "integer",
+              "format": "uint32",
+              "minimum": 0,
+              "default": 0,
+              "description": "Optional starting position for paginated results (0-based).\r\nWhen not provided, starts from the beginning."
+            },
+            "case_sensitive": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether the regex is case-sensitive. Defaults to false (case-insensitive)."
+            },
+            "max_ancestor_lines": {
+              "type": "integer",
+              "format": "uint32",
+              "minimum": 0,
+              "default": 10,
+              "description": "The maximum number of lines of tree-sitter ancestor node to render each matched result in the search results.\nFallback to simple context render mode if lines of one ancestor node are greater than the maximum allowed or tree-sitter fails."
+            },
+            "context_lines": {
+              "type": "integer",
+              "format": "uint32",
+              "minimum": 0,
+              "default": 2,
+              "description": "The number of context lines for simple context render mode.\nExample of one simple context render result: `context_lines of lines before matched line ++ matched line ++ context_lines of lines after matched line`."
+            }
+          },
+          "required": ["regex"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "list_agents_and_models",
+        "description": "List the agents and models available for use with the `create_thread` and\r\n`spawn_agent` tools.\r\n\r\nThe result may include external agents. The `spawn_agent` tool creates a\r\nnative Zed subagent, so its `model` must be an exact `models[].id` from the\r\nagent entry where `is_native` is `true`.\r\n\r\nCall this before either tool if you need to pick a specific agent or a\r\nnon-default model (for example, to use a cheaper model for bulk work). If\r\nyou're happy with the maintainer's current defaults, you don't need to call this.",
+        "parameters": { "type": "object", "properties": {} }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "list_directory",
+        "description": "Lists files and directories in a given path.\r\nPrefer [find_path, grep] when searching the codebase for specific contents.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "The path of the directory to list in the project."
+            }
+          },
+          "required": ["path"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "move_path",
+        "description": "Moves or rename a file or directory in the project, and returns confirmation that the move succeeded.\r\n\r\nIf the source and destination directories are the same, but the filename is different, this performs a rename. Otherwise, it performs a move.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "source_path": {
+              "type": "string",
+              "description": "The source path of the file or directory to move/rename."
+            },
+            "destination_path": {
+              "type": "string",
+              "description": "The destination path where the file or directory should be moved/renamed to.\r\nIf the paths are the same except for the filename, then this will be a rename."
+            }
+          },
+          "required": ["source_path", "destination_path"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read_file",
+        "description": "Reads the content of the given file in the project.\r\n\r\nThis tool can return line_number formatted verbatim lines: `right-aligned 6 char line_number` ++ `tab` ++ {line}.\r\ne.g.\r\n````\r\n   123\tHello world!\r\n````\r\n\r\nFor large files, this tool can return a file outline with symbol names and line numbers instead of the full content.\r\nThis outline IS a successful response -- use the line numbers to read specific sections with start_line/end_line.\r\n\r\nThis tool supports reading image files. Supported formats: PNG, JPEG, WebP, GIF, BMP, TIFF.\r\nImage files are returned as visual content that you can analyze directly.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "The relative path of the file to read."
+            },
+            "start_line": {
+              "type": ["integer", "null"],
+              "format": "uint32",
+              "minimum": 0,
+              "default": null,
+              "description": "Optional line number to start reading on (1-based index)"
+            },
+            "end_line": {
+              "type": ["integer", "null"],
+              "format": "uint32",
+              "minimum": 0,
+              "default": null,
+              "description": "Optional line number to end reading on (1-based index, inclusive)"
+            }
+          },
+          "required": ["path"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "spawn_agent",
+        "description": "Spawn a sub-agent for a well-scoped task.\r\n\r\n### Designing delegated subtasks\r\n\r\n- A new sub-agent does not inherits your session, except system prompt and tools.\r\n- Explicitly require sub-agent to output to what you need.\r\n- When sending a follow-up using an existing agent session_id, that sub-agent is resumed with its previous session attached with your new message.\r\n\r\n### Parallel delegation patterns\r\n\r\n- Run multiple independent subtasks in parallel if there's no unsafe data race in those subtasks.\r\n\r\n### Restricting sub-agent tools\r\n\r\n- By default a sub-agent inherits all of your tools. Pass `tools` to restrict its access -- for example read-only tools like [\"find_path\", \"grep\", \"list_directory\", \"read_file\"] for a search task, or an empty list for a pure reasoning task over content in the message.\r\n- A scoped allowlist keeps focused subtasks from performing side effects you did not intend.\r\n\r\n### Workspace scoping\r\n\r\n- Pass `workspace` to scope the sub-agent's whole session (its system-prompt context, its tool accessibilities) to a subset of the project by directories -- project root(s), or directory(s) within the project.\r\n- Each entry must name a directory inside the current project, by absolute path, by root name, or by a path relative to a root (e.g. `crates/foo`).\r\n- Omit `workspace` to let the sub-agent inherit the your's scope.\r\n- A resumed session keeps its original scope, `workspace` cannot be combined with `session_id`.\r\n\r\n### Output\r\n\r\n- You will receive only the agent's final message as output.\r\n- Successful calls return a session_id that you can use for follow-up messages.\r\n- Error results may also include a session_id if a session was already created.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "type": "string",
+              "description": "Short label displayed in the UI while the agent runs (e.g., \"Researching alternatives\")."
+            },
+            "message": {
+              "type": "string",
+              "description": "The prompt for the agent. For new sessions, include full context needed for the task. For follow-ups (with session_id), you can rely on the agent already having the previous session."
+            },
+            "session_id": {
+              "type": ["string", "null"],
+              "description": "A unique identifier for a conversation session between a client and agent.\n\nSessions maintain their own context, conversation history, and state,\nallowing multiple independent interactions with the same agent.\n\nSee protocol docs: [Session ID](https://agentclientprotocol.com/protocol/session-setup#session-id)\n\nSession ID of an existing agent session to continue instead of creating a new one. Omit to create a new agent.",
+              "default": null
+            },
+            "model": {
+              "type": ["string", "null"],
+              "description": "Optional model override. Pass the exact `models[].id` returned for the native Zed agent (`is_native: true`) by `list_agents_and_models`.\r\nOmit to preserve default behavior."
+            },
+            "tools": {
+              "type": ["array", "null"],
+              "items": { "type": "string", "description": "Name of one tool." },
+              "default": null,
+              "description": "Optional list of tool names the subagent may use (e.g. [\"find_path\", \"grep\", \"list_directory\", \"read_file\"]). When present, the subagent is restricted to only those tools; when omitted, it inherits your full tool set. An empty list gives the subagent no tools at all. Names must be a subset of your available tools. Ignored when resuming an existing session -- the session keeps the filter it was created with."
+            },
+            "workspace": {
+              "type": ["array", "null"],
+              "items": {
+                "type": "string",
+                "description": "One directory, as absolute path OR relative path to a project root OR project root."
+              },
+              "description": "Directories inside the project this subagent's session is scoped to, given as absolute paths, worktree root names, or paths relative to a root (e.g. `crates/foo`).\nOmit to inherit the your's scope.\nCannot be combined with `session_id`."
+            }
+          },
+          "required": ["label", "message"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "terminal",
+        "description": "Executes a shell one-liner and returns the combined result.\r\n\r\nThis tool spawns a process using the maintainer's shell, reads from stdout and stderr (preserving the order of writes), and returns a string with the combined output result.\r\n\r\nThe output results will be shown to the maintainer already, only list it again if necessary, avoid being redundant.\r\n\r\nPrefer set the working directory with the tool parameter `cd`.\r\n\r\nDo not pipe output to `head`, `tail`, or similar output-filtering commands simply just to truncate the full final result. Instead, use tool parameter `head_lines` and/or `tail_lines`; this keeps the terminal output visible to the maintainer in real time and thus can help you with catching issues while limiting the final result sent back to you. When `head_lines` OR `tail_lines` specified, the first `head_lines` lines are returned, then a blank line, then the last `tail_lines` lines, otherwise you get full result.\r\n\r\nDo not use this tool for commands that run indefinitely NOT detached/asynchronous, such as servers (like `npm run start`, `npm run dev`, `python -m http.server`, etc) or file watchers that don't terminate on their own.\r\n\r\nFor potentially long-running commands, prefer specifying `timeout_ms` to bound runtime and prevent indefinite hangs.\r\n\r\nRemember that each invocation of this tool will spawn a new shell process, so you can't rely on any state from previous invocations.\r\n\r\nThe terminal is an interactive pty, so any command that blocks waiting for input will hang the tool until it times out.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string",
+              "description": "The one-liner command to execute.\r\n\r\nREMINDER: read-only git commands (`git log`, `git diff`, `git show`, `git blame`) MUST include `--no-pager` (e.g. `git --no-pager log`). Prefer `git --no-optional-locks status` over `git status` to avoid optional metadata writes. Git commands that may open an editor (`git rebase`, `git commit`, `git merge`, `git tag`) MUST be prefixed with `GIT_EDITOR=true ` (e.g. `GIT_EDITOR=true git rebase origin/main`). Otherwise the terminal will hang."
+            },
+            "cd": {
+              "type": "string",
+              "description": "Working directory: a project root directory or any subdirectory of one as relative or absolute path. E.g.  `project_root-directory\\src` or `C:\\Users\\me\\my-project` ."
+            },
+            "timeout_ms": {
+              "type": ["integer", "null"],
+              "format": "uint64",
+              "minimum": 0,
+              "description": "Optional maximum runtime (in milliseconds). If exceeded, the running terminal task is killed."
+            },
+            "head_lines": {
+              "type": ["integer", "null"],
+              "format": "uint",
+              "minimum": 0,
+              "default": null,
+              "description": "Include the first N lines of terminal output to you after the command finishes in the returned result."
+            },
+            "tail_lines": {
+              "type": ["integer", "null"],
+              "format": "uint",
+              "minimum": 0,
+              "default": null,
+              "description": "Include the last N lines of terminal output to you after the command finishes in the returned result."
+            }
+          },
+          "required": ["command", "cd"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "write_file",
+        "description": "Create a new file or overwrite an existing file with completely new contents.\r\n\r\nTo make granular edits to an existing file, prefer the `edit_file` tool instead.\r\n\r\nWARNING: This tool NEVER automatically creates nonexistent parent directories recursively, ERROR is expected by design if parent directory not existing.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "The path of the file to create or overwrite in the project."
+            },
+            "content": {
+              "type": "string",
+              "description": "The entire content for the file."
+            }
+          },
+          "required": ["path", "content"]
+        }
+      }
+    }
+  ],
+  "prompt_cache_key": "c8fd5793-4c34-46f3-9fdb-d04aaf0974c6",
+  "reasoning_effort": "max"
+}

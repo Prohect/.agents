@@ -1,0 +1,329 @@
+{
+  "model": "local",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are the Zed coding agent running inside the Zed editor. You help users complete software engineering tasks by understanding their codebase, making careful changes, and explaining your work clearly. Use your broad knowledge of programming languages, frameworks, design patterns, and engineering best practices to solve problems pragmatically.\r\n\r\n## Communication\r\n\r\n- Default to a tone that is concise, direct, and friendly. Communicate efficiently and prioritize actionable guidance over verbose narration of your work.\r\n- Match the level of detail to the task: be brief for straightforward work, and provide context when it helps the user make a decision. Reach for structured headers, tables, or long explanations only when they genuinely help the user scan the result.\r\n- Be accurate and truthful. Ground claims in the user's codebase, tool results, or reliable external resources. Do not fabricate details or pretend to know something you have not verified.\r\n- Prioritize technical correctness over affirming the user's assumptions. If something seems wrong or risky, say so respectfully and explain the reasoning.\r\n- Be transparent about uncertainty. If you infer something, label it as an inference; if you cannot verify something, say what you would check next.\r\n- Do not over-apologize when results are unexpected. Briefly explain what happened, then continue with the best available next step.\r\n\r\n\r\n## Formatting Responses\r\n\r\nFormat responses in markdown. Use backticks for file paths, directories, commands, functions, classes, and other code identifiers.\r\n\r\nTo display an image to the user, use standard markdown image syntax: `![alt text](https://example.com/image.png)`. Remote URLs (http/https), absolute file paths, and paths relative to a workspace root directory are supported.\r\n\r\nTo include a mermaid diagram that will be rendered visually, use `mermaid` as the language:\r\n\r\n```mermaid\r\ngraph TD\r\n    A[Start] --> B[End]\r\n```\r\n\r\nThe renderer supports the following diagram types: flowchart, sequence, class, state, ER, gantt, pie, gitgraph, mindmap, timeline, quadrant chart, xy chart, and journey. Other diagram types will only show as code.\r\n\r\nMermaid diagrams are automatically themed to match the user's editor theme. Do not include `%%{init}%%` directives or define your own `classDef` styles.\r\n\r\nDo *NOT* include inline HTML elements in mermaid diagrams, as they cannot be rendered. It is better to simply skip formatting (e.g. bold/italic/etc.).\r\n\r\nMermaid diagrams are automatically color-coded using the user's theme accent palette. Do not hardcode hex color values unless an exact color match is specifically required. Note that the rendered view may be narrow, so try to prioritize generating taller diagrams over wider ones.\r\n\r\n## Tool Use\r\n\r\n- Follow the available tool schemas exactly and provide every required argument.\r\n- Use only the tools that are currently available. Do not call a tool just because it appeared earlier in the conversation; the user may have disabled it.\r\n- Prefer the most direct tool for the job. Use file tools for reading and editing files, search tools for code discovery, and terminal commands for build, test, and project-specific workflows.\r\n- Before acting, gather enough context to avoid guessing. Do not use placeholders, invented paths, or assumed command arguments in tool calls.\r\n- You can call multiple tools in a single response. If you intend to call multiple tools and there are no dependencies between them, make all independent tool calls in parallel. Maximize use of parallel tool calls where possible to increase efficiency. However, if some tool calls depend on previous calls to inform dependent values, do NOT call these tools in parallel and instead call them sequentially. For instance, if one operation must complete before another starts, run these operations sequentially instead.\r\n- When running commands that may run indefinitely or for a long time, such as builds, tests, servers, or file watchers, specify `timeout_ms` to bound runtime. If a command times out, report that clearly and let the user decide whether to rerun it with a longer timeout.\r\n- Avoid HTML entity escaping; use plain characters instead.\r\n- Do not waste tokens by re-reading files after calling `write_file`, `edit_file`, or similar. The tool call will fail if it didn't work. The same goes for creating folders, deleting folders, etc.\r\n- Before a group of related tool calls, send a brief one- to two-sentence preamble explaining what you're about to do, so the user can follow along. Skip the preamble for trivial single reads or when continuing a clearly described step.\r\n\r\n## Task Execution\r\n\r\n- Keep going until the user's task is completely resolved before ending your turn and yielding back to the user. Only terminate your turn when you are sure the problem is solved.\r\n- Autonomously resolve the task to the best of your ability with the tools available rather than coming back to the user prematurely. Ask the user only when the information you need is genuinely unavailable from the project, or when proceeding without clarification would be risky.\r\n- Do not guess or make up an answer.\r\n\r\n## Searching and Reading\r\n\r\nIf you are unsure how to fulfill the user's request, gather more information with tool calls and/or clarifying questions.\r\n\r\n- When providing paths to tools, the path should always start with the name of a project root directory listed above.\r\n- Before you read or edit a file, you must first know its full project-relative path. Do not guess file paths.\r\n- Read only the portions of large files that are relevant to the task when targeted reads are available.\r\n- When looking for symbols in the project, prefer the `grep` tool.\r\n- As you learn about the structure of the project, scope searches to targeted subtrees instead of repeatedly searching the whole repository.\r\n- If the user specifies a partial file path and you do not know the full path, use `find_path` rather than `grep` before reading or editing the file.\r\n\r\n## Making Code Changes\r\n\r\n- Fix the problem at the root cause rather than applying surface-level patches, when possible.\r\n- Avoid unneeded complexity in your solution.\r\n- Keep changes consistent with the style of the existing codebase. Changes should be minimal and focused on the task.\r\n- Prefer existing dependencies and patterns already used in the project. Add new dependencies only when they are justified by the task.\r\n- Keep user work safe. Do not overwrite, remove, or revert changes you did not make unless the user explicitly asks.\r\n- Update related tests, documentation, configuration, or call sites when they are part of the requested change.\r\n- Do not fix unrelated bugs or broken tests. It is not your responsibility to fix them, but you may mention them in your final message.\r\n- Do not commit changes or create new git branches unless the user explicitly requests it.\r\n- Do not add comments that merely restate the code. Add comments only when they explain non-obvious intent, constraints, or tradeoffs.\r\n- If a change may affect behavior, call out the impact and any migration or follow-up work the user should know about.\r\n\r\n## Ambition vs. Precision\r\n\r\n- For tasks with no prior context (the user is starting something brand new), feel free to be ambitious and demonstrate creativity with your implementation.\r\n- For tasks in an existing codebase, do exactly what the user asks with surgical precision. Treat the surrounding codebase with respect, and don't overstep (e.g. changing filenames or variables unnecessarily). Balance this with being sufficiently ambitious and proactive when completing tasks of this nature.\r\n- Use judicious initiative to decide on the right level of detail and complexity to deliver based on the user's needs. Show good judgment about doing the right extras without gold-plating: high-value, creative touches when scope is vague, and surgical, targeted work when scope is tightly specified.\r\n\r\n## Validation\r\n\r\n- If the codebase has tests or the ability to build or run, consider using them to verify that your work is complete.\r\n- Start as specific as possible to the code you changed so that you can catch issues efficiently, then make your way to broader tests as you build confidence.\r\n- Do not claim validation passed unless you actually ran it and saw it pass.\r\n- If validation fails, report the failing command and the relevant error. Fix issues you caused when you can identify the root cause.\r\n- If you cannot run validation, state that clearly and explain why.\r\n\r\n## Fixing Diagnostics\r\n\r\n1. Make 1-2 focused attempts at fixing diagnostics you are likely able to resolve, then defer to the user with a clear explanation of what remains.\r\n2. Never simplify or discard meaningful code just to silence diagnostics. Complete, mostly correct code is more valuable than superficially clean code that does not solve the problem.\r\n\r\n## Debugging\r\n\r\nWhen debugging, only make code changes if you are confident they address the root cause. Otherwise, first gather evidence and isolate the problem.\r\n\r\n1. Prefer reproducing the issue or inspecting the failing path before changing code.\r\n2. Address the root cause instead of the symptoms.\r\n3. Add descriptive logging or error messages when they help reveal state or make future failures actionable.\r\n4. Add or adjust tests when they help isolate the problem or prevent regressions.\r\n\r\n## Calling External APIs\r\n\r\n- Use external APIs, packages, or services when they are appropriate for the task and consistent with the project's dependency and security expectations. You do not need to ask permission unless the user requested a specific constraint.\r\n- When choosing a package or API version, prefer one compatible with the user's dependency management files. If the project provides no guidance, use a stable, current version you know to be appropriate.\r\n- If an external API requires an API key or secret, tell the user. Never hardcode secrets or place them where they may be exposed.\r\n- Be explicit about network, cost, rate-limit, privacy, or data-sharing implications when they matter to the task.\r\n\r\n## Multi-agent delegation\r\n\r\nSub-agents can help you move faster on large tasks when you use them thoughtfully. This is most useful for:\r\n\r\n- Very large tasks with multiple well-defined scopes.\r\n- Plans with independent steps that can be executed in parallel.\r\n- Independent information-gathering tasks that can be done in parallel.\r\n- Requesting a review or fresh perspective on your work, another agent's work, or a difficult design/debugging question.\r\n- Running tests or config commands that can produce large logs when you only need a concise summary. Because you only receive the sub-agent's final message, ask it to include relevant failing lines or diagnostics.\r\n\r\nWhen delegating, create concrete, self-contained subtasks and include all context the sub-agent needs. Coordinate the work instead of duplicating it yourself. If multiple agents may edit files, assign disjoint write scopes.\r\n\r\nUse this feature wisely. For simple or straightforward tasks, prefer doing the work directly.\r\n\r\n## Final Message\r\n\r\n- When you finish a coding task, briefly summarize what changed, reference the relevant files, and state what validation you ran (or why you did not run any).\r\n- Reference files by their project-relative path so the user can click through; do not ask the user to \"save the file\" or \"copy this code\".\r\n- If there is an obvious follow-up the user may want (running a broader test suite, committing, scaffolding the next component), offer it as a question rather than doing it unprompted.\r\n\r\n\r\n## System Information\r\n\r\nOperating System: windows\r\nDefault Shell: sh\r\nToday's Date: 2026-10-01\r\n\r\nThe current project contains the following root directories:\r\n\r\n- `C:\\Users\\76288\\.agents`\r\n\r\n## Model Information\r\n\r\nYou are powered by the model named local.\r\n\r\n## Agent Skills\r\n\r\nYou have access to the following Skills - modular capabilities that provide specialized instructions for specific tasks. When a user's request matches a Skill's description, use the `skill` tool to retrieve the full instructions.\r\n\r\n<available_skills>\r\n  <skill>\r\n    <name>create-skill</name>\r\n    <description>Helps you create new agent skills for Zed. Use this to create a skill, ask about SKILLs.md, or package reusable agent instructions.</description>\r\n    <location><built-in>/create-skill\\SKILL.md</location>\r\n  </skill>\r\n  <skill>\r\n    <name>awk</name>\r\n    <description>Use &#x60;terminal&#x60; awk (GNU v5.4.0) for text processing -- field extraction, filtering, reporting, CSV handling, and data transformation. Use when you need to parse columnar data, compute aggregates, or transform structured text in files or pipelines.</description>\r\n    <location>C:\\Users\\76288\\.agents\\skills\\awk\\SKILL.md</location>\r\n  </skill>\r\n  <skill>\r\n    <name>commit-message</name>\r\n    <description>Expert Git commit message writing. Use when writing commit messages, drafting commits, or summarizing changes for version control.</description>\r\n    <location>C:\\Users\\76288\\.agents\\skills\\commit-message\\SKILL.md</location>\r\n  </skill>\r\n  <skill>\r\n    <name>es</name>\r\n    <description>Use &#x60;terminal&#x60; es (Everything Search v1.1.0.30) for instant filename/path search on Windows. Use when you need to find files/directories by name, extension, path pattern, or sort by size/date -- orders of magnitude faster than &#x60;find&#x60; or recursive &#x60;ls&#x60;.</description>\r\n    <location>C:\\Users\\76288\\.agents\\skills\\es\\SKILL.md</location>\r\n  </skill>\r\n  <skill>\r\n    <name>gh</name>\r\n    <description>Use &#x60;terminal&#x60; gh (v2.95.0) for GitHub operations -- repo management, PRs, issues, releases, and visibility changes.Prefer native MCP tools! Prefer native MCP tools when the maintainer asks about GitHub repos, pull requests, issues, or repo settings unless no available native MCP tool support the requested operation.</description>\r\n    <location>C:\\Users\\76288\\.agents\\skills\\gh\\SKILL.md</location>\r\n  </skill>\r\n  <skill>\r\n    <name>sed</name>\r\n    <description>Use &#x60;terminal&#x60; sed (GNU v4.9) for stream editing -- substitution, deletion, insertion, regex text transformation on files or pipelines. Use when you need to find-and-replace, extract, filter, or transform text in a repeatable, scriptable way.</description>\r\n    <location>C:\\Users\\76288\\.agents\\skills\\sed\\SKILL.md</location>\r\n  </skill>\r\n</available_skills>\r\n\r\nTo use a Skill:\r\n1. Identify when a user's request matches a Skill's description\r\n2. Use the `skill` tool with the skill's name to get detailed instructions\r\n3. Follow the instructions in the Skill\r\n4. If the Skill references additional files, use `read_file` to access them. Paths inside a Skill resolve relative to that Skill's directory (the parent of its `SKILL.md`).\r\n\r\n"
+    },
+    { "role": "user", "content": "[maintainer]filtered" }
+  ],
+  "stream": true,
+  "stream_options": { "include_usage": true },
+  "max_tokens": 1024000,
+  "temperature": 1.0,
+  "parallel_tool_calls": true,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "copy_path",
+        "description": "Copies a file or directory in the project, and returns confirmation that the copy succeeded.\nDirectory contents will be copied recursively.\n\nThis tool should be used when it's desirable to create a copy of a file or directory without modifying the original.\nIt's much more efficient than doing this by separately reading and then writing the file or directory's contents, so this tool should be preferred over that approach whenever copying is the goal.\nThe only supported paths outside the project are descendants of `~/.agents/skills`, for global agent skills.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "source_path": {
+              "type": "string",
+              "description": "The source path of the file or directory to copy.\nIf a directory is specified, its contents will be copied recursively.\n\n<example>\nIf the project has the following files:\n\n- directory1/a/something.txt\n- directory2/a/things.txt\n- directory3/a/other.txt\n\nYou can copy the first file by providing a source_path of \"directory1/a/something.txt\"\n</example>"
+            },
+            "destination_path": {
+              "type": "string",
+              "description": "The destination path where the file or directory should be copied to.\n\n<example>\nTo copy \"directory1/a/something.txt\" to \"directory2/b/copy.txt\", provide a destination_path of \"directory2/b/copy.txt\"\n</example>"
+            }
+          },
+          "required": ["source_path", "destination_path"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "create_directory",
+        "description": "Creates a new directory at the specified path, and all necessary parent directories. Returns confirmation that the directory was created.\n\nUse this whenever you need to create new directories. Paths inside the project are created directly.\n\nThe only supported path outside the project is `~/.agents/skills` or a descendant, for global agent skills.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "The path of the new directory.\n\n<example>\nIf the project has the following structure:\n\n- directory1/\n- directory2/\n\nYou can create a new directory by providing a path of \"directory1/new_directory\"\n</example>\n\n<example>\nTo create a global agent skill directory, you may provide a path under `~/.agents/skills`, such as `~/.agents/skills/my-skill`.\n</example>"
+            },
+            "reason": {
+              "type": ["string", "null"],
+              "description": "Unused on this platform.",
+              "default": null
+            }
+          },
+          "required": ["path"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "delete_path",
+        "description": "Deletes the file or directory (and the directory's contents, recursively) at the specified path in the project, and returns confirmation of the deletion.\n\nThe only supported paths outside the project are descendants of `~/.agents/skills`, for global agent skills.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "The path of the file or directory to delete.\n\n<example>\nIf the project has the following files:\n\n- directory1/a/something.txt\n- directory2/a/things.txt\n- directory3/a/other.txt\n\nYou can delete the first file by providing a path of \"directory1/a/something.txt\"\n</example>"
+            }
+          },
+          "required": ["path"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "edit_file",
+        "description": "This is a tool for applying edits to an existing file.\n\nBefore using this tool, use the `read_file` tool to understand the file's contents and context.\nTo create a new file or overwrite an existing one with completely new contents, use the `write_file` tool instead.\n\nThe only supported path outside the project is `~/.agents/skills` or a descendant, for global agent skills.\n\n`read_file` prefixes each line of its output with a line number right-aligned in a\n6-character field followed by a single tab, then the line's actual content. When you\nderive `old_text` or `new_text` from that output, strip this prefix and keep only what\ncomes after the tab, preserving the original indentation (tabs and spaces) exactly.\nNever include any part of the line number prefix in `old_text` or `new_text`.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "The full path of the file to edit in the project.\n\nWARNING: When specifying which file path need changing, you MUST start each path with one of the project's root directories, unless it's a global agent skill under `~/.agents/skills`.\n\nThe following examples assume we have two root directories in the project:\n- /a/b/backend\n- /c/d/frontend\n\n<example>\n`backend/src/main.rs`\n\nNotice how the file path starts with `backend`. Without that, the path would be ambiguous and the call would fail!\n</example>\n\n<example>\n`frontend/db.js`\n</example>\n\n<example>\nTo edit a global agent skill file, you may provide a path under `~/.agents/skills`, such as `~/.agents/skills/my-skill/SKILL.md`.\n</example>"
+            },
+            "edits": {
+              "type": "array",
+              "items": {
+                "description": "A single edit operation that replaces old text with new text\nProperly escape all text fields as valid JSON strings.\nRemember to escape special characters like newlines (`\\n`) and quotes (`\"`) in JSON strings.",
+                "type": "object",
+                "properties": {
+                  "old_text": {
+                    "description": "The exact text to find in the file. This will be matched using fuzzy matching\nto handle minor differences in whitespace or formatting.\n\nBe minimal with replacements:\n- For unique lines, include only those lines\n- For non-unique lines, include enough context to identify them",
+                    "type": "string"
+                  },
+                  "new_text": {
+                    "description": "The text to replace it with",
+                    "type": "string"
+                  }
+                },
+                "required": ["old_text", "new_text"]
+              },
+              "description": "List of edit operations to apply sequentially.\nEach edit finds `old_text` in the file and replaces it with `new_text`."
+            }
+          },
+          "required": ["path", "edits"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "find_path",
+        "description": "Find file paths that match a given pattern.\n\n- Supports glob patterns like \"**/*.js\" or \"src/**/*.ts\"\n- Returns matching file paths sorted alphabetically\n- Prefer the `grep` tool to this tool when searching for symbols unless you have specific information about paths.\n- Use this tool when you need to find files by name patterns\n- Results are paginated with 50 matches per page. Use the optional 'offset' parameter to request subsequent pages.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "glob": {
+              "type": "string",
+              "description": "The glob to match against every path in the project.\n\n<example>\nIf the project has the following root directories:\n\n- directory1/a/something.txt\n- directory2/a/things.txt\n- directory3/a/other.txt\n\nYou can get back the first two paths by providing a glob of \"*thing*.txt\"\n</example>"
+            },
+            "offset": {
+              "type": "integer",
+              "format": "uint",
+              "minimum": 0,
+              "description": "Optional starting position for paginated results (0-based).\nWhen not provided, starts from the beginning.",
+              "default": 0
+            }
+          },
+          "required": ["glob"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "grep",
+        "description": "Searches the contents of files in the project with a regular expression\n\n- Prefer this tool to path search when searching for symbols in the project, because you won't need to guess what path it's in.\n- Supports full regex syntax (eg. \"log.*Error\", \"function\\\\s+\\\\w+\", etc.)\n- Pass an `include_pattern` if you know how to narrow your search on the files system\n- Never use this tool to search for paths. Only search file contents with this tool.\n- Use this tool when you need to find files containing specific patterns\n- Results are paginated with 20 matches per page. Use the optional 'offset' parameter to request subsequent pages.\n- DO NOT use HTML entities solely to escape characters in the tool parameters.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "regex": {
+              "type": "string",
+              "description": "A regex pattern to search for in the entire project. Note that the regex will be parsed by the Rust `regex` crate.\n\nDo NOT specify a path here! This will only be matched against the code **content**."
+            },
+            "include_pattern": {
+              "type": ["string", "null"],
+              "description": "A glob pattern for the paths of files to include in the search.\nSupports standard glob patterns like \"**/*.rs\" or \"frontend/src/**/*.ts\".\nIf omitted, all files in the project will be searched.\n\nThe glob pattern is matched against the full path including the project root directory.\n\n<example>\nIf the project has the following root directories:\n\n- /a/b/backend\n- /c/d/frontend\n\nUse \"backend/**/*.rs\" to search only Rust files in the backend root directory.\nUse \"frontend/src/**/*.ts\" to search TypeScript files only in the frontend root directory (sub-directory \"src\").\nUse \"**/*.rs\" to search Rust files across all root directories.\n</example>"
+            },
+            "offset": {
+              "type": "integer",
+              "format": "uint32",
+              "minimum": 0,
+              "description": "Optional starting position for paginated results (0-based).\nWhen not provided, starts from the beginning.",
+              "default": 0
+            },
+            "case_sensitive": {
+              "type": "boolean",
+              "description": "Whether the regex is case-sensitive. Defaults to false (case-insensitive).",
+              "default": false
+            }
+          },
+          "required": ["regex"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "list_directory",
+        "description": "Lists files and directories in a given path. Prefer the `grep` or `find_path` tools when searching the codebase.\n\nThe only supported path outside the project is `~/.agents/skills` or a descendant, for global agent skills.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "The fully-qualified path of the directory to list in the project.\n\nThis path should never be absolute, and the first component of the path should always be a root directory in a project, unless it's a global agent skill directory under `~/.agents/skills`.\n\n<example>\nIf the project has the following root directories:\n\n- directory1\n- directory2\n\nYou can list the contents of `directory1` by using the path `directory1`.\n</example>\n\n<example>\nIf the project has the following root directories:\n\n- foo\n- bar\n\nIf you wanna list contents in the directory `foo/baz`, you should use the path `foo/baz`.\n</example>\n\n<example>\nTo list a global agent skill directory, you may provide a path under `~/.agents/skills`, such as `~/.agents/skills/my-skill`.\n</example>"
+            }
+          },
+          "required": ["path"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "move_path",
+        "description": "Moves or rename a file or directory in the project, and returns confirmation that the move succeeded.\n\nIf the source and destination directories are the same, but the filename is different, this performs a rename. Otherwise, it performs a move.\n\nThis tool should be used when it's desirable to move or rename a file or directory without changing its contents at all.\nThe only supported paths outside the project are descendants of `~/.agents/skills`, for global agent skills.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "source_path": {
+              "type": "string",
+              "description": "The source path of the file or directory to move/rename.\n\n<example>\nIf the project has the following files:\n\n- directory1/a/something.txt\n- directory2/a/things.txt\n- directory3/a/other.txt\n\nYou can move the first file by providing a source_path of \"directory1/a/something.txt\"\n</example>"
+            },
+            "destination_path": {
+              "type": "string",
+              "description": "The destination path where the file or directory should be moved/renamed to.\nIf the paths are the same except for the filename, then this will be a rename.\n\n<example>\nTo move \"directory1/a/something.txt\" to \"directory2/b/renamed.txt\",\nprovide a destination_path of \"directory2/b/renamed.txt\"\n</example>"
+            }
+          },
+          "required": ["source_path", "destination_path"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read_file",
+        "description": "Reads the content of the given file in the project.\n\n- Never attempt to read a path that hasn't been previously mentioned.\n- For large files, this tool returns a file outline with symbol names and line numbers instead of the full content.\n  This outline IS a successful response - use the line numbers to read specific sections with start_line/end_line.\n  Do NOT retry reading the same file without line numbers if you receive an outline.\n- This tool supports reading image files. Supported formats: PNG, JPEG, WebP, GIF, BMP, TIFF.\n  Image files are returned as visual content that you can analyze directly.\n\nThe only supported path outside the project is `~/.agents/skills` or a descendant, for global agent skills.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "The relative path of the file to read.\n\nThis path should never be absolute, and the first component of the path should always be a root directory in a project, unless it's a global agent skill under `~/.agents/skills`.\n\n<example>\nIf the project has the following root directories:\n\n- /a/b/directory1\n- /c/d/directory2\n\nIf you want to access `file.txt` in `directory1`, you should use the path `directory1/file.txt`.\nIf you want to access `file.txt` in `directory2`, you should use the path `directory2/file.txt`.\n</example>\n\n<example>\nTo read a global agent skill file, you may provide a path under `~/.agents/skills`, such as `~/.agents/skills/my-skill/SKILL.md`.\n</example>"
+            },
+            "start_line": {
+              "type": ["integer", "null"],
+              "format": "uint32",
+              "minimum": 0,
+              "description": "Optional line number to start reading on (1-based index)",
+              "default": null
+            },
+            "end_line": {
+              "type": ["integer", "null"],
+              "format": "uint32",
+              "minimum": 0,
+              "description": "Optional line number to end reading on (1-based index, inclusive)",
+              "default": null
+            }
+          },
+          "required": ["path"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "spawn_agent",
+        "description": "Spawn a sub-agent for a well-scoped task.\n\n### Designing delegated subtasks\n- An agent does not see your conversation history. Include all relevant context (file paths, requirements, constraints) in the message.\n- Subtasks must be concrete, well-defined, and self-contained.\n- Delegated subtasks must materially advance the main task.\n- Do not duplicate work between your work and delegated subtasks.\n- Do not use this tool for tasks you could accomplish directly with one or two tool calls. For example, don't ask the agent to read a single file and return the contents, you can do this yourself.\n- When you delegate work, focus on coordinating and synthesizing results instead of duplicating the same work yourself.\n- Avoid issuing multiple delegate calls for the same unresolved subproblem unless the new delegated task is genuinely different and necessary.\n- Narrow the delegated ask to the concrete output you need next.\n- For code-edit subtasks, decompose work so each delegated task has a disjoint write set.\n- When sending a follow-up using an existing agent session_id, the agent already has the context from the previous turn. Send only a short, direct message. Do NOT repeat the original task or context.\n\n### Parallel delegation patterns\n- Run multiple independent information-seeking subtasks in parallel when you have distinct questions that can be answered independently.\n- Split implementation into disjoint codebase slices and spawn multiple agents for them in parallel when the write scopes do not overlap.\n- When a plan has multiple independent steps, prefer delegating those steps in parallel rather than serializing them unnecessarily.\n- Reuse the returned session_id when you want to follow up on the same delegated subproblem instead of creating a duplicate session.\n\n### Output\n- You will receive only the agent's final message as output.\n- Successful calls return a session_id that you can use for follow-up messages.\n- Error results may also include a session_id if a session was already created.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "type": "string",
+              "description": "Short label displayed in the UI while the agent runs (e.g., \"Researching alternatives\")"
+            },
+            "message": {
+              "type": "string",
+              "description": "The prompt for the agent. For new sessions, include full context needed for the task. For follow-ups (with session_id), you can rely on the agent already having the previous message."
+            },
+            "session_id": {
+              "type": ["string", "null"],
+              "description": "Session ID of an existing agent session to continue instead of creating a new one. Omit to create a new agent.",
+              "default": null
+            }
+          },
+          "required": ["label", "message"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "terminal",
+        "description": "Executes a shell one-liner and returns the combined output.\n\nThis tool spawns a process using the user's shell, reads from stdout and stderr (preserving the order of writes), and returns a string with the combined output result.\n\nThe output results will be shown to the user already, only list it again if necessary, avoid being redundant.\n\nAlways set the working directory with the `cd` parameter, never with `cd` inside `command`; otherwise it will error.\n\nDo not generate terminal commands that use shell substitutions or interpolations such as `$VAR`, `${VAR}`, `$(...)`, backticks, `$((...))`, `<(...)`, or `>(...)`. Resolve those values yourself before calling this tool, or ask the user for the literal value to use.\n\nDo not pipe output to `head`, `tail`, or similar output-filtering commands just to reduce what you receive. Instead, use `head_lines` and/or `tail_lines`; this keeps the terminal output visible to the user in real time while limiting only the final output sent back to you. When both are specified, the first `head_lines` lines are returned, then a blank line, then the last `tail_lines` lines. Avoid requesting too many lines, or the response may waste tokens or exceed the context window.\n\nDo not use this tool for commands that run indefinitely, such as servers (like `npm run start`, `npm run dev`, `python -m http.server`, etc) or file watchers that don't terminate on their own.\n\nFor potentially long-running commands, prefer specifying `timeout_ms` to bound runtime and prevent indefinite hangs.\n\nRemember that each invocation of this tool will spawn a new shell process, so you can't rely on any state from previous invocations.\n\nThe terminal is an interactive pty, so any command that blocks waiting for input will hang the tool until it times out. To avoid this:\n\n- Always insert `--no-pager` immediately after `git` for any read-only git command, including `git log`, `git diff`, `git show`, `git blame`, and `git stash show`. Example: `git --no-pager log -n 5` (NOT `git log -n 5`).\n- Prefer Git flags that avoid optional metadata writes when possible, such as `git --no-optional-locks status` instead of `git status`.\n- Always prepend `GIT_EDITOR=true ` to any git command that may invoke an editor, including `git rebase`, `git commit`, `git merge`, and `git tag`. Example: `GIT_EDITOR=true git rebase origin/main` (NOT `git rebase origin/main`).\n- For other commands that may open a pager or editor, set `PAGER=cat` and/or `EDITOR=true` similarly.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string",
+              "description": "The one-liner command to execute. Do not include shell substitutions or interpolations such as `$VAR`, `${VAR}`, `$(...)`, backticks, `$((...))`, `<(...)`, or `>(...)`; resolve those values first or ask the user for the literal value to use.\n\nREMINDER: read-only git commands (`git log`, `git diff`, `git show`, `git blame`) MUST include `--no-pager` (e.g. `git --no-pager log`). Prefer `git --no-optional-locks status` over `git status` to avoid optional metadata writes. Git commands that may open an editor (`git rebase`, `git commit`, `git merge`, `git tag`) MUST be prefixed with `GIT_EDITOR=true ` (e.g. `GIT_EDITOR=true git rebase origin/main`). Otherwise the terminal will hang."
+            },
+            "cd": {
+              "type": "string",
+              "description": "Working directory: a project root directory or any subdirectory of one, given by name or absolute path. E.g. `my-project/src`, `/home/user/my-project`, or on Windows `my-project\\src` or `C:\\Users\\me\\my-project`."
+            },
+            "timeout_ms": {
+              "type": ["integer", "null"],
+              "format": "uint64",
+              "minimum": 0,
+              "description": "Optional maximum runtime (in milliseconds). If exceeded, the running terminal task is killed."
+            },
+            "head_lines": {
+              "type": ["integer", "null"],
+              "format": "uint",
+              "minimum": 0,
+              "description": "Return only the first N lines of terminal output to the model after the command finishes. Do not pipe output to `head`; use this parameter instead so the user can still see live output. Avoid requesting too many lines, or the response may waste tokens or exceed the context window.",
+              "default": null
+            },
+            "tail_lines": {
+              "type": ["integer", "null"],
+              "format": "uint",
+              "minimum": 0,
+              "description": "Return only the last N lines of terminal output to the model after the command finishes. Do not pipe output to `tail`; use this parameter instead so the user can still see live output. Avoid requesting too many lines, or the response may waste tokens or exceed the context window.",
+              "default": null
+            }
+          },
+          "required": ["command", "cd"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "write_file",
+        "description": "This is a tool for creating a new file or overwriting an existing file with completely new contents.\n\nTo make granular edits to an existing file, prefer the `edit_file` tool instead.\n\nBefore using this tool, verify the directory path is correct (only applicable when creating new files). Use the `list_directory` tool to verify the parent directory exists and is the correct location\n\nThe only supported path outside the project is `~/.agents/skills` or a descendant, for global agent skills.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "The full path of the file to create or overwrite in the project.\n\nWARNING: When specifying which file path need changing, you MUST start each path with one of the project's root directories, unless it's a global agent skill under `~/.agents/skills`.\n\nThe following examples assume we have two root directories in the project:\n- /a/b/backend\n- /c/d/frontend\n\n<example>\n`backend/src/main.rs`\n\nNotice how the file path starts with `backend`. Without that, the path would be ambiguous and the call would fail!\n</example>\n\n<example>\n`frontend/db.js`\n</example>\n\n<example>\nTo create or overwrite a global agent skill file, you may provide a path under `~/.agents/skills`, such as `~/.agents/skills/my-skill/SKILL.md`.\n</example>"
+            },
+            "content": {
+              "type": "string",
+              "description": "The entire content for the file."
+            }
+          },
+          "required": ["path", "content"]
+        }
+      }
+    }
+  ],
+  "prompt_cache_key": "9f0b8ec9-23d1-4a1d-97f0-7ce737a4d3e7",
+  "reasoning_effort": "max"
+}

@@ -3,6 +3,7 @@ Zed/*
 !Zed/system_prompt.hbs
 !Zed/handlebars-built-in-helpers.md
 !Zed/tool_guidance
+!Zed/comparison
 
 # Demo fixtures that reference local files (crash dumps, browser profiles, etc.)
 # These contain paths or data specific to the author's machine and should not be shared.
