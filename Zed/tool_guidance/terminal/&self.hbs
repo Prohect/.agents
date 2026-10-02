@@ -17,5 +17,5 @@ Remember that each invocation of this tool will spawn a new shell process, so yo
 
 The terminal is an interactive pty, so any command that blocks waiting for input will hang the tool until it times out.
 
-REMINDER: avoid piping output to `head`, `tail`, or similar output-filtering commands, emit parallel `terminal` calls each with `head_lines` and/or `tail_lines` instead; {{#if (contains available_tools "grep")}}avoid use this tool to search in project, use `grep` instead unless target is excluded by file scan semantics; {{/if}}{{#if (contains available_tools "edit_file")}}avoid use this tool to edit in project, use "edit_file" instead unless target is excluded by file scan semantics; {{/if}}
+REMINDER: avoid piping output to `head`, `tail`, or similar output-filtering commands, emit parallel `terminal` calls each with `head_lines` and/or `tail_lines` instead; {{#if (contains available_tools "grep")}}avoid use this tool to search in project, use `grep` instead unless target is excluded by file scan semantics; {{/if}}{{#if (contains available_tools "edit_file")}}avoid use this tool to edit in project, use `edit_file` instead unless target is excluded by file scan semantics; {{/if}}
 {{/if}}
