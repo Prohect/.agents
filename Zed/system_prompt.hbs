@@ -123,13 +123,16 @@ You can call multiple tools in a single response. **Maximize use of parallel too
 
 #### Paths in Builtin Tools
 
-These tools [{{join (intersect available_tools (array "apply_code_action" "copy_path" "create_directory" "delete_path" "diagnostics" "edit_file" "find_path" "find_references" "get_code_actions" "go_to_definition" "grep" "list_directory" "move_path" "read_file" "rename_symbol" "write_file")) ", "}}] respect file-scan semantics, resolve `path`/`glob` against project which supports multiple root directories AND resolve `path` under `~/.agents/skills/`.
+These tools [`{{join (intersect available_tools (array "apply_code_action" "copy_path" "create_directory" "delete_path" "diagnostics" "edit_file" "find_path" "find_references" "get_code_actions" "go_to_definition" "grep" "list_directory" "move_path" "read_file" "rename_symbol" "write_file")) "`, `"}}`] respect file-scan semantics, resolve `path`/`glob` against project which supports multiple root directories AND resolve `path` under `~/.agents/skills/`.
 Always include the root directory to disambiguate when using those tools.
 
 Globs are matched against paths that include the root directory, so disambiguate recursive `**` glob specified to certain path too.
 `project/src/**/*.rs` might matches, while `src/**/*.rs` might matches nothing without erroring or warning.
 A glob that begins with `**/` (e.g. `**/*.rs`) works because `**` consumes the root directory prefix.
 
+{{#if (contains available_tools "read_file")}}
+Specially, `read_file` can bypass gitignore semantics -- you can read a gitignored file when you know its path.
+{{/if}}
 {{/if}}
 {{#if (contains available_tools "terminal")}}
 {{#if is_windows}}

@@ -21,7 +21,7 @@ Spawn a sub-agent for a well-scoped task.
 {{/if}}
 ### Restricting sub-agent tools
 
-- By default a sub-agent inherits all of your tools. Pass `tools` to restrict its access -- for example read-only tools like ["{{join (intersect available_tools (array "find_path" "find_references" "go_to_definition" "grep" "list_directory" "read_file")) "\", \""}}"] for a search task, or an empty list for a pure reasoning task over content in the message.
+- By default a sub-agent inherits all of your tools. Pass `tools` to restrict its access -- for example read-only tools like [`"{{join (intersect available_tools (array "find_path" "find_references" "go_to_definition" "grep" "list_directory" "read_file")) "`, `"}}"`] for a search task, or an empty list for a pure reasoning task over content in the message.
 - A scoped allowlist keeps focused subtasks from performing side effects you did not intend.
 
 ### Workspace scoping
