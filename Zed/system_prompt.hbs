@@ -174,7 +174,7 @@ OR until you are stuck somewhere lacking access to what you need.
 Call `list_directory` on each project root directory to see the top-level structure (optionnally, parallel with other tool calls you want).
 
 {{/if}}
-{{#if and (contains available_tools "terminal") (eq shell "nu")}}
+{{#if (and (contains available_tools "terminal") (eq shell "nu"))}}
 ### Shell Context
 
 **You should call this once AS-IS before using terminal**.

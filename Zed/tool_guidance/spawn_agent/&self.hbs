@@ -10,7 +10,7 @@ Spawn a sub-agent for a well-scoped task.
 
 - Run multiple independent subtasks in parallel if there's no unsafe data race in those subtasks.
 
-{{#if contains available_tools "list_agents_and_models"}}
+{{#if (contains available_tools "list_agents_and_models")}}
 ### Model selection
 
 - When the maintainer requests a particular model or asks you to choose based on cost or capability, call `list_agents_and_models` first, then pass the exact `models[].id` from the native Zed agent entry (`is_native: true`) in `model`.
