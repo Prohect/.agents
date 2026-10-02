@@ -24,7 +24,8 @@ Context variables for system prompt:
   model_name        active model name, if any
   os                host operating system
   sandboxing        whether terminal commands run in the OS-level sandbox
-  shell             default shell
+  scoped            whether the session is scoped to a subset of the project's roots
+  scoped_roots      directories the session is scoped to (root_name, abs_path, project_path)  shell             default shell
   skills            catalog of skills (name, description, location)
   user_agents_md    raw user-global `AGENTS.md` content, if any
   worktrees         project worktrees (root_name, abs_path, rules_file)
@@ -37,6 +38,8 @@ Context variables for tool guidance:
   is_windows
   model_name
   sandboxing
+  scoped
+  scoped_roots
 
 Zed registers six custom helpers: `contains` (list, item),
 `join` (list, separator), `array` (items...) for building a list
@@ -77,9 +80,23 @@ Shell: {{shell}}
 The current project contains the following root directories:
 
 {{#each worktrees}}
-- `{{abs_path}}`
+- [`{{root_name}}`](`{{abs_path}}`)
 {{/each}}
 
+{{{{raw}}}}
+formatted by: [`{{root_name}}`](`{{abs_path}}`)
+
+{{{{/raw}}}}
+{{#if scoped}}
+### Scope
+
+You have access to these directories(relative to root directory):
+
+{{#each scoped_roots}}
+- `{{project_path}}`
+{{/each}}
+
+{{/if}}
 ## Tool Use
 
 You do not need to ask permission for an operation unless there's a specific constraint.
