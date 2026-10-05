@@ -4,4 +4,4 @@ Searches the contents of files in the project with a regular expression.
 - Pass an `include_pattern` if you know how to narrow your search on the files system.
 - Results are paginated with 20 matches per page. Use the optional 'offset' parameter to request subsequent pages.
 
-Each result is rendered as an ancestor tree-sitter node containing the matched tree-sitter node if this language is supported AND lines of that ancestor tree-sitter node less than `max_ancestor_lines`. Otherwise rendered as `context_lines` of lines before matched line ++ line ++ `context_lines` of lines alfter matched line.
+Each result is rendered as an ancestor tree-sitter node prefixer containing the matched line if this language is supported AND lines[ancestor_node_head..ancestor_node_head + min(lines of this ancestor node, `max_ancestor_lines`)] contains the matched line. Otherwise rendered as `context_lines` of lines before matched line ++ line ++ `context_lines` of lines alfter matched line.
